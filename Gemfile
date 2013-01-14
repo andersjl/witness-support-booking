@@ -1,5 +1,7 @@
 source 'https://rubygems.org'
 
+ruby "1.8.7"
+
 gem 'rails', '3.2.11'
 gem 'bootstrap-sass', '2.1'
 
