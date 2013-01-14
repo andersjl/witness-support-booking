@@ -4,7 +4,7 @@ describe "UserPages" do
 
   subject { page }
 
-  describe "signup page" do
+  describe "Signup page" do
     before( :each) { visit signup_path }
     it { should have_selector( 'h1',    :text => 'Ny användare') }
     it { should have_selector(
