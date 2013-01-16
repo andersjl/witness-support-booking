@@ -1,0 +1,16 @@
+<% provide( :title, "Logga in") %>
+<h1>Logga in</h1>
+
+<div class="row">
+  <div class="span6 offset3">
+    <%= form_for( :session, :url => sessions_path) do |f| %>
+      <%= f.label :email, "E-post" %>
+      <%= f.text_field :email %>
+      <%= f.label :password, "Lösenord" %>
+      <%= f.password_field :password %>
+      <%= f.submit "Logga in", :class => "btn btn-large btn-primary" %>
+    <% end %>
+    <p>Inget lösenord? <%= link_to "Registrera ett nu!", signup_path %></p>
+  </div>
+</div>
+

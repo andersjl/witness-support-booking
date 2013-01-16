@@ -14,6 +14,7 @@ describe User do
   it { should respond_to( :password_digest)}
   it { should respond_to( :password)}
   it { should respond_to( :password_confirmation)}
+  it { should respond_to( :remember_token)}
   it { should respond_to( :authenticate)}
   it { should be_valid}
 
@@ -29,10 +30,10 @@ describe User do
 
   context "when email address is already taken" do
     before do
-      (user_with_same_email = @user.dup).email.upcase!
+      ( user_with_same_email = @user.dup).email.upcase!
       user_with_same_email.save
     end
-    it { should_not be_valid }
+    it { should_not be_valid}
   end
 
   context "when password is not present" do
@@ -57,7 +58,7 @@ describe User do
   
   describe "return value of authenticate method" do
 
-    before { @user.save }
+    before { @user.save}
     let( :found_user) { User.find_by_email( @user.email)}
 
     context "with valid password" do
@@ -65,11 +66,16 @@ describe User do
     end
 
     context "with invalid password" do
-      let( :user_for_invalid_password) { found_user.authenticate( "invalid") }
+      let( :user_for_invalid_password) { found_user.authenticate( "invalid")}
       it { should_not == user_for_invalid_password}
-      specify { user_for_invalid_password.should be_false }
+      specify { user_for_invalid_password.should be_false}
     end
 
+  end
+
+  describe "remember token" do
+    before { @user.save}
+    its( :remember_token) { should_not be_blank}
   end
 
 end
