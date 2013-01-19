@@ -1,0 +1,10 @@
+
+<li>
+  <%= link_to user.name, user %>
+  <% if current_user.admin? && !current_user?( user) %>
+    | <%= link_to "Ta bort", user,
+                   :method => :delete,
+                   :data => { :confirm => "Ta bort #{ user.name}?"} %>
+    <% end %>
+</li>
+
