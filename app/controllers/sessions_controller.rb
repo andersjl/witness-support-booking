@@ -6,8 +6,8 @@ class SessionsController < ApplicationController
   def create
     user = User.find_by_email( params[ :session][ :email].downcase)
     if user && user.authenticate( params[ :session][ :password])
-      log_in user
-      redirect_to user
+      sign_in user
+      redirect_back_or user
     else
       flash.now[ :error] = 'Ogiltig kombination av e-post och lösenord'
       render "new"
@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
   end
 
   def destroy
-    log_out
+    sign_out
     redirect_to root_url
   end
 

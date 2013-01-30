@@ -1,6 +1,0 @@
-
-LAST_WEEK_LABEL = "Förra veckan"
-NEXT_WEEK_LABEL = "Nästa vecka"
-
-PARALLEL_SESSIONS_MAX = 5
-

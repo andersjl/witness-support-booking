@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "User pages" do
+describe "UserPages" do
 
   subject{ page}
 
@@ -9,7 +9,7 @@ describe "User pages" do
     before do
       @user = create_test_user( :name => "Normal",
                                 :email => "normal@exempel.se")
-      log_in @user
+      sign_in @user
       visit users_path
     end
 
@@ -38,8 +38,8 @@ describe "User pages" do
       context "as an admin user" do
         before do
           @admin = create_test_user :admin => true, :name => "Admin",
-            :email => "anders1lindeberg@gmail.com"
-          log_in @admin
+                                    :email => "anders1lindeberg@gmail.com"
+          sign_in @admin
           visit users_path
         end
 
@@ -52,9 +52,9 @@ describe "User pages" do
     end
   end
 
-  describe "Sign_up page" do
+  describe "Signup page" do
 
-    before( :each){ visit sign_up_path}
+    before( :each){ visit signup_path}
     let( :submit){ "Registrera ny användare"}
 
     it{ should have_selector( "h1",    :text => "Ny användare")}
@@ -68,7 +68,7 @@ describe "User pages" do
     end
 
     context "with valid information" do
-
+      
       before do
         fill_in "Namn",              :with => "Example User"
         fill_in "E-post",            :with => "user@example.com"
@@ -88,14 +88,15 @@ describe "User pages" do
         it{ should have_selector( "div.alert.alert-success", :text => "Välkommen")}
         it{ should have_link( "Logga ut")}
       end
+
     end
+
   end
 
   describe "profile page" do
 
-    before do
+    before( :each) do
       @user = create_test_user
-      # @morning, @afternoon = create_test_booking :count => 2
       visit user_path( @user)
     end
 
@@ -103,21 +104,14 @@ describe "User pages" do
     it{ should have_selector(
       "title", :text => "Bokning av vittnesstöd | #{ @user.name}")}
 
-=begin
-    describe "bookings" do
-      it{ should have_content( @morning.court_day)}
-      it{ should have_content( @afternoon.court_day)}
-      it{ should have_content( @user.bookings.count)}
-    end
-=end
   end
 
   describe "edit" do
 
     before( :each) do
-      visit log_in_path
+      visit signin_path
       @user = create_test_user
-      log_in @user
+      sign_in @user
       visit edit_user_path( @user)
     end
 
@@ -129,6 +123,7 @@ describe "User pages" do
 
     describe "with invalid information" do
       before{ click_button "Spara ändringar"}
+
       it{ should have_content( "fel")}
     end
 
@@ -145,11 +140,13 @@ describe "User pages" do
 
       it{ should have_selector(
         "title", :text => "Bokning av vittnesstöd | #{ new_name}")}
-        it{ should have_selector( "div.alert.alert-success")}
-        it{ should have_link( "Logga ut", :href => log_out_path)}
-        specify{ @user.reload.name.should  == new_name}
-        specify{ @user.reload.email.should == new_email}
+      it{ should have_selector( "div.alert.alert-success")}
+      it{ should have_link( "Logga ut", :href => signout_path)}
+      specify{ @user.reload.name.should  == new_name}
+      specify{ @user.reload.email.should == new_email}
     end
+
   end
+  
 end
 
