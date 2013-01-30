@@ -31,7 +31,6 @@ textarea {
   }
 }
 
-
 /* typography */
 
 h1, h2, h3, h4, h5, h6 {
@@ -58,7 +57,6 @@ p {
   font-size: 1.1em;
   line-height: 1.7em;
 }
-
 
 /* header */
 
@@ -106,7 +104,7 @@ footer {
 }
 
 
-/* sidebar */
+/* sidebar
 
 aside {
   section {
@@ -129,21 +127,27 @@ aside {
       margin-top: 0px;
     }
   }
-}
+} */
 
 
 /* forms */
 
-input, textarea, select, .uneditable-input {
-  border: 1px solid #bbb;
+  input, textarea, select, .uneditable-input {
+/*  border: 1px solid #bbb; */
   width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
+  padding: 2px;
+  margin-bottom: 2px;
   @include box_sizing( border-box);
 }
 
-input {
+input, select {
   height: auto !important;
+}
+
+.form-inline {
+  input {
+    width: auto;
+  }
 }
 
 #error_explanation {
@@ -173,6 +177,13 @@ input {
       border-bottom: 1px solid $grayLighter;
     }
   }
+}
+
+
+/* court_days index */
+
+.week_picker {
+  text-align: center;
 }
 
 
