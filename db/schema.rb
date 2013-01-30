@@ -10,16 +10,28 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130119101028) do
+ActiveRecord::Schema.define(:version => 20130123123659) do
+
+  create_table "court_days", :force => true do |t|
+    t.date     "date"
+    t.integer  "morning"
+    t.integer  "afternoon"
+    t.text     "notes"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "court_days", ["date"], :name => "index_court_days_on_date", :unique => true
 
   create_table "users", :force => true do |t|
     t.string   "name"
     t.string   "email"
+    t.boolean  "admin",           :default => false
+    t.boolean  "enabled",         :default => false
     t.string   "password_digest"
     t.string   "remember_token"
     t.datetime "created_at",                         :null => false
     t.datetime "updated_at",                         :null => false
-    t.boolean  "admin",           :default => false
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
