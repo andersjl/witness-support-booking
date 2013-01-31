@@ -27,7 +27,14 @@ describe "CourtDay pages" do
     it{ should have_content( Date.today + 7)}
     it{ should_not have_content( Date.today + 14)}
     it{ should have_content( @court_day.date)}
+    # this test fails on linebreaks!!
     it{ should have_content( @court_day.notes)}
+
+    it "has no edit button for any Court Day" do
+      first_date = Date.today - (Date.today.cwday - 1)
+      14.times{ |n| should_not have_selector( "table tr td form input",
+                                              :id => first_date + n)}
+    end
 
     context "when going one week back" do
       before{ click_button "Förra veckan"}
@@ -55,6 +62,70 @@ describe "CourtDay pages" do
         should have_content( @new_start_date - (@new_start_date.cwday - 1))
       end
     end
+
+    context "when admin" do
+
+      before do
+        @admin = create_test_user( :name => "Admin",
+                                   :email => "admin@exempel.se",
+                                   :admin => true)
+        visit log_in_path
+        fill_in "E-post",   :with => @admin.email
+        fill_in "Lösenord", :with => @admin.password
+        click_button "Logga in"
+        visit court_days_path
+      end
+
+      it "has edit link for each Court Day" do
+        first_date = Date.today - (Date.today.cwday - 1)
+        14.times{ |n| should have_link( "Ändra", :href => edit_court_day_path( first_date + n))}
+      end
+
+      context "clicking Court Day edit link" do
+        before{ click_link( "edit-#{ @court_day.date}")}
+        it{ should have_selector(
+            "title", :text => "Bokning av vittnesstöd | #{ @court_day.date}")}
+        it{ should have_selector(
+            "h1", :text => "Rättegångsdag #{ @court_day.date}")}
+      end
+    end
   end
+
+=begin
+  describe "edit" do
+
+    before do
+      @court_day = create_test_court_day :date => Date.today + 5,
+                                         :morning => 0, :afternoon => 3,
+                                         :notes => "hejsan\nhoppsan"
+      @admin = create_test_user( :name => "Admin",
+                                 :email => "admin@exempel.se",
+                                 :admin => true)
+      visit log_in_path
+      fill_in "E-post",   :with => @admin.email
+      fill_in "Lösenord", :with => @admin.password
+      click_button "Logga in"
+      visit edit_court_day_path( @court_day.date)
+    end
+
+    it{ should have_selector(
+        "title", :text => "Bokning av vittnesstöd | #{ @court_day.date}")}
+    it{ should have_selector(
+        "h1", :text => "Rättegångsdag #{ @court_day.date}")}
+
+    context "with nothing to do" do
+      before do
+        fill_in "Förmiddag", :with => 0
+        fill_in "Eftermiddag", :with => 0
+        fill_in "Noteringar", :with => ""
+        click_button "Spara ändringar"
+      end
+
+      it "the Court Day is deleted" do
+        CourtDay.find_by_date( @court_day.date).should be_nil
+      end
+    end
+  end
+=end
 end
 

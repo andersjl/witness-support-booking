@@ -1,6 +1,25 @@
 
 module CourtDaysHelper
 
+  def td_rowspan( rows, content = nil)
+    html = "<td"
+    html += " rowspan=\"#{ rows}\"" if rows > 1
+    html + ">#{ content}</td>"
+  end
+
+=begin
+  def court_day_rows( court_day)
+    [ 1, court_day.morning, court_day.afternoon].max
+  end
+
+  def morning_taken( court_day)
+    rand( court_day.morning + 1)  # stub
+  end
+
+  def afternoon_taken( court_day)
+    rand( court_day.afternoon + 1)  # stub
+  end
+
 # usage <%= court_days_table( @court_days).html_safe %>
   def court_days_table( court_days)
     html = ""
@@ -62,12 +81,6 @@ module CourtDaysHelper
     html
   end
 
-  def td_rowspan( rows, content)
-    html = "<td"
-    html += " rowspan=\"#{ rows}\"" if rows > 1
-    html + ">#{ content}</td>"
-  end
-
   def unbooked_row( row, taken, sessions, max)
     if row <= sessions
       if row == taken + 1
@@ -77,7 +90,10 @@ module CourtDaysHelper
       end
     elsif row == sessions + 1
       td_rowspan( max - row + 1, "")
+    else
+      ""
     end
   end
+=end
 end
 

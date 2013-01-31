@@ -1,7 +1,7 @@
 class CourtDaysController < ApplicationController
 
    before_filter :logged_in_user
-   before_filter :admin_user, :only => [ :update]
+   before_filter :admin_user, :only => [ :edit, :update]
 
   def index
     begin
@@ -25,6 +25,12 @@ class CourtDaysController < ApplicationController
         CourtDay.new :date => @start_date + n, :morning => 0, :afternoon => 0
       end
     end
+  end
+
+  def edit
+    @court_day = CourtDay.find_by_date( params[ :id]) ||
+                   CourtDay.new( :date => params[ :id],
+                                 :morning => 0, :afternoon => 0)
   end
 
 =begin

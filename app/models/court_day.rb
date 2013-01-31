@@ -9,6 +9,22 @@ class CourtDay < ActiveRecord::Base
   validate :there_must_be_something_to_do
   default_scope :order => "court_days.date"
 
+  def morning_taken( session = nil)  # stub
+    if session
+      "NN"
+    else
+      @morning_taken ||= rand( morning + 1)
+    end
+  end
+
+  def afternoon_taken( session = nil)  # stub
+    if session
+      "NN"
+    else
+      @afternoon_taken ||= rand( afternoon + 1)
+    end
+  end
+
   def there_must_be_something_to_do
     errors[ :base] << "Arbetsuppgifter saknas den #{ date}" unless
       (morning && morning > 0) || (afternoon && afternoon > 0) ||
