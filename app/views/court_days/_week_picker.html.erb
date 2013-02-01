@@ -1,5 +1,5 @@
 
-<div class="week_picker">
+<div class="week_picker" id="<%= week_picker_id %>">
   Ange ett datum i första visade veckan (spelar ingen roll vilken dag i veckan)
   <%= form_tag court_days_url, :method => "get", :class => "form-inline" do %>
     <%= submit_tag LAST_WEEK_LABEL %>

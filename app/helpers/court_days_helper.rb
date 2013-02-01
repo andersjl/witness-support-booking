@@ -1,13 +1,17 @@
 
 module CourtDaysHelper
 
+  def offset_n_span_to_class( offset, span)
+    (offset > 0 ? "offset#{ offset} " : "") + "span#{ span}"
+  end
+
+=begin
   def td_rowspan( rows, content = nil)
     html = "<td"
     html += " rowspan=\"#{ rows}\"" if rows > 1
     html + ">#{ content}</td>"
   end
 
-=begin
   def court_day_rows( court_day)
     [ 1, court_day.morning, court_day.afternoon].max
   end

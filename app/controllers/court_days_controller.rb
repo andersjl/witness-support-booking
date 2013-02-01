@@ -27,6 +27,82 @@ class CourtDaysController < ApplicationController
     end
   end
 
+=begin
+<div id="court-days">
+  <div class="row heading">
+    <div class="offset1 span1">Datum</div>
+    <div class="span2">Förmiddag</div>
+    <div class="span2">Eftermiddag</div>
+    <div class="span6">Noteringar</div>
+  </div>
+  <div class="row court-day">
+    <div class="span1 weekday">Må</div>
+    <div class="span1">2013-01-28</div>
+    <div class="span2">NN</div>
+    <div class="span2">2 kvar att boka</div>
+    <div class="span6">Noteringar av diverse slag</div>
+  </div>
+  <div class="row court-day last">
+    <div class="span1 weekday">Ti</div>
+    <div class="span1">2013-01-29</div>
+    <div class="span2">
+      <div class="row">
+        <div class="span2">NN</div>
+      </div>
+      <div class="row">
+        <div class="span2">NN</div>
+      </div>
+    </div>
+    <div class="span2">
+      <div class="row">
+        <div class="span2">2 kvar att boka</div>
+      </div>
+    </div>
+    <div class="span6">Noteringar av diverse slag dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfas dfasfsadfasf sdfasffffffffffffffffffff dfasfsadfasf sdfasf</div>
+  </div>
+</div>
+
+_court_day.html.erb
+<%
+  court_day_rows = [ 1, court_day.morning, court_day.afternoon].max
+  1.upto( court_day_rows) do |row|
+%>
+  <tr id="display-<%= court_day.date %>">
+    <% if row == 1 %>
+      <%= td_rowspan( court_day_rows, weekday( court_day.date)).html_safe %>
+      <%= td_rowspan( court_day_rows, court_day.date).html_safe %>
+    <% end %>
+    <% if row <= court_day.morning_taken %>
+      <td><%= court_day.morning_taken( row - 1) %></td>
+    <% else %>
+      <%= render :partial => "unbooked_row",
+                 :locals => { :row => row,
+                              :taken => court_day.morning_taken,
+                              :sessions => court_day.morning,
+                              :max => court_day_rows} %>
+    <% end %>
+    <% if row <= court_day.afternoon_taken %>
+      <td><%= court_day.afternoon_taken( row - 1) %></td>
+    <% else %>
+      <%= render :partial => "unbooked_row",
+                 :locals => { :row => row,
+                              :taken => court_day.afternoon_taken,
+                              :sessions => court_day.afternoon,
+                              :max => court_day_rows} %>
+    <% end %>
+    <% if row == 1 %>
+      <%= td_rowspan( court_day_rows, h( court_day.notes).gsub( "\n", "<br/>")
+                    ).html_safe %>
+      <% if current_user.admin? %>
+        <td><%= link_to "Ändra", edit_court_day_path( court_day.date),
+                        :method => "get", :id => "edit-#{ court_day.date}"
+            %></td>
+      <% end %>
+    <% end %>
+  </tr>
+<% end %>
+=end
+
   def edit
     @court_day = CourtDay.find_by_date( params[ :id]) ||
                    CourtDay.new( :date => params[ :id],

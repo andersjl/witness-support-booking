@@ -63,6 +63,7 @@ describe "CourtDay pages" do
       end
     end
 
+=begin
     context "when admin" do
 
       before do
@@ -89,6 +90,7 @@ describe "CourtDay pages" do
             "h1", :text => "Rättegångsdag #{ @court_day.date}")}
       end
     end
+=end
   end
 
 =begin
