@@ -1,8 +1,8 @@
 
 <%  provide( :title, 'Rondningar') %>
 <h1>Rondningar</h1>
-<%= render :partial => "week_picker",
-           :locals => { :week_picker_id => "week-picker-top"} %>
+<%= render :partial => "weekpicker",
+           :locals => { :weekpicker_id => "top"} %>
 <div id="court-days">
   <div class="row heading">
     <div class="offset1 span1">Datum</div>
@@ -66,6 +66,6 @@
 <%  end %>
 </div>
 
-<%= render :partial => "week_picker",
-           :locals => { :week_picker_id => "week-picker-bottom"} %>
+<%= render :partial => "weekpicker",
+           :locals => { :weekpicker_id => "bottom"} %>
 
