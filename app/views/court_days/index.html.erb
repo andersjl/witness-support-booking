@@ -4,65 +4,53 @@
 <%= render :partial => "weekpicker",
            :locals => { :weekpicker_id => "top"} %>
 <div id="court-days">
-  <div class="row heading">
-    <div class="offset1 span1">Datum</div>
-    <div class="span2">Förmiddag</div>
-    <div class="span2">Eftermiddag</div>
-    <div class="span6">Noteringar</div>
-  </div>
 <%  session_span = 2
-    notes_span = 6
-    @court_days.each_with_index do |court_day, ix|
-      court_day_class = "row court-day"
-      court_day_class += " last" if ix == @court_days.count - 1
-      court_day_id = "court-day-#{ court_day.date}" %>
-  <div class="<%= court_day_class %>" id="<%= court_day_id %>">
-    <div class="span1 weekday"><%= weekday( court_day.date) %></div>
-    <div class="span1"><%= court_day.date %></div>
-<%    offset = 0
+    notes_span = 6 %>
+<%= bootstrap_row( "heading", nil, 
+      bootstrap_col( 1, "offset1", nil, "Datum"),
+      bootstrap_col( session_span, nil, nil, "Förmiddag"),
+      bootstrap_col( session_span, nil, nil, "Eftermiddag"),
+      bootstrap_col( notes_span, nil, nil, "Noteringar")).html.indent.html_safe %>
+<%  @court_days.each_with_index do |court_day, ix|
+      cols = [ bootstrap_col( 1, "weekday", nil, weekday( court_day.date))]
+      cols << bootstrap_col( 1, nil, nil, court_day.date)
+      offset = 0
       [ "morning", "afternoon"].each do |session|
         offered = court_day.send( session)
-        if current_user.admin? %>
-    <div class="<%= "span#{ session_span}" %>">
-      <div class="row">
-        <div class="<%= "span#{ session_span}" %>">
-          <%= offered %> totalt
-        </div>
-      </div>
-<%      end
+        rows = [ ]
+        if current_user.admin?
+          rows << bootstrap_row( nil, nil,
+                    bootstrap_col( session_span, nil, nil,
+                      "#{ offered} totalt"))
+        end
         if offered > 0
-          unless current_user.admin?
-            column_class = offset_n_span_to_class( offset, session_span) %>
-    <div class="<%= column_class %>">
-<%        end
           taken = court_day.send( session + "_taken")
-          if offered - taken > 0 %>
-      <div class="row">
-        <div class="<%= "span#{ session_span}" %>">
-          <%= offered - taken %> kvar att boka
-        </div>
-      </div>
-<%        end
-          offset = 0 %>
-<%        taken.times do %>
-      <div class="row">
-        <div class="<%= "span#{ session_span}" %>">NN</div>
-      </div>
-<%        end
-          unless current_user.admin? %>
-    </div>
-<%        end
-        elsif !current_user.admin?
+          if offered - taken > 0
+            rows << bootstrap_row( nil, nil, 
+                      bootstrap_col( session_span, nil, nil,
+                        "#{ offered - taken} kvar att boka"))
+          end
+          taken.times do
+            rows << bootstrap_row( nil, nil,
+                      bootstrap_col( session_span, nil, nil,
+                        "NN"))
+          end
+        end
+        if rows.count > 0
+          cols << bootstrap_col( session_span, offset_to_class( offset), nil,
+                    *rows)
+          offset = 0
+        else
           offset += session_span
         end
-        if current_user.admin? %>
-    </div>
-<%      end
-      end %>
-    <div class="<%= offset_n_span_to_class( offset, notes_span) %>">
-      <%= h( court_day.notes).gsub( "\n", "<br/>").html_safe %>
-    </div>
-  </div>
+      end
+      cols << bootstrap_col( notes_span, offset_to_class( offset), nil,
+                h( court_day.notes).gsub( "\n", "<br/>").html_safe)
+      court_day_class = [ "court-day"]
+      court_day_class << "last" if ix == @court_days.count - 1
+      court_day_id = "court-day-#{ court_day.date}" %>
+<%=   bootstrap_row( court_day_class, court_day_id,
+        *cols).html.indent.html_safe %>
 <%  end %>
 </div>
 

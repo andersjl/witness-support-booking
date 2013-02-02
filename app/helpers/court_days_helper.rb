@@ -1,8 +1,67 @@
 
 module CourtDaysHelper
 
+  def offset_to_class( offset)
+    "offset#{ offset}" if offset > 0
+  end
+
+=begin
   def offset_n_span_to_class( offset, span)
     (offset > 0 ? "offset#{ offset} " : "") + "span#{ span}"
+  end
+=end
+
+  class ::String
+    def indent
+      gsub( "\n", "\n  ")
+    end
+  end
+
+  class BootstrapScaffold
+
+    attr_reader :html
+
+    def to_s
+      @html
+    end
+
+    def initialize( content, given_class, html_class, html_id)
+      @html =  %Q$\n<div class="#{ given_class}$
+      if html_class
+        html_class = html_class.flatten.join( " ") if html_class.is_a?( Array)
+        @html += %Q$ #{ html_class}$
+      end
+      @html += %Q$"$
+      if html_id
+        @html += %Q$ id="#{ html_id}"$
+      end
+      @html += %Q$>$
+      if content.is_a? Array
+        content.flatten.each{ |part| @html += part.to_s.indent}
+      else
+        @html += content.to_s.indent
+      end
+      @html += %Q$\n</div>$
+    end
+  end
+
+  class BootstrapRow < BootstrapScaffold
+    def initialize( html_class, html_id, *columns)
+      super columns, "row", html_class, html_id
+    end
+  end
+  def bootstrap_row( *args)
+    BootstrapRow.new( *args)
+  end
+
+  class BootstrapCol < BootstrapScaffold
+    def initialize( span, html_class, html_id, *rows)
+      span = "span#{ span}" unless span.to_s[ 0, 4] == "span"
+      super rows, span, html_class, html_id
+    end
+  end
+  def bootstrap_col( *args)
+    BootstrapCol.new( *args)
   end
 
 =begin
