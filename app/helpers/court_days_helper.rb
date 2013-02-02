@@ -1,6 +1,13 @@
 
 module CourtDaysHelper
 
+  def offset_n_span_to_class( offset, span)
+    result = ""
+    result += "offset#{ offset} " if offset.is_a?( Numeric) && offset > 0
+    result += "span#{ span}"
+  end
+
+=begin
   def render_day( court_day, session_span, notes_span, at_bottom)
     court_day_class = [ "court-day"]
     court_day_class << "last" if at_bottom
@@ -24,7 +31,7 @@ module CourtDaysHelper
       row << bootstrap_col( session_span, nil, nil, "#{ offered} totalt")
     end
     row << bootstrap_col( notes_span, nil, nil, h( court_day.notes
-                                               ).gsub( "\n", "<br/>"))
+                                                 ).gsub( "\n", "<br/>"))
     row
   end
 
@@ -42,7 +49,7 @@ module CourtDaysHelper
     end
     unless current_user.admin?
       row << bootstrap_col( notes_span, offset_to_class( offset), nil,
-                    h( court_day.notes).gsub( "\n", "<br/>").html_safe)
+               h( court_day.notes).gsub( "\n", "<br/>"))
     end
     row
   end
@@ -127,5 +134,6 @@ module CourtDaysHelper
   def bootstrap_col( *args)
     BootstrapCol.new( *args)
   end
+=end
 end
 

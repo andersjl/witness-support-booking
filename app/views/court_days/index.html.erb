@@ -7,16 +7,77 @@
 
 <div id="court-days">
 <%  session_span = 2
-    notes_span = 6 %>
-<%= bootstrap_row( "heading", nil, 
+    notes_span = 6
+=begin
+% >    
+< %= bootstrap_row( "heading", nil, 
       bootstrap_col( 1, "offset1", nil, "Datum"),
       bootstrap_col( session_span, nil, nil, "Förmiddag"),
       bootstrap_col( session_span, nil, nil, "Eftermiddag"),
       bootstrap_col( notes_span, nil, nil, "Noteringar")
-                 ).to_s.indent.html_safe %>
-<%  @court_days.each_with_index do |court_day, ix| %>
-<%=   render_day( court_day, session_span, notes_span,
-                  ix == @court_days.count - 1).indent.html_safe %>
+                 ).to_s.indent.html_safe % >
+=end
+%>
+  <div class="row heading">
+    <div class="offset1 span1">Datum</div>
+    <div class="span<%= session_span %>">Förmiddag</div>
+    <div class="span<%= session_span %>">Eftermiddag</div>
+    <div class="span<%= notes_span %>">Noteringar</div>
+  </div>
+<%  @court_days.each_with_index do |court_day, ix|
+=begin
+< %= render_day( court_day, session_span, notes_span,
+                  ix == @court_days.count - 1).indent.html_safe % >
+=end
+%>
+  <div class="row court-day<%= ix == @court_days.count - 1 ? ' last' : ''
+                            %>" id="court-day-<%= court_day.date%>">
+    <div class="span1 weekday"><%= weekday court_day.date %></div>
+    <div class="span1"><%= court_day.date %></div>
+    <div class="span<%= 2 * session_span + notes_span %>">
+<%  if current_user.admin? %>
+      <div class="row">
+<%    [ "morning", "afternoon"].each do |session|
+        offered = court_day.send( session) %>
+        <div class="span<%= session_span %>"><%= offered %> total</div>
+<%    end %>
+        <div class="span<%= notes_span %>">
+          <%= h( court_day.notes).gsub( "\n", "<br/>").html_safe %>
+        </div>
+      </div>
+<%  end
+    offset = 0 %>
+      <div class="row">
+<%  [ "morning", "afternoon"].each do |session|
+      offered = court_day.send( session)
+      if offered > 0 %>
+        <div class="<%= offset_n_span_to_class( offset, session_span) %>">
+<%      offset = 0
+        taken = court_day.send( session + "_taken")
+        if offered - taken > 0 %>
+          <div class="row">
+            <div class="span<%= session_span
+                             %>"><%= offered - taken %>kvar att boka</div>
+          </div>
+<%      end
+        taken.times do %>
+          <div class="row">
+            <div class="span<%= session_span %>">NN</div>
+          </div>
+<%      end %>
+        </div>
+<%    else
+        offset += session_span
+      end %>
+<%  end
+    unless current_user.admin? %>
+        <div class="<%= offset_n_span_to_class( offset, notes_span) %>">
+          <%= h( court_day.notes).gsub( "\n", "<br/>").html_safe %>
+        </div>
+<%  end %>
+      </div>
+    </div>
+  </div>
 <%  end %>
 </div>
 
