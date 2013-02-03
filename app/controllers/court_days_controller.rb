@@ -1,9 +1,26 @@
 class CourtDaysController < ApplicationController
 
    before_filter :logged_in_user
-   before_filter :admin_user, :only => [ :edit, :update]
+   before_filter :admin_user, :only => :update
 
   def index
+    collect_court_days
+  end
+
+  def update
+    @ajl_debug = params
+    updated_date = params[ :id]
+    @court_day = CourtDay.find_by_date( updated_date)
+    if @court_day
+      update_or_destroy
+    else
+      create
+    end
+    collect_court_days
+    render :index
+  end
+
+  def collect_court_days
     begin
       chosen_date = Date.parse( params[ :start_date])
     rescue
@@ -27,14 +44,35 @@ class CourtDaysController < ApplicationController
     end
   end
 
-  def edit
-    @court_day = CourtDay.find_by_date( params[ :id]) ||
-                   CourtDay.new( :date => params[ :id],
-                                 :morning => 0, :afternoon => 0)
+  def update_or_destroy
+    updated = params_to_court_day
+    if updated.something_to_do?
+      if [ @court_day.morning, @court_day.afternoon, @court_day.notes] !=
+           [ updated.morning, updated.afternoon, updated.notes]
+        @court_day.morning = updated.morning
+        @court_day.afternoon = updated.afternoon
+        @court_day.notes = updated.notes
+        @court_day.save
+      end
+    else
+      @court_day.destroy
+      @court_day = nil
+    end
+  end
+
+  def create
+    @court_day = params_to_court_day
+    @court_day.save if @court_day.something_to_do?
+  end
+
+  # params[ :id] is not the DB id
+  def params_to_court_day
+    CourtDay.new( :date => params[ :id], :morning => params[ :morning],
+      :afternoon => params[ :afternoon], :notes => params[ :notes])
   end
 
 =begin
-  def create
+    @court_day = CourtDay.find( params[ :court_day])
     @court_day = CourtDay.new( params[ :court_day])
     if @court_day.save
       flash[ :success] = "Ny rättegångsdag"
@@ -44,7 +82,6 @@ class CourtDaysController < ApplicationController
     end
   end
 
-  def update
     if @court_day.update_attributes( params[ :court_day])
       flash[ :success] = "Ändringar sparade"
       redirect_to @court_day

@@ -4,7 +4,7 @@ WitnessSupportBooking::Application.routes.draw do
   resources :sessions, :only => [:new, :create, :destroy]
   # CourtDay business logic needs update-or-create( date), in which case PUT
   # is correct (idempotent!) and hence #update handles creation as well.
-  resources :court_days, :only => [ :index, :edit, :update]
+  resources :court_days, :only => [ :index, :update]
   root :to => 'static_pages#home'
   match '/sign_up', :to => 'users#new'
   match '/log_in',  :to => 'sessions#new'

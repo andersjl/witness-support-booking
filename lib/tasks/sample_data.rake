@@ -26,8 +26,7 @@ namespace :db do
       afternoon = rand( 3) == 0 ? 0 : 1 + rand( PARALLEL_SESSIONS_MAX)
       attrs[ :afternoon] = afternoon
       if n == 7
-        attrs[ :notes] = %q$En lång text med en radbrytning här ->
-och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare$ 
+        attrs[ :notes] = %Q$En lång text med en radbrytning här ->\r\noch så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare$ 
       elsif (morning == 0 && afternoon == 0) || rand( 3) > 0
         attrs[ :notes] = "Fri text nummer #{ n + 1}"
       end

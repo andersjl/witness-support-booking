@@ -1,22 +1,27 @@
 
-<%  provide( :title, 'Rondningar') %>
+<%
+  provide( :title, 'Rondningar')
+%>
 <h1>Rondningar</h1>
 
-<%= render :partial => "weekpicker",
-           :locals => { :weekpicker_id => "top"} %>
-
+<%= render :partial => "weekpicker", :locals => { :wp_id => "top"} %>
+<%
+  if @court_day
+%>
+<%= render :partial => "shared/error_messages",
+           :locals => { :model => @court_day} %>
+<%
+  end
+%>
 <div id="court-days">
-<%  session_span = 2
-    notes_span = 6
-=begin
-% >    
-< %= bootstrap_row( "heading", nil, 
-      bootstrap_col( 1, "offset1", nil, "Datum"),
-      bootstrap_col( session_span, nil, nil, "Förmiddag"),
-      bootstrap_col( session_span, nil, nil, "Eftermiddag"),
-      bootstrap_col( notes_span, nil, nil, "Noteringar")
-                 ).to_s.indent.html_safe % >
-=end
+<% 
+  session_span = 2
+  notes_span = 6
+  if @ajl_debug
+%>
+  <p><%= @ajl_debug.inspect.html_safe %></p>
+<% 
+  end
 %>
   <div class="row heading">
     <div class="offset1 span1">Datum</div>
@@ -24,63 +29,96 @@
     <div class="span<%= session_span %>">Eftermiddag</div>
     <div class="span<%= notes_span %>">Noteringar</div>
   </div>
-<%  @court_days.each_with_index do |court_day, ix|
-=begin
-< %= render_day( court_day, session_span, notes_span,
-                  ix == @court_days.count - 1).indent.html_safe % >
-=end
+<%
+  @court_days.each_with_index do |court_day, ix|
 %>
   <div class="row court-day<%= ix == @court_days.count - 1 ? ' last' : ''
                             %>" id="court-day-<%= court_day.date%>">
     <div class="span1 weekday"><%= weekday court_day.date %></div>
     <div class="span1"><%= court_day.date %></div>
     <div class="span<%= 2 * session_span + notes_span %>">
-<%  if current_user.admin? %>
+<%
+  if current_user.admin?
+%>
       <div class="row">
-<%    [ "morning", "afternoon"].each do |session|
-        offered = court_day.send( session) %>
-        <div class="span<%= session_span %>"><%= offered %> total</div>
-<%    end %>
-        <div class="span<%= notes_span %>">
-          <%= h( court_day.notes).gsub( "\n", "<br/>").html_safe %>
+        <%= form_tag court_day_path( court_day.date.to_s), :method => "put",
+                     :class => "form-inline" do %> 
+<%
+    [ "morning", "afternoon"].each do |session|
+      parallel = court_day.send( session)
+    # parallel_id = "#{ court_day.date}-#{ session}"
+%>
+        <div class="span<%= session_span %>">
+          <%= label_tag session, "Behov" %>
+          <%= select_tag session,
+            options_for_select( (PARALLEL_SESSIONS_MAX + 1).times.
+                                  inject( [ ]){ |acc, n| acc << n},
+                                parallel),
+            :class => "parallel-sessions" %>
         </div>
+<%
+    end
+%>
+        <div class="span<%= notes_span - 1 %>">
+          <%= text_area_tag :notes, court_day.notes %>
+        </div>
+        <div class="span1">
+          <%= hidden_field_tag "start_date", @start_date %>
+          <%= submit_tag "Spara" %>
+        </div>
+        <% end %>
       </div>
-<%  end
-    offset = 0 %>
+<%
+  end
+  offset = 0
+%>
       <div class="row">
-<%  [ "morning", "afternoon"].each do |session|
-      offered = court_day.send( session)
-      if offered > 0 %>
+<%
+  [ "morning", "afternoon"].each do |session|
+    parallel = court_day.send( session)
+    if parallel > 0
+%>
         <div class="<%= offset_n_span_to_class( offset, session_span) %>">
-<%      offset = 0
-        taken = court_day.send( session + "_taken")
-        if offered - taken > 0 %>
+<%    
+      offset = 0
+      taken = court_day.send( session + "_taken")
+      if parallel - taken > 0
+%>
           <div class="row">
             <div class="span<%= session_span
-                             %>"><%= offered - taken %>kvar att boka</div>
+                             %>"><%= parallel - taken %> kvar att boka</div>
           </div>
-<%      end
-        taken.times do %>
+<%   
+      end
+      taken.times do
+%>
           <div class="row">
             <div class="span<%= session_span %>">NN</div>
           </div>
-<%      end %>
+<%
+      end
+%>
         </div>
-<%    else
+<%
+      else
         offset += session_span
-      end %>
-<%  end
-    unless current_user.admin? %>
+      end
+    end
+    unless current_user.admin?
+%>
         <div class="<%= offset_n_span_to_class( offset, notes_span) %>">
           <%= h( court_day.notes).gsub( "\n", "<br/>").html_safe %>
         </div>
-<%  end %>
+<%
+    end
+%>
       </div>
     </div>
   </div>
-<%  end %>
+<%
+  end
+%>
 </div>
 
-<%= render :partial => "weekpicker",
-           :locals => { :weekpicker_id => "bottom"} %>
+<%= render :partial => "weekpicker", :locals => { :wp_id => "bottom"} %>
 

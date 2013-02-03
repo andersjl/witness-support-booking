@@ -26,9 +26,16 @@ class CourtDay < ActiveRecord::Base
   end
 
   def there_must_be_something_to_do
-    errors[ :base] << "Arbetsuppgifter saknas den #{ date}" unless
-      (morning && morning > 0) || (afternoon && afternoon > 0) ||
-        !notes.blank?
+    errors[ :base] <<
+      "Arbetsuppgifter saknas den #{ date}" unless something_to_do?
+  end
+
+  def something_to_do?
+    (morning && morning > 0) || (afternoon && afternoon > 0) || !notes.blank?
+  end
+
+  def before_save(record)
+    record.notes = record.notes.gsub( "\r", " *** ")
   end
 end
 

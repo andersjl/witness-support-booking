@@ -37,7 +37,8 @@ describe "Authentication pages" do
       end
 
       it{ should have_selector(
-        "title", :text => "Bokning av vittnesstöd | #{ @user.name}")}
+        "title", :text => "Bokning av vittnesstöd | Rondningar")}
+      it{ should have_link( 'Rondningar', :href => court_days_path)}
       it{ should have_link( 'Användare', :href => users_path)}
       it{ should have_link( 'Mina uppgifter', :href => user_path( @user))}
       it{ should have_link( "Ändra #{ @user.name}",
