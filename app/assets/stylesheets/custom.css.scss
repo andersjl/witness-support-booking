@@ -23,13 +23,13 @@ section {
 textarea {
   resize: vertical;
 }
-
+/*
 .center {
   text-align: center;
   h1 {
     margin-bottom: 10px;
   }
-}
+}*/
 
 /* typography */
 
@@ -104,32 +104,6 @@ footer {
 }
 
 
-/* sidebar
-
-aside {
-  section {
-    padding: 10px 0;
-    border-top: 1px solid $grayLighter;
-    &:first-child {
-      border: 0;
-      padding-top: 0;
-    }
-    span {
-      display: block;
-      margin-bottom: 3px;
-      line-height: 1;
-    }
-    h1 {
-      font-size: 1.4em;
-      text-align: left;
-      letter-spacing: -1px;
-      margin-bottom: 3px;
-      margin-top: 0px;
-    }
-  }
-} */
-
-
 /* forms */
 
 input, textarea, select, .uneditable-input {
@@ -145,22 +119,11 @@ input, select {
 }
 
 .form-inline {
+  margin-bottom: 0;
   input, textarea, select {
     width: auto;
-  }
-}
-
-.court-day {
-  textarea {
-    width: 100%;
-    height: 4em;
-  }
-}
-
-.weekpicker {
-  text-align: center;
-  input {
-    width: 100px;
+    padding: 0.05em;
+/*    margin-bottom: 0;*/
   }
 }
 
@@ -178,7 +141,7 @@ input, select {
 }
 
 
-/* index */
+/* users index */
 
 .users {
   list-style: none;
@@ -196,8 +159,26 @@ input, select {
 
 /* court_days index */
 
+.court-day {
+  textarea {
+    width: 100%;
+    height: 3em;
+  }
+}
+
+.weekpicker {
+  text-align: center;
+  .datepicker {
+    width: 6em;
+  }
+}
+
+#weekpicker-top {
+  margin-bottom: 2em;
+}
+
 #weekpicker-bottom {
-  margin-top: 20px;
+  margin-top: 2em;
 }
 
 #court-days {

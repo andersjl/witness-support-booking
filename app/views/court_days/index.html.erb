@@ -36,87 +36,85 @@
                             %>" id="court-day-<%= court_day.date%>">
     <div class="span1 weekday"><%= weekday court_day.date %></div>
     <div class="span1"><%= court_day.date %></div>
-    <div class="span<%= 2 * session_span + notes_span %>">
+    <%= form_tag court_day_path( court_day.date.to_s), :method => "put",
+                 :class => "form-inline" do %> 
 <%
-  if current_user.admin?
-%>
-      <div class="row">
-        <%= form_tag court_day_path( court_day.date.to_s), :method => "put",
-                     :class => "form-inline" do %> 
-<%
+    offset = 0
     [ "morning", "afternoon"].each do |session|
       parallel = court_day.send( session)
-    # parallel_id = "#{ court_day.date}-#{ session}"
 %>
-        <div class="span<%= session_span %>">
-          <%= label_tag session, "Behov" %>
-          <%= select_tag session,
-            options_for_select( (PARALLEL_SESSIONS_MAX + 1).times.
-                                  inject( [ ]){ |acc, n| acc << n},
-                                parallel),
-            :class => "parallel-sessions" %>
-        </div>
+      <div class="<%= offset_n_span_to_class( offset, session_span) %>">
 <%
-    end
+      if current_user.admin?
 %>
-        <div class="span<%= notes_span - 1 %>">
-          <%= text_area_tag :notes, court_day.notes %>
-        </div>
-        <div class="span1">
-          <%= hidden_field_tag "start_date", @start_date %>
-          <%= submit_tag "Spara" %>
-        </div>
-        <% end %>
-      </div>
-<%
-  end
-  offset = 0
-%>
-      <div class="row">
-<%
-  [ "morning", "afternoon"].each do |session|
-    parallel = court_day.send( session)
-    if parallel > 0
-%>
-        <div class="<%= offset_n_span_to_class( offset, session_span) %>">
-<%    
-      offset = 0
-      taken = court_day.send( session + "_taken")
-      if parallel - taken > 0
-%>
-          <div class="row">
-            <div class="span<%= session_span
-                             %>"><%= parallel - taken %> kvar att boka</div>
+        <div class="row">
+          <div class="span<%= session_span %>">
+            <%= label_tag session, "Behov" %>
+            <%= select_tag session,
+              options_for_select( (PARALLEL_SESSIONS_MAX + 1).times.
+                                    inject( [ ]){ |acc, n| acc << n},
+                                  parallel),
+              :class => "parallel-sessions" %>
           </div>
+        </div>
+<%
+      end
+      if parallel > 0
+        taken = court_day.send( session + "_taken")
+        if parallel - taken > 0
+%>
+        <div class="row">
+          <div class="span<%= session_span
+                           %>"><%= parallel - taken %> kvar att boka</div>
+        </div>
 <%   
-      end
-      taken.times do
+        end
+        taken.times do
 %>
-          <div class="row">
-            <div class="span<%= session_span %>">NN</div>
-          </div>
-<%
-      end
-%>
+        <div class="row">
+          <div class="span<%= session_span %>">NN</div>
         </div>
 <%
-      else
+        end
+      elsif !current_user.admin?
         offset += session_span
       end
-    end
-    unless current_user.admin?
-%>
-        <div class="<%= offset_n_span_to_class( offset, notes_span) %>">
-          <%= h( court_day.notes).gsub( "\n", "<br/>").html_safe %>
-        </div>
-<%
-    end
 %>
       </div>
-    </div>
+<%
+    end
+    if current_user.admin?
+      # the following is to prevent browser automatic fill-in
+      notes = court_day.notes.blank? ? " " : court_day.notes
+%>
+      <div class="span<%= notes_span - 1 %>">
+        <div class="row">
+          <div class="span<%= notes_span - 1 %>">
+            <%= text_area_tag :notes, notes %>
+          </div>
+        </div>
+      </div>
+      <div class="span1">
+        <div class="row">
+          <div class="span1">
+            <%= hidden_field_tag "start_date", @start_date %>
+            <%= submit_tag "Spara" %>
+          </div>
+        </div>
+      </div>
+<%
+    else
+%>
+      <div class="<%= offset_n_span_to_class( offset, notes_span) %>">
+        <%= h( court_day.notes).gsub( "\n", "<br/>").html_safe %>
+      </div>
+<%
+    end
+%>
+    <% end  # form_tag %>
   </div>
 <%
-  end
+  end  # @court_days.each_with_index
 %>
 </div>
 

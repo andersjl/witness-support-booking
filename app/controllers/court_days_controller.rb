@@ -8,7 +8,7 @@ class CourtDaysController < ApplicationController
   end
 
   def update
-    @ajl_debug = params
+    @ajl_debug = params if AJL_DEBUG
     updated_date = params[ :id]
     @court_day = CourtDay.find_by_date( updated_date)
     if @court_day
@@ -17,7 +17,11 @@ class CourtDaysController < ApplicationController
       create
     end
     collect_court_days
-    render :index
+    if AJL_DEBUG
+      render :index
+    else
+      redirect_to court_days_path
+    end
   end
 
   def collect_court_days
@@ -47,13 +51,13 @@ class CourtDaysController < ApplicationController
   def update_or_destroy
     updated = params_to_court_day
     if updated.something_to_do?
-      if [ @court_day.morning, @court_day.afternoon, @court_day.notes] !=
-           [ updated.morning, updated.afternoon, updated.notes]
+    # if [ @court_day.morning, @court_day.afternoon, @court_day.notes.blank?
+    #    ] != [ updated.morning, updated.afternoon, updated.notes.blank?]
         @court_day.morning = updated.morning
         @court_day.afternoon = updated.afternoon
         @court_day.notes = updated.notes
         @court_day.save
-      end
+    # end
     else
       @court_day.destroy
       @court_day = nil
@@ -67,8 +71,10 @@ class CourtDaysController < ApplicationController
 
   # params[ :id] is not the DB id
   def params_to_court_day
-    CourtDay.new( :date => params[ :id], :morning => params[ :morning],
-      :afternoon => params[ :afternoon], :notes => params[ :notes])
+    CourtDay.new(
+      :date => params[ :id],
+      :morning => params[ :morning], :afternoon => params[ :afternoon],
+      :notes => params[ :notes].blank? ? nil : params[ :notes].strip)
   end
 
 =begin

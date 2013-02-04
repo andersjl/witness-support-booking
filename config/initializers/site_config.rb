@@ -1,3 +1,4 @@
+AJL_DEBUG = true
 
 LAST_WEEK_LABEL = "Förra veckan"
 NEXT_WEEK_LABEL = "Nästa vecka"
