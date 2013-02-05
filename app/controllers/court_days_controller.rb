@@ -8,16 +8,14 @@ class CourtDaysController < ApplicationController
   end
 
   def update
-    @ajl_debug = params if AJL_DEBUG
-    updated_date = params[ :id]
-    @court_day = CourtDay.find_by_date( updated_date)
+    @court_day = CourtDay.find_by_date( params[ :id])
     if @court_day
       update_or_destroy
     else
       create
     end
     collect_court_days
-    if AJL_DEBUG
+    if Rails.env.development?
       render :index
     else
       redirect_to court_days_path
@@ -38,8 +36,9 @@ class CourtDaysController < ApplicationController
     defined_days = CourtDay.find :all,
                                  :conditions =>
                                    [ "date >= ? and date < ?",
-                                     @start_date, @start_date + 14]
-    @court_days = 14.times.collect do |n|
+                                     @start_date,
+                                     @start_date +  7 * WEEKS_P_PAGE]
+    @court_days = (7 * WEEKS_P_PAGE).times.collect do |n|
       if defined_days.first && defined_days.first.date == @start_date + n
         defined_days.shift
       else

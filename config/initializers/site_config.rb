@@ -1,7 +1,7 @@
-AJL_DEBUG = true
 
 LAST_WEEK_LABEL = "Förra veckan"
 NEXT_WEEK_LABEL = "Nästa vecka"
+WEEKS_P_PAGE = 2
 
 PARALLEL_SESSIONS_MAX = 5
 

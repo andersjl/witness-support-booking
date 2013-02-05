@@ -7,14 +7,14 @@ module CourtDaysHelper
     result += "span#{ span}"
   end
 
+=begin
+
   def parallel_session_options
     (PARALLEL_SESSIONS_MAX + 1).times.inject( [ ]){ |acc, n| acc << n}
-=begin
-      s = n.to_s
-      acc << [ s, s]
-=end
+    # s = n.to_s
+    # acc << [ s, s]
   end
-=begin
+
   def render_day( court_day, session_span, notes_span, at_bottom)
     court_day_class = [ "court-day"]
     court_day_class << "last" if at_bottom

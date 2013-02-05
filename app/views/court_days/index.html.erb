@@ -38,14 +38,16 @@
     <div class="span1"><%= court_day.date %></div>
     <%= form_tag court_day_path( court_day.date.to_s), :method => "put",
                  :class => "form-inline" do %> 
+      <%= hidden_field_tag "start_date", @start_date %>
 <%
     offset = 0
     [ "morning", "afternoon"].each do |session|
       parallel = court_day.send( session)
+      if current_user.admin || parallel > 0
 %>
       <div class="<%= offset_n_span_to_class( offset, session_span) %>">
 <%
-      if current_user.admin?
+        if current_user.admin?
 %>
         <div class="row">
           <div class="span<%= session_span %>">
@@ -58,30 +60,34 @@
           </div>
         </div>
 <%
-      end
-      if parallel > 0
-        taken = court_day.send( session + "_taken")
-        if parallel - taken > 0
+        end
+        if parallel > 0
+          taken = court_day.send( session + "_taken")
+          if parallel - taken > 0
 %>
         <div class="row">
           <div class="span<%= session_span
                            %>"><%= parallel - taken %> kvar att boka</div>
         </div>
 <%   
-        end
-        taken.times do
+          end
+          taken.times do
 %>
         <div class="row">
           <div class="span<%= session_span %>">NN</div>
         </div>
 <%
+          end
+          offset = 0
+        elsif !current_user.admin?
+          offset += session_span
         end
-      elsif !current_user.admin?
-        offset += session_span
-      end
 %>
       </div>
 <%
+      elsif parallel == 0
+        offset += session_span
+      end
     end
     if current_user.admin?
       # the following is to prevent browser automatic fill-in
@@ -96,14 +102,11 @@
       </div>
       <div class="span1">
         <div class="row">
-          <div class="span1">
-            <%= hidden_field_tag "start_date", @start_date %>
-            <%= submit_tag "Spara" %>
-          </div>
+          <div class="span1"><%= submit_tag "Spara" %></div>
         </div>
       </div>
 <%
-    else
+    elsif !court_day.notes.blank?
 %>
       <div class="<%= offset_n_span_to_class( offset, notes_span) %>">
         <%= h( court_day.notes).gsub( "\n", "<br/>").html_safe %>
