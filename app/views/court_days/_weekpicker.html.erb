@@ -1,7 +1,8 @@
 <div class="weekpicker" id="weekpicker-<%= wp_id %>">
-  Ange ett datum i första önskade veckan
-  (spelar ingen roll vilken dag i veckan)
-  <%= form_tag court_days_path, :method => "get", :class => "form-inline" do %>
+  Växla vecka med pilarna eller skriv in ett datum första önskade veckan och
+  tryck OK
+  <%= form_tag court_days_path, :method => "get",
+                                :class => "form-inline" do %>
     <%= submit_tag LAST_WEEK_LABEL %>
     <%= text_field_tag :start_date, @start_date,
                        :id => "datepicker-#{ wp_id}",

@@ -1,7 +1,7 @@
 
-LAST_WEEK_LABEL = "Förra veckan"
-NEXT_WEEK_LABEL = "Nästa vecka"
-WEEKS_P_PAGE = 2
+LAST_WEEK_LABEL = "<<"
+NEXT_WEEK_LABEL = ">>"
+WEEKS_P_PAGE = 1
 
 PARALLEL_SESSIONS_MAX = 5
 

@@ -26,7 +26,7 @@ class CourtDaysController < ApplicationController
     begin
       chosen_date = Date.parse( params[ :start_date])
     rescue
-      chosen_date = Date.today
+      chosen_date = Date.today + 2
     end
     case params[ :commit]
     when ::LAST_WEEK_LABEL then chosen_date -= 7
@@ -38,11 +38,13 @@ class CourtDaysController < ApplicationController
                                    [ "date >= ? and date < ?",
                                      @start_date,
                                      @start_date +  7 * WEEKS_P_PAGE]
-    @court_days = (7 * WEEKS_P_PAGE).times.collect do |n|
-      if defined_days.first && defined_days.first.date == @start_date + n
+    @court_days = (5 * WEEKS_P_PAGE).times.collect do |n|
+      weeks, days = n.divmod 5
+      date = @start_date + 7 * weeks + days
+      if defined_days.first && defined_days.first.date == date
         defined_days.shift
       else
-        CourtDay.new :date => @start_date + n, :morning => 0, :afternoon => 0
+        CourtDay.new :date => date, :morning => 0, :afternoon => 0
       end
     end
   end

@@ -6,6 +6,7 @@ class CourtDay < ActiveRecord::Base
                    :uniqueness => { :message => "Datumet är redan använt"}
   validates :morning, :inclusion => { :in => 0 .. PARALLEL_SESSIONS_MAX}
   validates :afternoon, :inclusion => { :in => 0 .. PARALLEL_SESSIONS_MAX}
+  validate :never_on_weekends
   validate :there_must_be_something_to_do
   default_scope :order => "court_days.date"
 
@@ -23,6 +24,15 @@ class CourtDay < ActiveRecord::Base
     else
       @afternoon_taken ||= rand( afternoon + 1)
     end
+  end
+
+  def never_on_weekends
+    return unless date  # handled by presence
+    case date.cwday
+    when 6 then error = "lördag"
+    when 7 then error = "söndag"
+    end
+    errors[ :base] << "#{ date} är en #{ error}" if error
   end
 
   def there_must_be_something_to_do

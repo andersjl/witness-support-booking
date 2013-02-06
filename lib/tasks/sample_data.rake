@@ -16,21 +16,25 @@ namespace :db do
                    :password => "bokning",
                    :password_confirmation => "bokning"
     end
-    date = Date.today + COURT_DAY_COUNT
-    long_text_done = false
+    first_date = Date.today - (COURT_DAY_COUNT / 10) * 7
+    first_date -= first_date.cwday - 1
+    incr = 0
     COURT_DAY_COUNT.times do |n|
-      date -= rand( 2) + 1
+      weeks, days = incr.divmod( 5)
+      date = first_date + 7 * weeks + days
+      puts date
       attrs = { :date => date}
       morning = rand( 3) == 0 ? 0 : 1 + rand( PARALLEL_SESSIONS_MAX)
       attrs[ :morning] = morning
       afternoon = rand( 3) == 0 ? 0 : 1 + rand( PARALLEL_SESSIONS_MAX)
       attrs[ :afternoon] = afternoon
-      if n == 7
+      if n == 11
         attrs[ :notes] = %Q$En lång text med en radbrytning här ->\r\noch så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare$ 
       elsif (morning == 0 && afternoon == 0) || rand( 3) > 0
         attrs[ :notes] = "Fri text nummer #{ n + 1}"
       end
       CourtDay.create! attrs
+      incr += rand( 2) + 1
     end
   end
 end

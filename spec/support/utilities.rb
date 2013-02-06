@@ -17,11 +17,9 @@ def create_test_user_do( attrs, extra = nil)
   else
     admin = attrs[ :admin]
   end
-# puts "User.create :email => #{ em}, :name => #{ nm}, :password => \"dåligt\", :password_confirmation => \"dåligt\""
   result = User.create! :email => em, :name => nm, :password => "dåligt",
                         :password_confirmation => "dåligt"
   result.toggle! :admin if admin
-# puts result.inspect
   result
 end
 private :create_test_user_do
@@ -49,24 +47,29 @@ def create_test_court_day( opts = { })
   end
 end
 def create_test_court_day_do( attrs, do_not_save, increment = false)
-  attrs[ :date] += rand( 2) + 1 if increment
-  attrs = attrs.dup
+  used = attrs.dup
+  used[ :date] = ensure_weekday( used[ :date])
+  attrs[ :date] = used[ :date] + rand( 2) + 1 if increment
   if increment
-    attrs[ :morning] = rand( attrs[ :morning] + 1)
-    attrs[ :afternoon] = rand( attrs[ :afternoon] + 1)
-    attrs.delete( :notes) if
-      (attrs[ :morning] > 0 || attrs[ :afternoon] > 0) && rand( 2) == 0
+    used[ :morning] = rand( used[ :morning] + 1)
+    used[ :afternoon] = rand( used[ :afternoon] + 1)
+    used.delete( :notes) if
+      (used[ :morning] > 0 || used[ :afternoon] > 0) && rand( 2) == 0
   end
   if do_not_save
-    CourtDay.new attrs
+    CourtDay.new used
   else
-    CourtDay.create! attrs
+    CourtDay.create! used
   end
 end
 private :create_test_court_day_do
 
-def expand_if_proc( possibly_proc, arg)
-  possibly_proc.is_a?( Proc) ? possibly_proc.call( arg) : possibly_proc
+def ensure_weekday( date)
+  case date.cwday
+  when 6 then date += 2
+  when 7 then date += 1
+  else        date
+  end
 end
 
 =begin
