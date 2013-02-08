@@ -1,125 +1,119 @@
 
-<%
-  provide( :title, 'Rondningar')
-%>
+<%  provide( :title, 'Rondningar') %>
 <h1>Rondningar</h1>
 
-<%= render :partial => "weekpicker", :locals => { :wp_id => "top"} %>
-<%
-  if @court_day
-%>
+<% if @court_day %>
 <%= render :partial => "shared/error_messages",
            :locals => { :model => @court_day} %>
-<%
-  end
-%>
+<% end
+    session_span = 2
+    notes_span = 6 %>
 <div id="court-days">
-<% 
-  session_span = 2
-  notes_span = 6
-  if @ajl_debug
-%>
-  <p><%= @ajl_debug.inspect.html_safe %></p>
-<% 
-  end
-%>
   <div class="row heading">
     <div class="offset1 span1">Datum</div>
     <div class="span<%= session_span %>">Förmiddag</div>
     <div class="span<%= session_span %>">Eftermiddag</div>
     <div class="span<%= notes_span %>">Noteringar</div>
   </div>
-<%
-  @court_days.each_with_index do |court_day, ix|
-%>
+<% @court_days.each_with_index do |court_day, ix|
+     form_path = current_user.admin? ? court_day_path( court_day.date.to_s) :
+                                        user_path( current_user) %>
   <div class="row court-day<%= ix == @court_days.count - 1 ? ' last' : ''
                             %>" id="court-day-<%= court_day.date%>">
     <div class="span1 weekday"><%= weekday court_day.date %></div>
     <div class="span1"><%= court_day.date %></div>
-    <%= form_tag court_day_path( court_day.date.to_s), :method => "put",
-                 :class => "form-inline" do %> 
+    <%= form_tag form_path, :method => "put", :class => "form-inline" do %> 
       <%= hidden_field_tag "start_date", @start_date %>
-<%
-    offset = 0
-    [ "morning", "afternoon"].each do |session|
-      parallel = court_day.send( session)
-      if current_user.admin || parallel > 0
-%>
+  <% unless current_user.admin?  %>
+        <%= hidden_field_tag "court_day", court_day.id || 0 %>
+  <% end
+     date = "-" + court_day.date.to_s  # to save keystrokes below
+     offset = 0
+     [ :morning, :afternoon].each do |session|
+       parallel = court_day.send( session)
+       if current_user.admin? || parallel > 0 %>
       <div class="<%= offset_n_span_to_class( offset, session_span) %>">
-<%
-        if current_user.admin?
-%>
+      <% if current_user.admin?  %>
         <div class="row">
           <div class="span<%= session_span %>">
             <%= label_tag session, "Behov" %>
-            <%= select_tag session,
+            <%= select_tag "#{ session}#{ date}",
               options_for_select( (PARALLEL_SESSIONS_MAX + 1).times.
                                     inject( [ ]){ |acc, n| acc << n},
                                   parallel),
               :class => "parallel-sessions" %>
           </div>
         </div>
-<%
-        end
-        if parallel > 0
-          taken = court_day.send( session + "_taken")
-          if parallel - taken > 0
-%>
+      <% end
+         if parallel > 0
+           bookings = court_day.send( "#{ session}_bookings")
+           taken = bookings.count
+           if parallel - taken > 0 %>
         <div class="row">
-          <div class="span<%= session_span
-                           %>"><%= parallel - taken %> kvar att boka</div>
+          <div class="span<%= session_span %>">
+          <% if current_user.admin? %>
+            <%= parallel - taken %> kvar att boka
+          <% elsif !current_user.booked?( court_day, session) %>
+            <%= submit_tag session == :afternoon ? VALUE_BOOK_AFTERNOON :
+                                                   VALUE_BOOK_MORNING %>
+            (<%= parallel - taken %> kvar)
+          <% end %>
+          </div>
         </div>
-<%   
-          end
-          taken.times do
-%>
+        <% end
+           if current_user.booked?( court_day, session) %>
+            <%= submit_tag session == :afternoon ? VALUE_UNBOOK_AFTERNOON :
+                                                   VALUE_UNBOOK_MORNING %>
+        <% end
+           bookings.each do |booking| %>
         <div class="row">
-          <div class="span<%= session_span %>">NN</div>
+          <div class="span<%= session_span %>">
+          <% if booking.user == current_user %>
+            <b>
+          <% end %>
+            <%= booking.user.name %>
+          <% if booking.user == current_user %>
+            </b>
+          <% end %>
+          </div>
         </div>
-<%
-          end
-          offset = 0
-        elsif !current_user.admin?
-          offset += session_span
-        end
-%>
+        <% end
+           offset = 0
+         elsif !current_user.admin?
+           offset += session_span
+         end %>
       </div>
-<%
-      elsif parallel == 0
-        offset += session_span
-      end
-    end
-    if current_user.admin?
-      # the following is to prevent browser automatic fill-in
-      notes = court_day.notes.blank? ? " " : court_day.notes
-%>
+    <% elsif parallel == 0
+         offset += session_span
+       end
+     end
+     if current_user.admin?
+       # the following is to prevent browser automatic fill-in
+       notes = court_day.notes.blank? ? " " : court_day.notes %>
       <div class="span<%= notes_span - 1 %>">
         <div class="row">
           <div class="span<%= notes_span - 1 %>">
-            <%= text_area_tag :notes, notes %>
+            <%= text_area_tag "notes" + date, notes %>
           </div>
         </div>
       </div>
       <div class="span1">
         <div class="row">
-          <div class="span1"><%= submit_tag "Spara" %></div>
+          <div class="span1">
+            <%= submit_tag VALUE_SAVE %> <%= weekday( court_day.date) %>
+          </div>
         </div>
       </div>
-<%
-    elsif !court_day.notes.blank?
-%>
+  <% elsif !court_day.notes.blank? %>
       <div class="<%= offset_n_span_to_class( offset, notes_span) %>">
         <%= h( court_day.notes).gsub( "\n", "<br/>").html_safe %>
       </div>
-<%
-    end
-%>
-    <% end  # form_tag %>
+  <% end
+     end %>
   </div>
-<%
-  end  # @court_days.each_with_index
-%>
+<% end  # @court_days.each_with_index %>
 </div>
 
-<%= render :partial => "weekpicker", :locals => { :wp_id => "bottom"} %>
+<%= render :partial => "court_days/weekpicker",
+           :locals  => { :wp_id => "bottom"} %>
 

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CourtDay do
+describe "CourtDay model" do
 
   before{ @court_day = create_test_court_day :do_not_save => true}
   subject{ @court_day}
@@ -9,6 +9,9 @@ describe CourtDay do
   it{ should respond_to( :morning)}
   it{ should respond_to( :afternoon)}
   it{ should respond_to( :notes)}
+  it{ should respond_to( :bookings)}
+  it{ should respond_to( :morning_bookings)}
+  it{ should respond_to( :afternoon_bookings)}
   it{ should be_valid}
 
   context "when date is missing" do
@@ -66,6 +69,22 @@ describe CourtDay do
       @court_day.save!
     end
     it{ CourtDay.find( :first).should == @court_day}
+  end
+
+  [ :morning, :afternoon].each do |session|
+    context "when booking #{ session}" do
+      before do
+        @court_day.send "#{ session}=", 2
+        @court_day.save!
+        @user = create_test_user
+        @user.book! @court_day, session
+      end
+      it{ @court_day.send( "#{ session}_bookings").count.should == 1}
+      it "correct user and session" do
+        @court_day.bookings.first.user.should == @user
+        @court_day.bookings.first.session.should == session
+      end
+    end
   end
 end
 

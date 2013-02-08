@@ -8,22 +8,17 @@ class CourtDay < ActiveRecord::Base
   validates :afternoon, :inclusion => { :in => 0 .. PARALLEL_SESSIONS_MAX}
   validate :never_on_weekends
   validate :there_must_be_something_to_do
+
   default_scope :order => "court_days.date"
 
-  def morning_taken( session = nil)  # stub
-    if session
-      "NN"
-    else
-      @morning_taken ||= rand( morning + 1)
-    end
+  has_many :bookings, :dependent => :destroy
+
+  def morning_bookings
+    bookings.find :all, :conditions => "session = 0"
   end
 
-  def afternoon_taken( session = nil)  # stub
-    if session
-      "NN"
-    else
-      @afternoon_taken ||= rand( afternoon + 1)
-    end
+  def afternoon_bookings
+    bookings.find :all, :conditions => "session = 1"
   end
 
   def never_on_weekends

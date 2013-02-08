@@ -28,31 +28,17 @@ module SessionsHelper
     user == current_user
   end
 
-=begin
-  def redirect_back_or( default)
-    redirect_to( return_to || default)
-    forget_return_to
-  end
-
-  def return_to
-    session[ :return_to]
-  end
-
-  def store_return_to
-    session[ :return_to] = request.url
-  end
-
-  def forget_return_to
-    session.delete( :return_to)
-  end
-=end
-
   def logged_in_user
     redirect_to log_in_url, :notice => "Logga in först" unless logged_in?
   end
 
   def correct_user
-    redirect_to( root_path) unless current_user?( User.find( params[ :id]))
+    begin
+      params_user = User.find( params[ :id])
+      redirect_to( root_path) unless current_user? params_user
+    rescue
+      redirect_to( root_path)
+    end
   end
   
   def admin_user

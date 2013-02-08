@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe User do
+describe "User model" do
 
   before{ @user = User.new( :name => "Example User",
                             :email => "user@example.com",
@@ -17,9 +17,20 @@ describe User do
   it{ should respond_to( :remember_token)}
   it{ should respond_to( :admin)}
   it{ should respond_to( :authenticate)}
-# it{ should respond_to( :bookings)}
+  it{ should respond_to( :bookings)}
+# it{ should respond_to( :court_days)}
+  it{ should respond_to( :booked?)}
+  it{ should respond_to( :book!)}
+
   it{ should be_valid}
   it{ should_not be_admin}
+
+  describe "accessible attributes" do
+    it "should not allow access to admin" do
+      lambda{ User.new( :admin => true)}.should raise_error(
+        ActiveModel::MassAssignmentSecurity::Error)
+    end    
+  end
 
   context "with admin attribute set to 'true'" do
     before do
@@ -70,53 +81,58 @@ describe User do
   
   describe "return value of authenticate method" do
 
-    before{ @user.save!}
-    let( :found_user){ User.find_by_email( @user.email)}
+    before do
+      @user.save!
+      @found_user = User.find_by_email( @user.email)
+    end
 
     context "with valid password" do
-      it{ should == found_user.authenticate( @user.password)}
+      it{ should == @found_user.authenticate( @user.password)}
     end
 
     context "with invalid password" do
-      let( :user_for_invalid_password){ found_user.authenticate( "invalid")}
+      let( :user_for_invalid_password){ @found_user.authenticate( "invalid")}
       it{ should_not == user_for_invalid_password}
       specify{ user_for_invalid_password.should be_false}
     end
 
   end
 
-  describe "remember token" do
+  describe "#remember token" do
     before{ @user.save!}
     its( :remember_token){ should_not be_blank}
   end
 
-=begin
-  describe "booking associations" do
+  describe "#book!" do
 
     before do
       @user.save!
-      @later_morning     = create_test_booking :court_day => Date.today + 2,
-                                               :user => @user
-      @earlier_afternoon = create_test_booking :court_day => Date.today + 1,
-                                               :afternoon => true,
-                                               :user => @user
-      @earlier_morning   = create_test_booking :court_day => Date.today + 1,
-                                               :user => @user
+      @court_day = create_test_court_day :morning => 1, :afternoon => 2
     end
 
-    it "sorting" do
-      @user.bookings.sort.should == [ @earlier_morning, @earlier_afternoon, @later_morning]
-    end
+    [ :morning, :afternoon].each do |session|
+      context session do
 
-    it "should destroy associated bookings" do
-      bookings = @user.bookings.dup
-      @user.destroy
-      bookings.should_not be_empty
-      bookings.each do |booking|
-        Booking.find_by_id( booking.id).should be_nil
+        it{ should_not be_booked( @court_day, session)}
+
+        context "booked" do
+
+          before{ @user.book! @court_day, session}
+
+          it{ should be_booked( @court_day, session)}
+
+          it "is actually booked" do
+            @user.bookings.first.court_day.should == @court_day
+            @user.bookings.first.session.should == session
+          end
+
+          it "second booking fails" do
+            lambda{ @user.book! @court_day, session
+                  }.should raise_error( ActiveRecord::RecordNotUnique)
+          end
+        end
       end
     end
   end
-=end
 end
 

@@ -6,6 +6,6 @@ module ApplicationHelper
   end
 
   def weekday( date)
-    [ "Må", "Ti", "On", "To", "Fr", "Lö", "Sö"][ date.cwday - 1]
+    [ "mån", "tis", "ons", "tor", "fre", "lör", "sön"][ date.cwday - 1]
   end
 end

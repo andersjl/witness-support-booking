@@ -22,7 +22,7 @@ class UsersController < ApplicationController
     if @user.save
       log_in @user
       flash[ :success] = "Välkommen att boka!"
-      redirect_to @user
+      redirect_to court_days_path
     else
       render 'new'
     end
@@ -34,12 +34,19 @@ class UsersController < ApplicationController
 
   def update
     @user = User.find( params[ :id])
-    if @user.update_attributes( params[ :user])
-      flash[ :success] = "Uppgifterna sparade"
-      log_in @user
-      redirect_to @user
+    case params[ :commit]
+    when VALUE_BOOK_MORNING     then update_book_do( :morning)
+    when VALUE_BOOK_AFTERNOON   then update_book_do( :afternoon)
+    when VALUE_UNBOOK_MORNING   then update_unbook_do( :morning)
+    when VALUE_UNBOOK_AFTERNOON then update_unbook_do( :afternoon)
     else
-      render 'edit'
+      if @user.update_attributes( params[ :user])
+        flash[ :success] = "Uppgifterna sparade"
+        log_in @user
+        redirect_to court_days_path
+      else
+        render 'edit'
+      end
     end
   end
 
@@ -51,27 +58,17 @@ class UsersController < ApplicationController
     redirect_to users_url
   end
 
-=begin
-  def logged_in_user
-    if logged_in?
-      forget_return_to
-    else
-      store_return_to
-      redirect_to log_in_url, :notice => "Logga in först"
-    end
+  def update_book_do( session)
+    @user.bookings.create! :court_day_id => params[ :court_day],
+                           :session => session
+    back_to_court_days
   end
-  private :logged_in_user
+  private :update_book_do
 
-  def correct_user
-    @user = User.find( params[ :id])
-    redirect_to( root_path) unless current_user?( @user)
+  def update_unbook_do( session)
+    @user.booked?( CourtDay.find( params[ :court_day]), session).destroy
+    back_to_court_days
   end
-  private :correct_user
-  
-  def admin_user
-    redirect_to( root_path) unless current_user.admin?
-  end
-  private :admin_user
-=end
+  private :update_book_do
 end
 

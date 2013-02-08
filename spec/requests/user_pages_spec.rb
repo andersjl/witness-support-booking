@@ -81,10 +81,12 @@ describe "User pages" do
       end
 
       context "after saving the user" do
-        before{ click_button submit}
-        let( :user){ User.find_by_email( "user@example.com")}
+        before do
+          click_button submit
+          @user = User.find_by_email( "user@example.com")
+        end
         it{ should have_selector(
-          "title", :text => "Bokning av vittnesstöd | #{ user.name}")}
+          "title", :text => "Bokning av vittnesstöd | Rondningar")}
         it{ should have_selector( "div.alert.alert-success", :text => "Välkommen")}
         it{ should have_link( "Logga ut")}
       end
@@ -144,7 +146,7 @@ describe "User pages" do
       end
 
       it{ should have_selector(
-        "title", :text => "Bokning av vittnesstöd | #{ new_name}")}
+        "title", :text => "Bokning av vittnesstöd | Rondningar")}
         it{ should have_selector( "div.alert.alert-success")}
         it{ should have_link( "Logga ut", :href => log_out_path)}
         specify{ @user.reload.name.should  == new_name}
