@@ -4,6 +4,8 @@
 /* mixins, variables, etc. */
 
 $grayMediumLight: #eaeaea;
+$ajlRed: #c00;
+$ajlYellow: #c60;
 
 
 /* universal */
@@ -157,8 +159,9 @@ input, select {
 }
 
 a.disabled-user {
-  color: #c00;
+  color: $ajlRed;
   font-weight: bold;
+  text-decoration: underline;
 }
 
 
@@ -168,6 +171,14 @@ a.disabled-user {
   textarea {
     width: 100%;
     height: 5em;
+  }
+}
+
+div.to-book {
+  color: $ajlYellow;
+  font-weight: bold;
+  &.urgent {
+    color: $ajlRed;
   }
 }
 

@@ -59,8 +59,19 @@
            if parallel - taken > 0 %>
         <div class="row">
           <div class="span<%= session_span %>">
-          <% if current_user.admin? %>
-            <%= parallel - taken %> kvar att boka
+          <% if current_user.admin?
+               days_to_go = court_day.date - Date.today
+               if days_to_go < 0 %>
+            <div>
+            <% elsif days_to_go < BOOKING_DAYS_AHEAD_MIN %>
+            <div class="to-book urgent">
+            <% elsif days_to_go < BOOKING_DAYS_AHEAD_MAX %>
+            <div class="to-book">
+            <% else %>
+            <div>
+            <% end %>
+              <%= parallel - taken %> kvar att boka
+            </div>
           <% elsif !current_user.booked?( court_day, session) %>
             <%= submit_tag session == :afternoon ? VALUE_BOOK_AFTERNOON :
                                                    VALUE_BOOK_MORNING %>
