@@ -15,10 +15,11 @@ describe "User model" do
   it{ should respond_to( :password)}
   it{ should respond_to( :password_confirmation)}
   it{ should respond_to( :remember_token)}
-  it{ should respond_to( :admin)}
+  it{ should respond_to( :role)}
+  it{ should respond_to( :admin?)}
+  it{ should respond_to( :enabled?)}
   it{ should respond_to( :authenticate)}
   it{ should respond_to( :bookings)}
-# it{ should respond_to( :court_days)}
   it{ should respond_to( :booked?)}
   it{ should respond_to( :book!)}
 
@@ -26,18 +27,17 @@ describe "User model" do
   it{ should_not be_admin}
 
   describe "accessible attributes" do
-    it "should not allow access to admin" do
-      lambda{ User.new( :admin => true)}.should raise_error(
+    it "should not allow access to role" do
+      lambda{ User.new( :role => "disabled")}.should raise_error(
         ActiveModel::MassAssignmentSecurity::Error)
     end    
   end
 
-  context "with admin attribute set to 'true'" do
+  context "with role attribute set to 'admin'" do
     before do
       @user.save!
-      @user.toggle!( :admin)
+      @user.update_attribute :role, "admin"
     end
-
     it{ should be_admin}
   end
 
@@ -77,6 +77,34 @@ describe "User model" do
   describe "with a password that's too short" do
     before{ @user.password = @user.password_confirmation = "a" * 5}
     it{ should be_invalid}
+  end
+
+  describe "when role is missing" do
+    before{ @user.role = nil}
+    it{ should be_invalid}
+  end
+
+  describe "with an undefined role" do
+    before{ @user.role = "unknown"}
+    it{ should be_invalid}
+  end
+
+  describe "#enabled?" do
+
+    context "when role is 'disabled'" do
+      before{ @user.role = "disabled"}
+      it{ should_not be_enabled}
+    end
+
+    context "when role is 'normal'" do
+      before{ @user.role = "normal"}
+      it{ should be_enabled}
+    end
+
+    context "when role is 'admin'" do
+      before{ @user.role = "admin"}
+      it{ should be_enabled}
+    end
   end
   
   describe "return value of authenticate method" do

@@ -2,8 +2,20 @@
   <h1>Bokning av vittnesstöd</h1>
   <h2>
     Detta är startsidan för bokning av
-    <a href="http://www.brottsoffermyndigheten.se/om-oss/vittnesstod">vittnesstöd</a>.
+    <a href="http://www.brottsoffermyndigheten.se/om-oss/vittnesstod">
+      vittnesstöd
+    </a>.
   </h2>
-  <%= link_to "Börja använda bokningen!", sign_up_path, :class => "btn btn-large btn-primary" %>
+<% if logged_in?
+     if !current_user.enabled? %>
+ <div class="center">
+   Du kommer att få ett mejl till <%= current_user.email %> när du kan börja
+   boka!
+ </div>
+  <% end %>
+<% else %>
+  <%= link_to "Börja använda bokningen!", sign_up_path,
+              :class => "btn btn-large btn-primary" %>
+<% end %>
 </div>
 

@@ -23,13 +23,13 @@ section {
 textarea {
   resize: vertical;
 }
-/*
+
 .center {
   text-align: center;
   h1 {
     margin-bottom: 10px;
   }
-}*/
+}
 
 /* typography */
 
@@ -154,6 +154,11 @@ input, select {
       border-bottom: 1px solid $grayLight;
     }
   }
+}
+
+a.disabled-user {
+  color: #c00;
+  font-weight: bold;
 }
 
 

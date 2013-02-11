@@ -6,18 +6,26 @@
 <%= render :partial => "shared/error_messages",
            :locals => { :model => @court_day} %>
 <% end
-    session_span = 2
-    notes_span = 6 %>
+   session_span = 2
+   notes_span = 6 %>
 <div id="court-days">
   <div class="row heading">
     <div class="offset1 span1">Datum</div>
     <div class="span<%= session_span %>">Förmiddag</div>
     <div class="span<%= session_span %>">Eftermiddag</div>
-    <div class="span<%= notes_span %>">Noteringar</div>
+    <div class="span<%= notes_span %>">
+<% disabled = User.find :all, :conditions => [ "role = ?", "disabled"]
+   if  disabled.count > 0 && current_user.admin? %>
+      <%= link_to "#{ disabled.count} nya att aktivera", users_path,
+                  :class => "disabled-user" %>
+<% else %>
+      Noteringar
+<% end %>
+    </div>
   </div>
 <% @court_days.each_with_index do |court_day, ix|
      form_path = current_user.admin? ? court_day_path( court_day.date.to_s) :
-                                        user_path( current_user) %>
+                                       user_path( current_user) %>
   <div class="row court-day<%= ix == @court_days.count - 1 ? ' last' : ''
                             %>" id="court-day-<%= court_day.date%>">
     <div class="span1 weekday"><%= weekday court_day.date %></div>

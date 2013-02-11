@@ -13,18 +13,16 @@ def create_test_user_do( attrs, extra = nil)
   if extra
     em = extra.to_s + em
     nm += extra.to_s
-    admin = false
-  else
-    admin = attrs[ :admin]
   end
+  role = attrs[ :role] || "normal"
   result = User.create! :email => em, :name => nm, :password => "dåligt",
                         :password_confirmation => "dåligt"
-  result.toggle! :admin if admin
+  result.update_attribute :role, role if role
   result
 end
 private :create_test_user_do
 
-def log_in( user)
+def fake_log_in( user)
   visit log_in_path
   fill_in "E-post", :with => user.email
   fill_in "Lösenord", :with => user.password
@@ -37,6 +35,9 @@ def create_test_court_day( opts = { })
   count = opts.delete( :count) || 1
   do_not_save = opts.delete :do_not_save
   opts[ :date] ||= Date.today
+  while opts[ :date].cwday > 5 || CourtDay.find_by_date( opts[ :date])
+    opts[ :date] += 1
+  end
   opts[ :morning] ||= 1
   opts[ :afternoon] ||= 1
   opts[ :notes] ||= "Fri text"

@@ -107,24 +107,26 @@ describe "CourtDay index" do
     before do
       @user = create_test_user( :name => "Normal",
                                 :email => "normal@exempel.se")
-      visit log_in_path
-      fill_in "E-post",   :with => @user.email
-      fill_in "Lösenord", :with => @user.password
-      click_button "Logga in"
+      fake_log_in @user
     end
 
     it_behaves_like "any user"
     it_behaves_like "unbooked"
+
+    context "when there are deactivated users" do
+      before do
+        dis1, dis2, dis3 = create_test_user :count => 3, :role => "disabled"
+        visit court_days_path
+      end
+      it{ within( "div.row.heading"){ should_not have_link( "3 nya att aktivera")}}
+    end
 
     context "booking" do
 
       def login_other_user
         @other = create_test_user( :name => "En Annan",
                                    :email => "en.annan@exempel.se")
-        visit log_in_path
-        fill_in "E-post",   :with => @other.email
-        fill_in "Lösenord", :with => @other.password
-        click_button "Logga in"
+        fake_log_in @other
       end
 
       shared_examples_for "any booking button click" do
@@ -191,11 +193,8 @@ describe "CourtDay index" do
     before do
       @admin = create_test_user( :name => "Admin",
                                  :email => "admin@exempel.se",
-                                 :admin => true)
-      visit log_in_path
-      fill_in "E-post",   :with => @admin.email
-      fill_in "Lösenord", :with => @admin.password
-      click_button "Logga in"
+                                 :role => "admin")
+      fake_log_in @admin
     end
 
     it_behaves_like "on court_days index page"
@@ -247,6 +246,15 @@ describe "CourtDay index" do
           end
         end
       end
+    end
+
+    context "when there are deactivated users" do
+      before do
+        dis1, dis2, dis3 = create_test_user :count => 3, :role => "disabled"
+        visit court_days_path
+      end
+      it{ within( "div.row.heading"){
+            should have_link( "3 nya att aktivera", :href => users_path)}}
     end
   end
 end

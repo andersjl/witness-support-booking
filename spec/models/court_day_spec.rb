@@ -65,8 +65,8 @@ describe "CourtDay model" do
 
   context "earliest first" do
     before do
-      @later = create_test_court_day :date => Date.tomorrow
       @court_day.save!
+      @later = create_test_court_day :date => Date.tomorrow
     end
     it{ CourtDay.find( :first).should == @court_day}
   end

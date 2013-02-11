@@ -1,7 +1,8 @@
 class CourtDaysController < ApplicationController
 
-   before_filter :logged_in_user
-   before_filter :admin_user, :only => :update
+  before_filter :logged_in_user
+  before_filter :enabled_user
+  before_filter :admin_user, :only => :update
 
   def index
     collect_court_days

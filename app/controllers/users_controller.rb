@@ -1,31 +1,33 @@
 class UsersController < ApplicationController
 
-  before_filter :logged_in_user, :only => [ :index, :edit, :update, :destroy]
+  before_filter :logged_in_user,
+                :only => [ :index, :show, :edit, :update, :enable, :destroy]
+  before_filter :enabled_user, :only => [ :index, :show, :enable, :destroy]
   before_filter :correct_user, :only => [ :edit, :update]
-  before_filter :admin_user, :only => :destroy
+  before_filter :admin_user, :only => [ :enable, :destroy]
 
   def new
     @user = User.new
+  end
+ 
+  def create
+    @user = User.new( params[ :user])
+    if @user.save
+      log_in @user
+      flash[ :success] = "Välkommen #{ @user.name}!"
+      redirect_to root_path
+    else
+      render 'new'
+    end
+  end
+
+  def index
+    @users = User.order_by_role_and_name
   end
 
   def show
     @user = User.find( params[ :id])
   # @bookings = @user.bookings.sort.paginate( :page => params[ :page])
-  end
-
-  def index
-    @users = User.paginate( :page => params[ :page])
-  end
-
-  def create
-    @user = User.new( params[ :user])
-    if @user.save
-      log_in @user
-      flash[ :success] = "Välkommen att boka!"
-      redirect_to court_days_path
-    else
-      render 'new'
-    end
   end
 
   def edit
@@ -42,12 +44,23 @@ class UsersController < ApplicationController
     else
       if @user.update_attributes( params[ :user])
         flash[ :success] = "Uppgifterna sparade"
-        log_in @user
+        log_in @user  # because remember_token has been reset
         redirect_to court_days_path
       else
         render 'edit'
       end
     end
+  end
+
+  def enable
+    @user = User.find( params[ :id])
+    if @user.update_attribute :role, "normal"
+      flash[ :success] = "Användare #{ @user.name}, #{ @user.email} aktiverad"
+    else
+      flash[ :error] =
+        "Användare #{ @user.name}, #{ @user.email} kunde inte aktiveras"
+    end
+    redirect_to :users
   end
 
   def destroy
@@ -69,6 +82,6 @@ class UsersController < ApplicationController
     @user.booked?( CourtDay.find( params[ :court_day]), session).destroy
     back_to_court_days
   end
-  private :update_book_do
+  private :update_unbook_do
 end
 

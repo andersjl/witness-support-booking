@@ -5,16 +5,19 @@
       <nav>
         <ul class="nav pull-right">
           <li><%= link_to "Start", root_path %></li>
-          <li><%= link_to "Hjälp", '#' %></li>
-          <% if logged_in? %>
+<% if logged_in? %>
+  <% if enabled? %>
             <li><%= link_to "Rondningar", court_days_path %></li>
             <li><%= link_to "Användare", users_path %></li>
+  <% end %>
             <li id="fat-menu" class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                 Inloggad <b class="caret"></b>
               </a>
               <ul class="dropdown-menu">
+  <% if enabled? %>
                 <li><%= link_to "Mina uppgifter", current_user %></li>
+  <% end %>
                 <li><%= link_to "Ändra #{ current_user.name}",
                                 edit_user_path( current_user) %></li>
                 <li class="divider"></li>
@@ -24,9 +27,9 @@
                 </li>
               </ul>
             </li>
-          <% else %>
+<% else %>
             <li><%= link_to "Logga in", log_in_path %></li>
-          <% end %>
+<% end %>
         </ul>
       </nav>
     </div>
