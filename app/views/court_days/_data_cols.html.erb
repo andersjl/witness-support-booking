@@ -1,0 +1,96 @@
+<% offset = 0
+   date = court_day.date
+   admin = current_user.admin?
+   too_late = court_day.date < Date.today
+   [ :morning, :afternoon].each do |session|
+     parallel = court_day.send( session)
+     if (!admin || too_late) && parallel == 0
+       offset += session_span
+     else %>
+          <div class="<%= offset_n_span_to_class( offset, session_span) %>">
+<%     if admin && !too_late %>
+            <div class="row">
+              <div class="span<%= session_span %>">
+                <%= label_tag session, "Behov" %>
+                <%= select_tag "#{ session}-#{ date}",
+                  options_for_select( (PARALLEL_SESSIONS_MAX + 1).times.
+                                        inject( [ ]){ |acc, n| acc << n},
+                                      parallel),
+                  :class => "parallel-sessions" %>
+              </div>
+            </div>
+<%     end
+       if parallel > 0
+         booked = current_user.booked? court_day, session
+         bookings = court_day.send( "#{ session}_bookings")
+         taken = bookings.count
+         if (parallel - taken > 0) && (too_late || admin || !booked) %>
+            <div class="row">
+              <div class="span<%= session_span %>">
+<%         if too_late %>
+                <%= parallel - taken %> blev aldrig bokade
+<%         elsif admin
+             days_to_go = court_day.date - Date.today
+             if days_to_go < BOOKING_DAYS_AHEAD_MIN %>
+                <div class="to-book urgent">
+<%           elsif days_to_go < BOOKING_DAYS_AHEAD_MAX %>
+                <div class="to-book">
+<%           else %>
+                <div>
+<%           end %>
+                  <%= parallel - taken %> kvar att boka
+                </div>
+<%         else %>
+                <%= submit_tag session == :afternoon ? VALUE_BOOK_AFTERNOON :
+                                                       VALUE_BOOK_MORNING %>
+                (<%= parallel - taken %> kvar)
+<%         end %>
+              </div>
+            </div>
+<%       end
+         if booked && !too_late %>
+            <div class="row">
+              <div class="span<%= session_span %>">
+                <%= submit_tag session == :afternoon ?
+                                 VALUE_UNBOOK_AFTERNOON :
+                                 VALUE_UNBOOK_MORNING %>
+              </div>
+            </div>
+<%       end
+         bookings.each do |booking| %>
+            <div class="row">
+              <div class="span<%= session_span %>">
+                <%= booking.user == current_user ? "<b>".html_safe : ""
+                  %><%= booking.user.name %><%= booking.user == current_user ?
+                                                  "</b>".html_safe : "" %>
+              </div>
+            </div>
+<%       end
+       end %>
+          </div>
+<%     offset = 0
+     end
+   end  # [ :morning, :afternoon].each do |session|
+   if admin && !too_late
+     # the following is to prevent browser automatic fill-in
+     notes = court_day.notes.blank? ? " " : court_day.notes %>
+          <div class="span<%= notes_span - 1 %>">
+            <div class="row">
+              <div class="span<%= notes_span - 1 %>">
+                <%= text_area_tag "notes-#{ date}", notes %>
+              </div>
+            </div>
+          </div>
+          <div class="span1">
+            <div class="row">
+              <div class="span1">
+                <%= submit_tag VALUE_SAVE %> <%= weekday court_day.date %>
+              </div>
+            </div>
+          </div>
+<% elsif !court_day.notes.blank? %>
+          <div class="<%= offset_n_span_to_class( offset, notes_span) %>">
+            <%= h( court_day.notes).gsub( "\n", "<br/>").html_safe %>
+          </div>
+<% end %>
+
