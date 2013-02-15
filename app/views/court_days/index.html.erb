@@ -14,7 +14,7 @@
         <div class="span<%= notes_span %>">
 <% disabled = User.find :all, :conditions => [ "role = ?", "disabled"]
    if  disabled.count > 0 && current_user.admin? %>
-          <%= link_to "#{ disabled.count} nya att aktivera", users_path,
+          <%= link_to "#{ disabled.count} ny att aktivera", users_path,
                   :class => "disabled-user" %>
 <% else %>
           Noteringar
@@ -28,7 +28,7 @@
                                        user_path( current_user) %>
       <div class="row court-day<%= ix == @court_days.count - 1 ? ' last' : ''
                             %>" id="court-day-<%= date %>">
-        <div class="span1 weekday"><%= weekday court_day.date %></div>
+        <div class="span1 weekday"><%= day_of_week court_day.date %></div>
         <div class="span1"><%= date %></div>
 <%   if too_late %>
 <%= render :partial => "court_days/data_cols",

@@ -9,12 +9,12 @@ module CourtDaysHelper
 end
 
 def back_to_court_days
-  if Rails.env.development?
+# if Rails.env.development?
     collect_court_days
     render "court_days/index"
-  else
-    redirect_to court_days_path
-  end
+# else
+#   redirect_to court_days_path
+# end
 end
 
 def collect_court_days

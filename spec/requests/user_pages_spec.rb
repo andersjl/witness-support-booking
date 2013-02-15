@@ -28,10 +28,11 @@ describe "User pages" do
       end
     end
 
-    describe "enable/delete" do
+    describe "enable/delete/rescue" do
 
       it{ should_not have_link( "Ta bort")}
       it{ should_not have_link( "Aktivera")}
+      it "has no change password link"
 
       context "as an admin user" do
         before do
@@ -47,6 +48,7 @@ describe "User pages" do
           expect{ click_link( "Ta bort")}.to change( User, :count).by( -1)
         end
         it{ should_not have_link( "Ta bort", :href => user_path( @admin))}
+        it "can set new user password"
 
         context "when a user is disabled" do
           before do

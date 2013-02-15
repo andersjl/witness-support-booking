@@ -28,7 +28,7 @@
             <div class="row">
               <div class="span<%= session_span %>">
 <%         if too_late %>
-                <%= parallel - taken %> blev aldrig bokade
+                <%= parallel - taken %> blev aldrig bokad
 <%         elsif admin
              days_to_go = court_day.date - Date.today
              if days_to_go < BOOKING_DAYS_AHEAD_MIN %>
@@ -84,7 +84,8 @@
           <div class="span1">
             <div class="row">
               <div class="span1">
-                <%= submit_tag VALUE_SAVE %> <%= weekday court_day.date %>
+                <%= submit_tag(
+                      "#{ VALUE_SAVE} #{ day_of_week court_day.date}") %>
               </div>
             </div>
           </div>

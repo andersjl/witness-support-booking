@@ -5,7 +5,7 @@ module ApplicationHelper
     page_title.empty? ? base_title : "#{ base_title} | #{ page_title}"
   end
 
-  def weekday( date)
-    [ "mån", "tis", "ons", "tor", "fre", "lör", "sön"][ date.cwday - 1]
+  def day_of_week( date)
+    [ "må", "ti", "on", "to", "fr", "lö", "sö"][ date.cwday - 1]
   end
 end
