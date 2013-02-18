@@ -1,0 +1,28 @@
+<% provide( :title, 'Läs in fil') %>
+<h1>VARNING!</h1>
+<p>
+Om du fortsätter kommer du att RADERA HELA DATABASEN och läsa in en fil med
+nya data som ersätter de gamla. Om inläsningen misslyckas finns varken gamla
+eller nya användare och bokningar kvar, ingen kan logga in, och en expert
+måste tillkallas för att man ska kunna få igång bokningen igen.
+</p><p>
+Data kan inte återställas, utan får skrivas in igen.
+</p><p>
+Men för all del, inläsningen KAN ju lyckas också! I så fall får eventuella nya
+användare lösenordet som angivits nedan. Naturligtivs bör lösenordet ändras av
+respektive användare efteråt.
+</p>
+<div class="row">
+  <div class="span6 offset3">
+    <%= form_for( @database, :url => database_path) do |f| %>
+      <%= f.label :all_data,
+                  "RADERA HELA DATABASEN och ersätt den med filen" %>
+      <%= f.file_field :all_data %>
+      <%= f.submit "OK", :confirm =>
+            "Är du säker? Om inläsningen misslyckas finns varken användare" +
+            " eller bokningar kvar!" %>
+      <%= f.label :new_pw, "Lösen för nya användare" %>
+      <%= f.text_field :new_pw %>
+    <% end %>
+  </div>
+</div>

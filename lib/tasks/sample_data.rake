@@ -6,18 +6,28 @@ namespace :db do
 
   task :populate => :environment do
     
-    User.create!( :name => "Administratör",
-                  :email => "anders1lindeberg@gmail.com",
-                  :password => "admini",
-                  :password_confirmation => "admini").toggle!( :admin)
-
+    admin = User.create! :name => "Administratör",
+                         :email => "anders1lindeberg@gmail.com",
+                         :password => "admini",
+                         :password_confirmation => "admini"
+    has_roles = admin.respond_to? :role
+    if has_roles
+      admin.update_attribute :role, "admin"
+    else
+      admin.update_attribute :admin, true
+    end
     (USER_COUNT - 1).times do |n|
       name = "Ex #{ n + 1} Empel"
       email = "ex.#{ n + 1}.empel@exempel.se"
-      User.create! :name => name, 
-                   :email => email,
-                   :password => "bokning",
-                   :password_confirmation => "bokning"
+      user = User.create! :name => name, 
+                          :email => email,
+                          :password => "bokning",
+                          :password_confirmation => "bokning"
+      if has_roles
+        user.update_attribute :role, "normal"
+      else
+        user.update_attribute :admin, false
+      end
     end
 
     first_date = Date.today - (COURT_DAY_COUNT / 10) * 7
@@ -40,7 +50,11 @@ namespace :db do
       incr += rand( 2) + 1
     end
 
-    users = User.find :all, :conditions => [ "admin = ?", false]
+    if has_roles
+      users = User.find :all, :conditions => [ "role = ?", "normal"]
+    else
+      users = User.find :all, :conditions => [ "admin = ?", false]
+    end
     shortlist = users[ 0, 3]
     CourtDay.find( :all).each do |court_day|
       [ :morning, :afternoon].each do |session|

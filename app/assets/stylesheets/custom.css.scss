@@ -125,7 +125,6 @@ input, select {
   input, textarea, select {
     width: auto;
     padding: 0.05em;
-/*    margin-bottom: 0;*/
   }
 }
 
@@ -214,6 +213,20 @@ div.to-book {
 
 
 /* miscellaneous */
+
+.xml-dump-n-restore {
+  margin-top: 1.5em;
+}
+
+.right {
+  text-align: right;
+}
+
+input {
+  &#admin_pw, &#user_pw {
+    width: 10em;
+  }
+}
 
 .debug_dump {
   clear: both;

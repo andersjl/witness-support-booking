@@ -6,3 +6,6 @@
     </section>
   </aside>
 </div>
+<% if current_user.admin? %>
+<%= render :partial => "shared/xml_dump_n_restore" %>
+<% end %>
