@@ -4,6 +4,77 @@ describe "User pages" do
 
   subject{ page}
 
+  describe "sign_up process" do
+
+    before{ visit sign_up_path}
+    let( :submit){ "Registrera ny användare"}
+
+    it{ should have_selector( "h1", :text => "Ny användare")}
+    it{ should have_selector(
+      "title", :text => "Bokning av vittnesstöd | Ny användare")}
+
+    context "with invalid information" do
+      it "should not create a user" do
+        expect{ click_button submit}.not_to change( User, :count)
+      end
+    end
+
+    context "with valid information" do
+
+      before do
+        fill_in "Namn",              :with => "Example User"
+        fill_in "E-post",            :with => "user@example.com"
+        fill_in "Välj lösenord",     :with => "foobar"
+        fill_in "Bekräfta lösenord", :with => "foobar"
+      end
+
+      it "should create a user" do
+        expect{ click_button submit}.to change( User, :count).by( 1)
+      end
+
+      context "after saving the user" do
+        before do
+          click_button submit
+          @user = User.find_by_email( "user@example.com")
+        end
+        it{ @user.should_not be_enabled}
+        it{ should_not have_selector(
+          "title", :text => "Bokning av vittnesstöd | ")}
+        it{ should have_content(
+    "Du kommer att få ett mejl till user@example.com när du kan börja boka!")}
+        it{ should have_selector( "div.alert.alert-success",
+                                  :text => "Välkommen #{ @user.name}")}
+        it{ should_not have_link( "Rondningar")}
+        it{ should_not have_link( "Användare")}
+        it{ should_not have_link( "Mina uppgifter")}
+        it{ should have_link( "Ändra #{ @user.name}",
+                               :href => edit_user_path( @user))}
+        it{ should have_link( "Logga ut", :href => log_out_path)}
+        it{ should_not have_link( "Logga in")}
+        it "should send an email to admin"
+
+        context "when enabled by admin" do
+
+          before do
+            @admin = create_test_user :role => "admin"
+            fake_log_in @admin
+            visit users_path
+            within( "li#user-#{ @user.id}"){ click_link( "Aktivera")}
+          end
+          
+          it{ @user.reload.should be_enabled}
+          it "should send an email to the enabled user"
+
+          context "flashes success" do
+            it{ should have_selector( "div.alert.alert-success", :content => @user.name)}
+            it{ within( "div.alert.alert-success"){ should have_content( @user.name)}}
+            it{ within( "div.alert.alert-success"){ should have_content( @user.email)}}
+          end
+        end
+      end
+    end
+  end
+
   describe "index" do
 
     before do
@@ -47,6 +118,7 @@ describe "User pages" do
         it "should be able to delete another user" do
           expect{ click_link( "Ta bort")}.to change( User, :count).by( -1)
         end
+        it "should be able to deactivate another user"
         it{ should_not have_link( "Ta bort", :href => user_path( @admin))}
         it "can set new user password"
 
@@ -62,77 +134,7 @@ describe "User pages" do
     end
   end
 
-  describe "sign_up process" do
-
-    before( :each){ visit sign_up_path}
-    let( :submit){ "Registrera ny användare"}
-
-    it{ should have_selector( "h1",    :text => "Ny användare")}
-    it{ should have_selector(
-      "title", :text => "Bokning av vittnesstöd | Ny användare")}
-
-    context "with invalid information" do
-      it "should not create a user" do
-        expect{ click_button submit}.not_to change( User, :count)
-      end
-    end
-
-    context "with valid information" do
-
-      before do
-        fill_in "Namn",              :with => "Example User"
-        fill_in "E-post",            :with => "user@example.com"
-        fill_in "Välj lösenord",     :with => "foobar"
-        fill_in "Bekräfta lösenord", :with => "foobar"
-      end
-
-      it "should create a user" do
-        expect{ click_button submit}.to change( User, :count).by( 1)
-      end
-
-      context "after saving the user" do
-        before do
-          click_button submit
-          @user = User.find_by_email( "user@example.com")
-        end
-        it{ @user.should_not be_enabled}
-        it{ should_not have_selector(
-          "title", :text => "Bokning av vittnesstöd | ")}
-        it{ should have_content(
-    "Du kommer att få ett mejl till user@example.com när du kan börja boka!")}
-        it{ should have_selector( "div.alert.alert-success", :text => "Välkommen #{ @user.name}")}
-        it{ should_not have_link( "Rondningar")}
-        it{ should_not have_link( "Användare")}
-        it{ should_not have_link( "Mina uppgifter")}
-        it{ should have_link( "Ändra #{ @user.name}",
-                               :href => edit_user_path( @user))}
-        it{ should have_link( "Logga ut", :href => log_out_path)}
-        it{ should_not have_link( "Logga in")}
-        it "should send an email to admin"
-
-        context "when enabled by admin" do
-
-          before do
-            @admin = create_test_user :role => "admin"
-            fake_log_in @admin
-            visit users_path
-            within( "li#user-#{ @user.id}"){ click_link( "Aktivera")}
-          end
-          
-          it{ @user.reload.should be_enabled}
-          it "should send an email to the enabled user"
-
-          context "flashes success" do
-            it{ should have_selector( "div.alert.alert-success", :content => @user.name)}
-            it{ within( "div.alert.alert-success"){ should have_content( @user.name)}}
-            it{ within( "div.alert.alert-success"){ should have_content( @user.email)}}
-          end
-        end
-      end
-    end
-  end
-
-  describe "profile page" do
+  describe "show" do
 
     before do
       @user = create_test_user
@@ -143,6 +145,28 @@ describe "User pages" do
     it{ should have_selector( "h1",    :text => @user.name)}
     it{ should have_selector(
       "title", :text => "Bokning av vittnesstöd | #{ @user.name}")}
+
+    context "admin" do
+
+      before do
+        @user.update_attribute :role, "admin"
+        fake_log_in @user
+        visit user_path( @user)
+      end
+
+      it{ should have_link "Läs ut hela databasen till en fil", 
+                           :href => database_path}
+      it{ should have_link "RADERA HELA DATABASEN och läs in en fil",
+                           :href => new_database_path}
+
+      context "saving database" do
+        # file content is tested with the new_database_path request
+        before{ click_link "Läs ut hela databasen till en fil"}
+        context "page.response_headers[ 'Content-Type']" do
+          it{ page.response_headers[ "Content-Type"].should == "text/xml"}
+        end
+      end
+    end
   end
 
   describe "edit" do

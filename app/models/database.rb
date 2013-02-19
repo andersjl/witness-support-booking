@@ -3,7 +3,7 @@ require "nokogiri"
 module AllDataDefs
 
   DOC_DEF =  # order matters, hence no Hash
-    [ [ "user",      "name", "email"],
+    [ [ "user",      "name", "email", "password_digest"],
       [ "court_day", "date", "morning", "afternoon", "notes"],
       [ "booking",   [ "user", "email"], [ "court_day", "date"], "session"]]
   TYPECASTS = { "session" => lambda{ |v| v.to_sym}}
@@ -98,15 +98,11 @@ class Database < ActiveRecord::Base
 include AllDataDefs
 
   def self.columns
-    @columns ||= [ :all_data, :new_pw].collect do |col|
-      ActiveRecord::ConnectionAdapters::Column.new( col, :string, nil, false)
-    end
+    @columns ||= [ ActiveRecord::ConnectionAdapters::Column.new(
+                     :all_data, :string, nil, false)]
   end
 
-  attr_accessible :all_data, :new_pw
-
-  attr_accessor :new_pw
-  validates :new_pw, :presence => true, :length => { :minimum => 6}
+  attr_accessible :all_data
 
   def all_data=( uploaded)
     return unless uploaded
@@ -139,9 +135,9 @@ include AllDataDefs
 
   def replace!
     return unless @replace_descr
-    user_secrets = User.find( :all).inject( { }) do |acc, user|
-      acc[ user.email] = [ user.read_attribute( :password_digest), user.role]
-      acc
+    admin_digests = User.find( :all).inject( [ ]) do |acc, user|
+      next acc unless user.role = "admin"
+      acc << [ user.name, user.email, user.read_attribute( :password_digest)]
     end
     Booking.delete_all
     CourtDay.delete_all
@@ -161,17 +157,26 @@ include AllDataDefs
         obj.send( "#{ obj_attr}=", value)
       end
       if model == "user"
-        obj.password = obj.password_confirmation = new_pw
+        obj.password = obj.password_confirmation = "dummy_password"
       end
       obj.save!
       if model == "user"
-        secret = user_secrets[ obj.email]
-        if secret
-          password_digest, role = secret
-          obj.update_attribute :password_digest, password_digest
-          obj.update_attribute :role, role
-        end
+        obj.update_attribute :password_digest, obj_descr[ "password_digest"]
       end
+    end
+    admin_digests.each do |name_email_digest|
+      name, email, digest = name_email_digest
+      admin = User.find_by_email email
+      if admin
+        admin.update_attribute :name, name
+      else
+        admin = User.new :name => name, :email => email,
+                         :password => "dummy_password",
+                         :password_confirmation => "dummy_password"
+        admin.save!
+      end
+      admin.update_attribute :password_digest, digest
+      admin.update_attribute :role, "admin"
     end
   end
 end

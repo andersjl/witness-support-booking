@@ -222,8 +222,6 @@ describe "CourtDay index" do
     it_behaves_like "on court_days index page"
     it_behaves_like "any user"
     it "can (un)book users"
-    it "can dump database to XML"
-    it "can reset database from XML"
 
     it "has input controls for each changeable Court Day" do
       (5 * WEEKS_P_PAGE).times do |n|

@@ -10,13 +10,14 @@ end
 def create_test_user_do( attrs, extra = nil)
   em = attrs[ :email] || "ex@empel.se"
   nm = attrs[ :name] || "Ex Empel"
+  pw = attrs[ :password] || "dåligt"
   if extra
     em = extra.to_s + em
     nm += extra.to_s
   end
   role = attrs[ :role] || "normal"
-  result = User.create! :email => em, :name => nm, :password => "dåligt",
-                        :password_confirmation => "dåligt"
+  result = User.create! :email => em, :name => nm, :password => pw,
+                        :password_confirmation => pw
   result.update_attribute :role, role if role
   result
 end
@@ -65,6 +66,24 @@ def create_test_court_day_do( attrs, do_not_save, increment = false)
 end
 private :create_test_court_day_do
 
+def booking_schema
+  [ [ 1, 2, :morning], [ 1, 3, :afternoon],
+    [ 2, 3, :morning], [ 2, 1, :afternoon],
+    [ 3, 1, :morning], [ 3, 2, :afternoon]]
+end
+
+def create_test_bookings
+  u1, u2, u3 = create_test_user :count => 3
+  c1, c2, c3 = create_test_court_day :count => 3
+  3.times do |i|
+    cd = eval( "c#{ i + 1}")
+    cd.morning = cd.afternoon = i + 1
+    cd.save
+  end
+  booking_schema.each{ |uds| eval( "u#{ uds[ 0]}").
+                               book!( eval( "c#{ uds[ 1]}"), uds[ 2])}
+end
+
 def ensure_weekday( date)
   case date.cwday
   when 6 then date += 2
@@ -72,48 +91,4 @@ def ensure_weekday( date)
   else        date
   end
 end
-
-=begin
-def create_test_court_day_randomize( attrs, key)
-  n = rand( attrs[ key] + 1)
-  if n == 0
-    attrs.delete key
-  else
-    attrs[ key] = n
-  end
-end
-private :create_test_court_day_randomize
-=end
-
-=begin
-def create_test_booking( opts = { })
-  count = opts.delete( :count) || 1
-  if count == 1
-    create_test_booking_do opts
-  else
-    count.times.collect{ |no| create_test_booking_do opts, no + 1}
-  end
-end
-def create_test_booking_do( attrs, extra = nil)
-  attrs = attrs.dup
-  attrs[ :court_day] ||= Date.today
-  attrs[ :afternoon] ||= false
-  user = attrs.delete( :user)
-  if extra
-    add_to_court_days, afternoon = extra.divmod 2
-    attrs[ :court_day] += add_to_court_days
-    attrs[ :afternoon] = (afternoon == 1)
-  end
-# result =
-  if user
-    user.bookings.create! attrs
-  else
-  # puts attrs.inspect
-    Booking.create! attrs
-  end
-# puts result.inspect
-# result
-end
-private :create_test_booking_do
-=end
 

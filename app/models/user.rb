@@ -25,6 +25,10 @@ class User < ActiveRecord::Base
   has_many :bookings, :dependent => :destroy
   has_many :court_days, :through => :bookings
 
+  def inspect
+    "##{ name}##{ email}##{ role}#"
+  end
+
   def admin?
     role == "admin"
   end

@@ -13,6 +13,10 @@ class CourtDay < ActiveRecord::Base
 
   has_many :bookings, :dependent => :destroy
 
+  def inspect
+    "##{ date.to_s}##{ morning}##{ afternoon}#"
+  end
+
   def morning_bookings
     bookings.find :all, :conditions => "session = 0"
   end
