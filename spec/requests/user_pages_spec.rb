@@ -95,6 +95,7 @@ describe "User pages" do
       it "should list each user" do
         User.order_by_role_and_name.each do |user|
           page.should have_selector( "li", :text => user.name)
+          page.should have_selector( "li", :text => user.email)
         end
       end
     end
@@ -145,6 +146,7 @@ describe "User pages" do
     it{ should have_selector( "h1",    :text => @user.name)}
     it{ should have_selector(
       "title", :text => "Bokning av vittnesstöd | #{ @user.name}")}
+    it{ should have_content( @user.email)}
 
     context "admin" do
 
