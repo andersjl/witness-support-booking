@@ -7,6 +7,7 @@
                   :data => { :confirm => "Aktivera #{ user.name}?"},
                   :class => "disabled-user" %>
     <% end %>
+    | <%= link_to "Sätt nytt lösenord", edit_user_path( user) %>
     | <%= link_to "Ta bort", user,
                   :method => :delete,
                   :data => { :confirm => "Ta bort #{ user.name}?"} %>

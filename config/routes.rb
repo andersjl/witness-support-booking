@@ -5,6 +5,10 @@ WitnessSupportBooking::Application.routes.draw do
   # CourtDay business logic needs update-or-create( date), in which case PUT
   # is correct (idempotent!) and hence #update handles creation as well.
   resources :court_days, :only => [ :index, :update]
+  # Conceptually a booking is normally part of the user resource.  But when
+  # the Administrator unbooks a user it is more straigthtforward to view it as
+  # a resource in its own right.
+  resources :bookings, :only => [ :destroy]
   resource :database, :only => [ :new, :create, :show]
   root :to => "static_pages#home"
   match "/sign_up", :to => "users#new"

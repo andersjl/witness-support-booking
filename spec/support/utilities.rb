@@ -23,10 +23,10 @@ def create_test_user_do( attrs, extra = nil)
 end
 private :create_test_user_do
 
-def fake_log_in( user)
+def fake_log_in( user, password = nil)
   visit log_in_path
   fill_in "E-post", :with => user.email
-  fill_in "Lösenord", :with => user.password
+  fill_in "Lösenord", :with => password || user.password
   click_button "Logga in"
   cookies[ :remember_token] = user.remember_token  # if not Capybara
 end

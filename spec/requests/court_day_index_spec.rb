@@ -14,8 +14,8 @@ describe "CourtDay index" do
     (7 * (WEEKS_P_PAGE + 2) + 1).times do |n|
       date = monday + n - 7
       show = n % 7 < 5 && 6 < n && n < 7 * (WEEKS_P_PAGE + 1)
-      controls = date >= Date.today
-      yield date, show, controls
+      from_here_to_eternity = date >= Date.today
+      yield date, show, from_here_to_eternity
     end
   end
 
@@ -29,7 +29,7 @@ describe "CourtDay index" do
       :morning => 1, :afternoon => 3, :notes => "hejsan hoppsan"
     @cd_id = "court-day-#{ @cd.date}"
     @booked_user = create_test_user :name => "Berit Bokad",
-      :email => "bokad@example.com"
+                                    :email => "bokad@example.com"
     @booked_user.book!( @cd, :afternoon)
   end
 
@@ -42,7 +42,7 @@ describe "CourtDay index" do
   shared_examples_for "any week" do
 
     it "has correct days" do
-      test_dates( @tested_monday) do |date, show, controls|
+      test_dates( @tested_monday) do |date, show, from_here_to_eternity|
         if show
           should have_content date
         else
@@ -52,17 +52,17 @@ describe "CourtDay index" do
     end
 
     it "has controls from today on" do
-      test_dates( @tested_monday) do |date, show, controls|
+      test_dates( @tested_monday) do |date, show, from_here_to_eternity|
         within( :id, "court-day-#{ date}"){ should have_selector "form"
-                                          } if show && controls
+                                          } if show && from_here_to_eternity
       end
     end
 
 
     it "has no controls up to yesterday" do
-      test_dates( @tested_monday) do |date, show, controls|
+      test_dates( @tested_monday) do |date, show, from_here_to_eternity|
         within( :id, "court-day-#{ date}"){ should_not have_selector "form"
-                                          } if show && !controls
+                                          } if show && !from_here_to_eternity
       end
     end
   end
@@ -76,7 +76,8 @@ describe "CourtDay index" do
 
     it{ within( :id, @cd_id){ should have_content( day_of_week( @cd.date))}}
     it{ within( :id, @cd_id){ should have_content( @cd.date)}}
-    it{ within( :id, @cd_id){ should have_content( @booked_user.name)}}
+    it{ within( :id, "#{ @cd_id}-afternoon"
+              ){ should have_content( @booked_user.name)}}
     it{ within( :id, @cd_id){ should have_content( @cd.notes)}}  # no \n!!
     it{ within( :id, @cd_id){
       should_not have_selector( "input[value='#{ VALUE_UNBOOK_MORNING}']")}}
@@ -124,6 +125,21 @@ describe "CourtDay index" do
         should have_selector( "input[value='#{ VALUE_BOOK_MORNING}']")}}
       it{ within( :id, @cd_id){
         should have_selector( "input[value='#{ VALUE_BOOK_AFTERNOON}']")}}
+
+      it "has no controls when nothing to book" do
+        test_dates( @monday) do |date, show, ignore|
+          if show
+            if date != @cd.date
+              within( :id, "court-day-#{ date}") do
+                should_not have_selector( "input[value='#{ VALUE_BOOK_MORNING}']")
+                should_not have_selector( "input[value='#{ VALUE_BOOK_AFTERNOON}']")
+              end
+            end
+          else
+            should_not have_selector( "div[id='court-day-#{ date}']")
+          end
+        end
+      end
     end
 
     before do
@@ -140,7 +156,7 @@ describe "CourtDay index" do
         dis1, dis2, dis3 = create_test_user :count => 3, :role => "disabled"
         visit court_days_path
       end
-      it{ within( "div.row.heading"){ should_not have_link( "3 ny att aktivera")}}
+      it{ within( "div.row.heading"){ should_not have_content( "aktivera")}}
     end
 
     context "booking" do
@@ -155,6 +171,7 @@ describe "CourtDay index" do
 
         it_behaves_like "on court_days index page"
         it{ within( :id, @cd_id){ should have_content( @user.name)}}
+        it{ within( :id, @cd_id){ should_not have_link( @user.name)}}
         it{ within( :id, @cd_id){
           should_not have_selector( "input[value='#{ @value_book}']")}}
         it{ within( :id, @cd_id){
@@ -221,7 +238,6 @@ describe "CourtDay index" do
 
     it_behaves_like "on court_days index page"
     it_behaves_like "any user"
-    it "can unbook users"
 
     it "has input controls for each changeable Court Day" do
       (5 * WEEKS_P_PAGE).times do |n|
@@ -233,6 +249,11 @@ describe "CourtDay index" do
             should have_selector( "textarea")
             should have_selector(
               "input[value='#{ VALUE_SAVE} #{ day_of_week( date)}']")
+            court_day = CourtDay.find_by_date date
+            court_day && court_day.bookings.each do |booking|
+              should have_link( booking.user.name,
+                                :href => booking_path( booking))
+            end
           end
         end
       end
@@ -325,6 +346,31 @@ describe "CourtDay index" do
       end
       it{ within( "div.row.heading"){
             should have_link( "3 ny att aktivera", :href => users_path)}}
+    end
+
+    context "unbooking" do
+
+      before do
+        @booked_user.book!( @cd, :morning)
+        visit court_days_path
+      end
+
+      it{ within( :id, "#{ @cd_id}-morning"
+                ){ expect{ click_link( @booked_user.name)
+                         }.to change( Booking, :count).by( -1)}}
+
+      context "morning," do
+        before{ within( :id, "#{ @cd_id}-morning"
+                      ){ click_link( @booked_user.name)}}
+        context "morning" do
+          it{ within( :id, "#{ @cd_id}-morning"
+                    ){ should_not have_content( @booked_user.name)}}
+        end
+        context "afternoon still" do
+          it{ within( :id, "#{ @cd_id}-afternoon"
+                    ){ should have_content( @booked_user.name)}}
+        end
+      end
     end
   end
 end

@@ -28,7 +28,7 @@ module SessionsHelper
   end
 
   def logged_in_user
-    redirect_to log_in_url, :notice => "Logga in först" unless logged_in?
+    redirect_to log_in_path, :notice => "Logga in först" unless logged_in?
   end
 
   def enabled_user

@@ -104,12 +104,12 @@ describe "User pages" do
 
       it{ should_not have_link( "Ta bort")}
       it{ should_not have_link( "Aktivera")}
-      it "has no change password link"
+      it{ should_not have_link( "Sätt nytt lösenord")}
 
-      context "as an admin user" do
+      context "as admin" do
         before do
           @admin = create_test_user :role => "admin", :name => "Admin",
-            :email => "anders1lindeberg@gmail.com"
+            :email => "ad@min"
           fake_log_in @admin
           visit users_path
         end
@@ -117,19 +117,32 @@ describe "User pages" do
         it{ within( "li#user-#{ @user.id}"){
               should have_link( "Ta bort", :href => user_path( User.first))}}
         it "should be able to delete another user" do
-          expect{ click_link( "Ta bort")}.to change( User, :count).by( -1)
+          within( "li#user-#{ @user.id}"){ expect{ click_link( "Ta bort")
+                                         }.to change( User, :count).by( -1)}
         end
         it "should be able to deactivate another user"
-        it{ should_not have_link( "Ta bort", :href => user_path( @admin))}
-        it "can set new user password"
+        it{ within( "li#user-#{ @admin.id}"
+                  ){ should_not have_content( "Ta bort")}}
+        it{ within( "li#user-#{ @user.id}"
+                  ){ should have_link( "Sätt nytt lösenord",
+                                       :href => edit_user_path( @user))}}
 
         context "when a user is disabled" do
           before do
             @new_user = create_test_user :role => "disabled"
             visit users_path
           end
-          it{ within( "li#user-#{ @new_user.id}"){
-                should have_link( "Aktivera", :href => enable_user_path( @new_user))}}
+          it{ within( "li#user-#{ @new_user.id}"
+                    ){ should have_link(
+                         "Aktivera", :href => enable_user_path( @new_user))}}
+        end
+
+        context "when setting user password" do
+          before{ within( "li#user-#{ @user.id}"
+                        ){ click_link "Sätt nytt lösenord"}}
+          it{ should have_selector( "h1",    :text => "Ändra #{ @user.name}")}
+          it{ should have_selector(
+            "title", :text => "Bokning av vittnesstöd | Ändra #{ @user.name}")}
         end
       end
     end
@@ -147,13 +160,15 @@ describe "User pages" do
     it{ should have_selector(
       "title", :text => "Bokning av vittnesstöd | #{ @user.name}")}
     it{ should have_content( @user.email)}
+    it{ should_not have_content( "en fil")}
 
     context "admin" do
 
       before do
-        @user.update_attribute :role, "admin"
-        fake_log_in @user
-        visit user_path( @user)
+        @admin = create_test_user :name => "Ad Min", :email => "ad@min",
+                                  :role => "admin"
+        fake_log_in @admin
+        visit user_path( @admin)
       end
 
       it{ should have_link "Läs ut hela databasen till en fil", 
@@ -168,46 +183,127 @@ describe "User pages" do
           it{ page.response_headers[ "Content-Type"].should == "text/xml"}
         end
       end
+      
+      context "viewing another user" do
+        before{ visit user_path( @user)}
+        it{ should_not have_content( "en fil")}
+      end
     end
   end
 
   describe "edit" do
 
-    before( :each) do
-      visit log_in_path
+    before do
       @user = create_test_user
-      fake_log_in @user
-      visit edit_user_path( @user)
+      @old_name = @user.name
+      @old_email = @user.email
+      @old_pw = @user.password
+      @new_name = "Nytt Namn"
+      @new_email = "ny@mejl"
+      @new_pw = "nytt-lösen"
     end
 
-    describe "page" do
+    shared_examples_for "any logged in user" do
       it{ should have_selector( "h1",    :text => "Ändra #{ @user.name}")}
       it{ should have_selector(
         "title", :text => "Bokning av vittnesstöd | Ändra #{ @user.name}")}
     end
 
-    describe "with invalid information" do
-      before{ click_button "Spara ändringar"}
-      it{ should have_content( "fel")}
+    shared_examples_for "password change" do
+      it "old password does not work" do
+        fake_log_in @user, @old_pw
+        should have_selector( "title",
+                              :text => "Bokning av vittnesstöd | Logga in")
+        should have_selector( "div.alert.alert-error")
+      end
+      it "new password works" do
+        fake_log_in @user, @new_pw
+        should have_selector( "title",
+                              :text => "Bokning av vittnesstöd | Rondningar")
+      end
     end
 
-    describe "with valid information" do
-      let( :new_name){ "Nytt Namn"}
-      let( :new_email){ "ny@example.com"}
+    context "yourself" do
+
       before do
-        fill_in "Namn", :with => new_name
-        fill_in "E-post", :with => new_email
-        fill_in "Lösenord", :with => @user.password
-        fill_in "Bekräfta lösenord", :with => @user.password
-        click_button "Spara ändringar"
+        fake_log_in @user
+        visit edit_user_path( @user)
       end
 
-      it{ should have_selector(
-        "title", :text => "Bokning av vittnesstöd | Rondningar")}
-        it{ should have_selector( "div.alert.alert-success")}
+      it_behaves_like "any logged in user"
+
+      describe "with invalid information" do
+        before{ click_button "Spara ändringar"}
+        it{ should have_selector( "div.alert.alert-error")}
+      end
+
+      describe "with valid information" do
+
+        before do
+          fill_in "Namn", :with => @new_name
+          fill_in "E-post", :with => @new_email
+          fill_in "Lösenord", :with => @new_pw
+          fill_in "Bekräfta lösenord", :with => @new_pw
+          click_button "Spara ändringar"
+          @user.reload
+        end
+
+        it_behaves_like "password change"
+        it{ should have_selector(
+          "title", :text => "Bokning av vittnesstöd | Rondningar")}
+        it{ within( "div.alert.alert-success"
+                  ){ should have_content( "Uppgifterna sparade")}}
         it{ should have_link( "Logga ut", :href => log_out_path)}
-        specify{ @user.reload.name.should  == new_name}
-        specify{ @user.reload.email.should == new_email}
+        specify{ @user.reload.name.should  == @new_name}
+        specify{ @user.reload.email.should == @new_email}
+      end
+    end
+
+    context "admin" do
+
+      before do
+        @admin = create_test_user :role => "admin", :name => "Admin",
+                                  :email => "ad@min"
+        fake_log_in @admin
+        visit edit_user_path( @user)  # sic!
+      end
+
+      it_behaves_like "any logged in user"
+
+      context "changing other attributes" do
+
+        before do
+          fill_in "Namn", :with => @new_name
+          fill_in "E-post", :with => @new_email
+          fill_in "Lösenord", :with => @new_pw
+          fill_in "Bekräfta lösenord", :with => @new_pw
+          click_button "Spara ändringar"
+          @user.reload
+        end
+
+        specify{ @user.name.should  == @old_name}
+        specify{ @user.email.should == @old_email}
+      end
+
+      context "changing password" do
+
+        before do
+          fill_in "Lösenord", :with => @new_pw
+          fill_in "Bekräfta lösenord", :with => @new_pw
+          click_button "Spara ändringar"
+          @user.reload
+        end
+
+        specify( "still logged in as admin"){
+          should have_link( "Mina uppgifter", :href => user_path( @admin))}
+        it{ should have_selector(
+          "title", :text => "Bokning av vittnesstöd | Användare")}
+        it{ within( "div.alert.alert-success"
+                  ){ should have_content( "Lösenordet ändrat")}}
+        it_behaves_like "password change"
+        specify{ @user.name.should  == @old_name}
+        specify{ @user.email.should == @old_email}
+      end
     end
   end
 end

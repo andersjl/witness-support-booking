@@ -43,9 +43,14 @@ class UsersController < ApplicationController
     when VALUE_UNBOOK_AFTERNOON then update_unbook_do( :afternoon)
     else
       if @user.update_attributes( params[ :user])
-        flash[ :success] = "Uppgifterna sparade"
-        log_in @user  # because remember_token has been reset
-        redirect_to court_days_path
+        if @user == current_user
+          flash[ :success] = "Uppgifterna sparade"
+          log_in @user  # because remember_token has been reset
+          redirect_to court_days_path
+        else
+          flash[ :success] = "Lösenordet ändrat"
+          redirect_to users_path
+        end
       else
         render 'edit'
       end
@@ -65,10 +70,11 @@ class UsersController < ApplicationController
 
   def destroy
     destroyed = User.find( params[ :id])
+    name = destroyed.name
     email = destroyed.email
     destroyed.destroy
-    flash[ :success] = "User #{ email} destroyed."
-    redirect_to users_url
+    flash[ :success] = "Användare #{ name} (#{ email}) borttagen"
+    redirect_to users_path
   end
 
   def update_book_do( session)

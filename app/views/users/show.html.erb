@@ -9,6 +9,6 @@
     </section>
   </aside>
 </div>
-<% if current_user.admin? %>
+<% if current_user.admin? && current_user == @user %>
 <%= render :partial => "shared/xml_dump_n_restore" %>
 <% end %>
