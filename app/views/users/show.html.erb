@@ -4,9 +4,11 @@
     <section>
       <h1><%= @user.name %></h1>
     </section>
+<% if current_user.admin? || current_user == @user %>
     <section>
       <%= @user.email %>
     </section>
+<% end %>
   </aside>
 </div>
 <% if current_user.admin? && current_user == @user %>

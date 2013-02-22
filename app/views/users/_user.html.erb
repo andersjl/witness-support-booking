@@ -1,5 +1,5 @@
 <li id="user-<%= user.id %>">
-  <%= link_to user.name, user %> | <%= user.email %>
+  <%= link_to user.name, user %>
   <% if current_user.admin? && !current_user?( user) %>
     <% unless user.enabled? %>
     | <%= link_to "Aktivera", enable_user_path( user),

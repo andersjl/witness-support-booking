@@ -9,8 +9,6 @@ class SessionsController < ApplicationController
       log_in user
       redirect_to court_days_path
     else
-    # flash.now[ :error] = 'Ogiltig kombination av e-post och lösenord'
-    # render "new"
       flash[ :error] = 'Ogiltig kombination av e-post och lösenord'
       redirect_to log_in_path
     end

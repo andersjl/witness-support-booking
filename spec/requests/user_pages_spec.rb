@@ -95,7 +95,7 @@ describe "User pages" do
       it "should list each user" do
         User.order_by_role_and_name.each do |user|
           page.should have_selector( "li", :text => user.name)
-          page.should have_selector( "li", :text => user.email)
+          page.should_not have_selector( "li", :text => user.email)
         end
       end
     end
@@ -156,11 +156,29 @@ describe "User pages" do
       visit user_path( @user)
     end
 
-    it{ should have_selector( "h1",    :text => @user.name)}
-    it{ should have_selector(
-      "title", :text => "Bokning av vittnesstöd | #{ @user.name}")}
-    it{ should have_content( @user.email)}
-    it{ should_not have_content( "en fil")}
+    shared_examples_for "viewing any user" do
+      it{ should have_selector( "h1",    :text => @shown.name)}
+      it{ should have_selector(
+        "title", :text => "Bokning av vittnesstöd | #{ @shown.name}")}
+    end
+
+    context "self" do
+      before{ @shown = @user}
+      it_behaves_like "viewing any user"
+      it{ should have_content( @shown.email)}
+      it{ should_not have_content( "en fil")}
+    end
+
+    context "other user" do
+      before do
+        @other = create_test_user :name => "Other", :email => "ot@her"
+        @shown = @other
+        visit user_path( @other)
+      end
+      it_behaves_like "viewing any user"
+      it{ should_not have_content( @shown.email)}
+      it{ should_not have_content( "en fil")}
+    end
 
     context "admin" do
 
@@ -171,10 +189,25 @@ describe "User pages" do
         visit user_path( @admin)
       end
 
-      it{ should have_link "Läs ut hela databasen till en fil", 
-                           :href => database_path}
-      it{ should have_link "RADERA HELA DATABASEN och läs in en fil",
-                           :href => new_database_path}
+      context "viewing self" do
+        before{ @shown = @admin}
+        it{ should have_content( @shown.email)}
+        it_behaves_like "viewing any user"
+        it{ should have_link "Läs ut hela databasen till en fil", 
+                             :href => database_path}
+        it{ should have_link "RADERA HELA DATABASEN och läs in en fil",
+                             :href => new_database_path}
+      end
+
+      context "viewing other" do
+        before do
+          visit user_path( @user)
+          @shown = @user
+        end
+        it_behaves_like "viewing any user"
+      # below is not a requirement?
+      # it{ should_not have_content( @shown.email)}
+      end
 
       context "saving database" do
         # file content is tested with the new_database_path request

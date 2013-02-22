@@ -10,13 +10,41 @@ describe "CourtDay index" do
     date - (date.cwday - 1)
   end
 
-  def test_dates( monday)
+  def test_dates( date_in_week, previous_if_weekend = false)
     (7 * (WEEKS_P_PAGE + 2) + 1).times do |n|
-      date = monday + n - 7
+      date = monday( date_in_week, previous_if_weekend) + n - 7
       show = n % 7 < 5 && 6 < n && n < 7 * (WEEKS_P_PAGE + 1)
       from_here_to_eternity = date >= Date.today
       yield date, show, from_here_to_eternity
     end
+  end
+
+  def create_future_date
+    @tested_date = @cd.date + 21
+    @tested_id = "court-day-#{ @tested_date}-morning"
+    @future_cd = create_test_court_day :date => @tested_date
+  end
+
+  def visit_future_date
+    within :id, "weekpicker-bottom" do
+      fill_in "datepicker-bottom", :with => @tested_date
+      click_on "OK"
+    end
+  end
+
+  def create_and_visit_future_date
+    create_future_date
+    visit_future_date
+  end
+
+  def shows( date)
+    should have_selector "div[id='court-day-#{ date}']"
+  end
+
+  def known_problem
+    yield
+  rescue RSpec::Expectations::ExpectationNotMetError => e
+    pending "#{ e.message} - known problem"
   end
 
   subject{ page}
@@ -42,7 +70,7 @@ describe "CourtDay index" do
   shared_examples_for "any week" do
 
     it "has correct days" do
-      test_dates( @tested_monday) do |date, show, from_here_to_eternity|
+      test_dates( @tested_date) do |date, show, from_here_to_eternity|
         if show
           should have_content date
         else
@@ -52,7 +80,7 @@ describe "CourtDay index" do
     end
 
     it "has controls from today on" do
-      test_dates( @tested_monday) do |date, show, from_here_to_eternity|
+      test_dates( @tested_date) do |date, show, from_here_to_eternity|
         within( :id, "court-day-#{ date}"){ should have_selector "form"
                                           } if show && from_here_to_eternity
       end
@@ -60,7 +88,7 @@ describe "CourtDay index" do
 
 
     it "has no controls up to yesterday" do
-      test_dates( @tested_monday) do |date, show, from_here_to_eternity|
+      test_dates( @tested_date) do |date, show, from_here_to_eternity|
         within( :id, "court-day-#{ date}"){ should_not have_selector "form"
                                           } if show && !from_here_to_eternity
       end
@@ -70,7 +98,7 @@ describe "CourtDay index" do
   shared_examples_for "any user" do
 
     context "this week" do
-      before{ @tested_monday = @monday}
+      before{ @tested_date = @monday}
       it_behaves_like "any week"
     end
 
@@ -87,7 +115,7 @@ describe "CourtDay index" do
     context "going one week back" do
       before do
         click_button VALUE_LAST_WEEK
-        @tested_monday = @monday - 7
+        @tested_date = @monday - 7
       end
       it_behaves_like "any week"
     end
@@ -95,7 +123,7 @@ describe "CourtDay index" do
     context "going one week forward" do
       before do
         click_button VALUE_NEXT_WEEK
-        @tested_monday = @monday + 7
+        @tested_date = @monday + 7
       end
       it_behaves_like "any week"
     end
@@ -105,7 +133,7 @@ describe "CourtDay index" do
         @new_start_date = @monday + 4711 + rand( 7)
         fill_in "start_date", :with => @new_start_date
         click_button "OK"
-        @tested_monday = monday @new_start_date, :previous_if_weekend
+        @tested_date = monday @new_start_date, :previous_if_weekend
       end
       it_behaves_like "any week"
     end
@@ -118,12 +146,12 @@ describe "CourtDay index" do
       it{ should_not have_selector( "select")}
       it{ should_not have_selector( "textarea")}
       it{ should have_content( "(2 kvar)")}
-      it{ within( :id, @cd_id){
+      it{ within( :id, @tested_id){
         should_not have_selector( 
           "input[value='#{ VALUE_SAVE} #{ day_of_week( @cd.date)}']")}}
-      it{ within( :id, @cd_id){
+      it{ within( :id, @tested_id){
         should have_selector( "input[value='#{ VALUE_BOOK_MORNING}']")}}
-      it{ within( :id, @cd_id){
+      it{ within( :id, @tested_id){
         should have_selector( "input[value='#{ VALUE_BOOK_AFTERNOON}']")}}
 
       it "has no controls when nothing to book" do
@@ -146,6 +174,7 @@ describe "CourtDay index" do
       @user = create_test_user( :name => "Normal",
                                 :email => "normal@exempel.se")
       fake_log_in @user
+      @tested_id = @cd_id
     end
 
     it_behaves_like "any user"
@@ -170,29 +199,30 @@ describe "CourtDay index" do
       shared_examples_for "any booking button click" do
 
         it_behaves_like "on court_days index page"
-        it{ within( :id, @cd_id){ should have_content( @user.name)}}
-        it{ within( :id, @cd_id){ should_not have_link( @user.name)}}
-        it{ within( :id, @cd_id){
+        it{ within( :id, @tested_id){ should have_content( @user.name)}}
+        it{ within( :id, @tested_id){ should_not have_link( @user.name)}}
+        it{ within( :id, @tested_id){
           should_not have_selector( "input[value='#{ @value_book}']")}}
-        it{ within( :id, @cd_id){
+        it{ within( :id, @tested_id){
           should have_selector( "input[value='#{ @value_unbook}']")}}
 
         context "when unbooked" do
-          before{ within( :id, @cd_id){ click_button @value_unbook}}
+          before{ within( :id, @tested_id){ click_button @value_unbook}}
           it_behaves_like "unbooked"
         end
       end
 
       shared_examples_for "any other user" do
         it_behaves_like "on court_days index page"
-        it{ within( :id, @cd_id){
+        it{ within( :id, @tested_id){
           should_not have_selector( "input[value='#{ @value_unbook}']")}}
       end
 
       context "last" do
 
         before do
-          within( :id, @cd_id){ click_button VALUE_BOOK_MORNING}
+          @tested_id = @cd_id
+          within( :id, @tested_id){ click_button VALUE_BOOK_MORNING}
           @value_book = VALUE_BOOK_MORNING
           @value_unbook = VALUE_UNBOOK_MORNING
         end
@@ -202,7 +232,7 @@ describe "CourtDay index" do
         context "switch user" do
           before{ login_other_user}
           it_behaves_like "any other user"
-          it{ within( :id, @cd_id){
+          it{ within( :id, @tested_id){
             should_not have_selector( "input[value='#{ @value_book}']")}}
         end
       end
@@ -210,7 +240,8 @@ describe "CourtDay index" do
       context "not last" do
 
         before do
-          within( :id, @cd_id){ click_button VALUE_BOOK_AFTERNOON}
+          @tested_id = @cd_id
+          within( :id, @tested_id){ click_button VALUE_BOOK_AFTERNOON}
           @value_book = VALUE_BOOK_AFTERNOON
           @value_unbook = VALUE_UNBOOK_AFTERNOON
         end
@@ -222,6 +253,30 @@ describe "CourtDay index" do
           it_behaves_like "any other user"
           it{ within( :id, @cd_id){
             should have_selector( "input[value='#{ @value_book}']")}}
+        end
+      end
+
+      context "future" do
+
+        before do
+          create_and_visit_future_date
+          within( :id, @tested_id){ click_button VALUE_BOOK_MORNING}
+        end
+
+        it{ shows @tested_date}
+        it{ within( :id, @tested_id){ should_not have_selector(
+              "input[value='#{ VALUE_BOOK_MORNING}']")}}
+        it{ within( :id, @tested_id){
+          should have_selector( "input[value='#{ VALUE_UNBOOK_MORNING}']")}}
+
+        context "unbooking" do
+          before{ within( :id, @tested_id
+                        ){ click_button VALUE_UNBOOK_MORNING}}
+          it{ shows @tested_date}
+          it{ within( :id, @tested_id){ should have_selector(
+                "input[value='#{ VALUE_BOOK_MORNING}']")}}
+          it{ within( :id, @tested_id){ should_not have_selector(
+                "input[value='#{ VALUE_UNBOOK_MORNING}']")}}
         end
       end
     end
@@ -260,7 +315,7 @@ describe "CourtDay index" do
     end
     
     context "changing and saving" do
-      
+
       def change( date)
         @changed_date = date
         @changed_id = "court-day-#{ date}"
@@ -370,6 +425,23 @@ describe "CourtDay index" do
           it{ within( :id, "#{ @cd_id}-afternoon"
                     ){ should have_content( @booked_user.name)}}
         end
+      end
+
+      context "future" do
+
+        before do
+          create_future_date
+          @booked_user.book!( @future_cd, :morning)
+          visit_future_date
+          within( :id, @tested_id){ click_link( @booked_user.name)}
+        end
+
+        it{ known_problem{ shows @tested_date}}
+        specify{ @booked_user.should_not be_booked( @future_cd, :morning)}
+      end
+
+      context "past" do
+        it "is not possible"
       end
     end
   end

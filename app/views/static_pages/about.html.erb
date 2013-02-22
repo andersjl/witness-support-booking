@@ -1,16 +1,20 @@
 <% provide( :title, "Om") %>
 <h1>Om webbsidan</h1>
-<h2>Syfte</h2>
-<p>
-  Detta är ett en webbsida för bokning av vittnesstöd, tills vidare endast vid
-  Stockholms tingsrätt.  Vad "vittnesstöd" innebär kan du läsa om
-  <%= link_to "här", BOM_URL %>.  Ägare av webbsidan är
-  <%= link_to "Brottsofferjouren Sydöstra Stockholm", BOJ_SOS_URL %>.
-</p>
-<h2>Teknik</h2>
-<p>
-  Webbsidan är öppen källkod och utvecklad med frivilligt arbete.
-  Felrapporter, förbättringsförslag och erbjudande om hjälp kan sändas till
-  <%= mail_to "anders.lindeberg@telia.com", "Anders Lindeberg" %>.
-</p>
+<div class="row">
+  <div class="offset2 span8">
+    <h2>Syfte</h2>
+    <p>
+      Detta är ett en webbsida för bokning av vittnesstöd, tills vidare endast
+      vid Stockholms tingsrätt.  Vad "vittnesstöd" innebär kan du läsa om
+      <%= link_to "här", BOM_URL %>.  Ägare av webbsidan är
+      <%= link_to "Brottsofferjouren Sydöstra Stockholm", BOJ_SOS_URL %>.
+    </p>
+    <h2>Teknik</h2>
+    <p>
+      Webbsidan är öppen källkod och utvecklad med frivilligt arbete.
+      Felrapporter, förbättringsförslag och erbjudande om hjälp kan sändas till
+      <%= mail_to "anders.lindeberg@telia.com", "Anders Lindeberg" %>.
+    </p>
+  </div>
+</div>
 
