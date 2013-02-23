@@ -72,7 +72,7 @@ include AllDataDefs
     when :start_model
       File.open( "/home/anders/tmp/debug_xml.txt", "w") do |f|
         @new_db.each{ |m| f.puts m.inspect}
-      end
+      end if Rails.env.development?
     when :start_attr
       @state = :start_model
     when :read_attr
