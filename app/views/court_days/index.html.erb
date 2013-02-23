@@ -38,7 +38,6 @@
                          :notes_span => notes_span} %>
 <%   else %>
         <%= form_tag form_path, :method => "put", :class => "form-inline" do %> 
-          <%= hidden_field_tag "start_date", @start_date %>
 <%     unless current_user.admin?  %>
           <%= hidden_field_tag "court_day", court_day.id || 0 %>
 <%     end %>

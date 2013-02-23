@@ -27,7 +27,6 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find( params[ :id])
-  # @bookings = @user.bookings.sort.paginate( :page => params[ :page])
   end
 
   def edit
@@ -44,9 +43,9 @@ class UsersController < ApplicationController
     else
       if @user.update_attributes( params[ :user])
         if @user == current_user
-          flash[ :success] = "Uppgifterna sparade"
           log_in @user  # because remember_token has been reset
-          redirect_to court_days_path
+          flash.now[ :success] = "Uppgifterna sparade"
+          back_to_court_days
         else
           flash[ :success] = "Lösenordet ändrat"
           redirect_to users_path
@@ -60,20 +59,19 @@ class UsersController < ApplicationController
   def enable
     @user = User.find( params[ :id])
     if @user.update_attribute :role, "normal"
-      flash[ :success] = "Användare #{ @user.name}, #{ @user.email} aktiverad"
+      flash[ :success] = "Användare #{ @user.inspect} aktiverad"
     else
       flash[ :error] =
-        "Användare #{ @user.name}, #{ @user.email} kunde inte aktiveras"
+        "Användare #{ @user.inspect} kunde inte aktiveras"
     end
-    redirect_to :users
+    redirect_to users_path
   end
 
   def destroy
     destroyed = User.find( params[ :id])
-    name = destroyed.name
-    email = destroyed.email
+    destroyed_inspect = destroyed.inspect
     destroyed.destroy
-    flash[ :success] = "Användare #{ name} (#{ email}) borttagen"
+    flash[ :success] = "Användare #{ destroyed_inspect}) borttagen"
     redirect_to users_path
   end
 

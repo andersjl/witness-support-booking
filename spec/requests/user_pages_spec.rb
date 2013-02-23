@@ -46,9 +46,6 @@ describe "User pages" do
                                   :text => "Välkommen #{ @user.name}")}
         it{ should_not have_link( "Rondningar")}
         it{ should_not have_link( "Användare")}
-        it{ should_not have_link( "Mina uppgifter")}
-        it{ should have_link( "Ändra #{ @user.name}",
-                               :href => edit_user_path( @user))}
         it{ should have_link( "Logga ut", :href => log_out_path)}
         it{ should_not have_link( "Logga in")}
         it "should send an email to admin"
@@ -166,6 +163,7 @@ describe "User pages" do
       before{ @shown = @user}
       it_behaves_like "viewing any user"
       it{ should have_content( @shown.email)}
+      it{ should have_link( "Ändra", :href => edit_user_path( @user))}
       it{ should_not have_content( "en fil")}
     end
 
@@ -327,12 +325,14 @@ describe "User pages" do
           @user.reload
         end
 
-        specify( "still logged in as admin"){
-          should have_link( "Mina uppgifter", :href => user_path( @admin))}
         it{ should have_selector(
           "title", :text => "Bokning av vittnesstöd | Användare")}
         it{ within( "div.alert.alert-success"
                   ){ should have_content( "Lösenordet ändrat")}}
+        specify "still logged in as admin" do
+          click_link( @admin.name)
+          should have_content( @admin.email)
+        end
         it_behaves_like "password change"
         specify{ @user.name.should  == @old_name}
         specify{ @user.email.should == @old_email}

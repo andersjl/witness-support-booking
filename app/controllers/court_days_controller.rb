@@ -5,6 +5,14 @@ class CourtDaysController < ApplicationController
   before_filter :admin_user, :only => :update
 
   def index
+    if params[ :start_date]
+      chosen_date = Date.parse( params[ :start_date])
+      case params[ :commit]
+      when VALUE_LAST_WEEK then chosen_date -= 7
+      when VALUE_NEXT_WEEK then chosen_date += 7
+      end
+      session[ :start_date] = chosen_date.to_s
+    end
     collect_court_days
   end
 
@@ -21,13 +29,10 @@ class CourtDaysController < ApplicationController
   def update_or_destroy
     updated = params_to_court_day
     if updated.something_to_do?
-    # if [ @court_day.morning, @court_day.afternoon, @court_day.notes.blank?
-    #    ] != [ updated.morning, updated.afternoon, updated.notes.blank?]
-        @court_day.morning = updated.morning
-        @court_day.afternoon = updated.afternoon
-        @court_day.notes = updated.notes
-        @court_day.save
-    # end
+      @court_day.morning = updated.morning
+      @court_day.afternoon = updated.afternoon
+      @court_day.notes = updated.notes
+      @court_day.save
     else
       @court_day.destroy
       @court_day = nil
@@ -49,6 +54,5 @@ class CourtDaysController < ApplicationController
       :notes => params[ "notes" + date].blank? ? nil : params[ "notes" + date
                                                              ].strip)
   end
-
 end
 

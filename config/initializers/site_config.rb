@@ -3,6 +3,7 @@
 VALUE_SAVE             = "Spara"
 VALUE_LAST_WEEK        = "<<"
 VALUE_NEXT_WEEK        = ">>"
+VALUE_START_DATE       = "OK"
 VALUE_BOOK_MORNING     = "Boka fm"
 VALUE_BOOK_AFTERNOON   = "Boka em"
 VALUE_UNBOOK_MORNING   = "Avboka fm"

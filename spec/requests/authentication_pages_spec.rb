@@ -38,9 +38,6 @@ describe "Authentication pages" do
         "title", :text => "Bokning av vittnesstöd | Rondningar")}
       it{ should have_link( "Rondningar", :href => court_days_path)}
       it{ should have_link( "Användare", :href => users_path)}
-      it{ should have_link( "Mina uppgifter", :href => user_path( @user))}
-      it{ should have_link( "Ändra #{ @user.name}",
-                             :href => edit_user_path( @user))}
       it{ should have_link( "Logga ut", :href => log_out_path)}
       it{ should_not have_link( "Logga in", :href => log_in_path)}
 

@@ -41,12 +41,6 @@ describe "CourtDay index" do
     should have_selector "div[id='court-day-#{ date}']"
   end
 
-  def known_problem
-    yield
-  rescue RSpec::Expectations::ExpectationNotMetError => e
-    pending "#{ e.message} - known problem"
-  end
-
   subject{ page}
 
   before do
@@ -135,7 +129,18 @@ describe "CourtDay index" do
         click_button "OK"
         @tested_date = monday @new_start_date, :previous_if_weekend
       end
+
       it_behaves_like "any week"
+
+      context "switching user resets the date" do
+        before do
+          @other = create_test_user( :name => "En Annan",
+                                     :email => "en.annan@exempel.se")
+          fake_log_in @other
+          @tested_date = @monday
+        end
+        it_behaves_like "any week"
+      end
     end
   end
 
@@ -436,7 +441,8 @@ describe "CourtDay index" do
           within( :id, @tested_id){ click_link( @booked_user.name)}
         end
 
-        it{ known_problem{ shows @tested_date}}
+      # it{ known_problem{ shows @tested_date}}
+        it{ shows @tested_date}
         specify{ @booked_user.should_not be_booked( @future_cd, :morning)}
       end
 

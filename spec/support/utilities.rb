@@ -1,4 +1,10 @@
 
+def known_problem
+  yield
+rescue RSpec::Expectations::ExpectationNotMetError => e
+  pending "#{ e.message} - known problem"
+end
+
 def create_test_user( opts = { })
   count = opts.delete( :count) || 1
   if count == 1
