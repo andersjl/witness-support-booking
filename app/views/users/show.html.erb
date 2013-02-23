@@ -8,6 +8,11 @@
     <section>
       <%= @user.email %>
     </section>
+<%   if current_user == @user %>
+    <section>
+      <%= link_to "Ändra", edit_user_path( current_user) %>
+    </section>
+<%   end %>
 <% end %>
   </aside>
 </div>
