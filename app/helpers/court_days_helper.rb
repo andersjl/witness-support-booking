@@ -13,7 +13,7 @@ module CourtDaysHelper
   end
 
   def collect_court_days
-    session[ :start_date] ||= (Date.today + 2).to_s
+    session[ :start_date] ||= CourtDay.monday( Date.today).to_s
     @start_date = session[ :start_date]
     @court_days = CourtDay.page( Date.parse( session[ :start_date]))
   end

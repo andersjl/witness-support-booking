@@ -56,7 +56,7 @@ def create_test_court_day( opts = { })
 end
 def create_test_court_day_do( attrs, do_not_save, increment = false)
   used = attrs.dup
-  used[ :date] = ensure_weekday( used[ :date])
+  used[ :date] = CourtDay.ensure_weekday( used[ :date])
   attrs[ :date] = used[ :date] + rand( 2) + 1 if increment
   if increment
     used[ :morning] = rand( used[ :morning] + 1)
@@ -88,13 +88,5 @@ def create_test_bookings
   end
   booking_schema.each{ |uds| eval( "u#{ uds[ 0]}").
                                book!( eval( "c#{ uds[ 1]}"), uds[ 2])}
-end
-
-def ensure_weekday( date)
-  case date.cwday
-  when 6 then date += 2
-  when 7 then date += 1
-  else        date
-  end
 end
 

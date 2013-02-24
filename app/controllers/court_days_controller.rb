@@ -11,7 +11,7 @@ class CourtDaysController < ApplicationController
       when VALUE_LAST_WEEK then chosen_date -= 7
       when VALUE_NEXT_WEEK then chosen_date += 7
       end
-      session[ :start_date] = chosen_date.to_s
+      session[ :start_date] = CourtDay.monday( chosen_date).to_s
     end
     collect_court_days
   end

@@ -25,18 +25,30 @@ class CourtDay < ActiveRecord::Base
     bookings.find :all, :conditions => "session = 1"
   end
 
-  def self.page( start_date)
-    first = start_date - (start_date.cwday - 1)  # start on a monday
-    defined_days = find :all, :conditions =>
-      [ "date >= ? and date < ?", first, first +  7 * WEEKS_P_PAGE]
+  def self.page( first_monday)
+    defined_days = find :all, :conditions => [ "date >= ? and date < ?",
+      first_monday, first_monday +  7 * WEEKS_P_PAGE]
     (5 * WEEKS_P_PAGE).times.collect do |n|
       weeks, days = n.divmod 5
-      date = first + 7 * weeks + days
+      date = first_monday + 7 * weeks + days
       if defined_days.first && defined_days.first.date == date
         defined_days.shift
       else
         CourtDay.new :date => date, :morning => 0, :afternoon => 0
       end
+    end
+  end
+
+  def self.monday( date)
+    date = ensure_weekday( date)
+    date - (date.cwday - 1)
+  end
+
+  def self.ensure_weekday( date)
+    case date.cwday
+    when 6 then date += 2
+    when 7 then date += 1
+    else        date
     end
   end
 

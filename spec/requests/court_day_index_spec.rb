@@ -5,14 +5,9 @@ include SessionsHelper
 
 describe "CourtDay index" do
 
-  def monday( date, previous_if_weekend = false)
-    date = ensure_weekday( date) unless previous_if_weekend
-    date - (date.cwday - 1)
-  end
-
-  def test_dates( date_in_week, previous_if_weekend = false)
+  def test_dates( date_in_week)
     (7 * (WEEKS_P_PAGE + 2) + 1).times do |n|
-      date = monday( date_in_week, previous_if_weekend) + n - 7
+      date = CourtDay.monday( date_in_week) + n - 7
       show = n % 7 < 5 && 6 < n && n < 7 * (WEEKS_P_PAGE + 1)
       from_here_to_eternity = date >= Date.today
       yield date, show, from_here_to_eternity
@@ -44,7 +39,7 @@ describe "CourtDay index" do
   subject{ page}
 
   before do
-    @monday = monday( Date.today)
+    @monday = CourtDay.monday( Date.today)
     first_date = @monday <= Date.today ? Date.today : @monday
     @n_changeable = 6 - first_date.cwday
     @cd = create_test_court_day :date => first_date + rand( @n_changeable),
@@ -127,7 +122,7 @@ describe "CourtDay index" do
         @new_start_date = @monday + 4711 + rand( 7)
         fill_in "start_date", :with => @new_start_date
         click_button "OK"
-        @tested_date = monday @new_start_date, :previous_if_weekend
+        @tested_date = CourtDay.monday @new_start_date
       end
 
       it_behaves_like "any week"
@@ -389,7 +384,7 @@ describe "CourtDay index" do
           new_start_date = @monday + 7 * weeks + days
           fill_in "start_date", :with => new_start_date
           click_button "OK"
-          change( monday( new_start_date) + rand( 5))
+          change( CourtDay.monday( new_start_date) + rand( 5))
         end
         it_behaves_like "any changed day"
       end
