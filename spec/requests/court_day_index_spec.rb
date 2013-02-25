@@ -52,7 +52,7 @@ describe "CourtDay index" do
 
   shared_examples_for "on court_days index page" do
     it{ should have_selector(
-      "title", :text => "Bokning av vittnesstöd | Rondningar")}
+      "title", :text => "#{ APPLICATION_NAME} | Rondningar")}
     it{ should have_selector( "h1", :text => "Rondningar")}
   end
 

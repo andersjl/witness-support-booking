@@ -18,3 +18,6 @@ BOOKING_DAYS_AHEAD_MAX = 14
 BOM_URL     = "http://www.brottsoffermyndigheten.se/om-oss/vittnesstod"
 BOJ_SOS_URL = "http://www.farsta.boj.se"
 
+APPLICATION_NAME = "Vittnesstöd"
+ALL_DATA_FILE_NAME = "#{ APPLICATION_NAME.downcase}_databas"
+

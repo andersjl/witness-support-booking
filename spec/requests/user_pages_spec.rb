@@ -11,7 +11,7 @@ describe "User pages" do
 
     it{ should have_selector( "h1", :text => "Ny användare")}
     it{ should have_selector(
-      "title", :text => "Bokning av vittnesstöd | Ny användare")}
+      "title", :text => "#{ APPLICATION_NAME} | Ny användare")}
 
     context "with invalid information" do
       it "should not create a user" do
@@ -39,7 +39,7 @@ describe "User pages" do
         end
         it{ @user.should_not be_enabled}
         it{ should_not have_selector(
-          "title", :text => "Bokning av vittnesstöd | ")}
+          "title", :text => "#{ APPLICATION_NAME} | ")}
         it{ should have_content(
     "Du kommer att få ett mejl till user@example.com när du kan börja boka!")}
         it{ should have_selector( "div.alert.alert-success",
@@ -82,7 +82,7 @@ describe "User pages" do
     end
 
     it{ should have_selector(
-      "title", :text => "Bokning av vittnesstöd | Användare")}
+      "title", :text => "#{ APPLICATION_NAME} | Användare")}
     it{ should have_selector( "h1", :text => "Alla användare")}
 
     describe "pagination" do
@@ -139,7 +139,7 @@ describe "User pages" do
                         ){ click_link "Sätt nytt lösenord"}}
           it{ should have_selector( "h1",    :text => "Ändra #{ @user.name}")}
           it{ should have_selector(
-            "title", :text => "Bokning av vittnesstöd | Ändra #{ @user.name}")}
+            "title", :text => "#{ APPLICATION_NAME} | Ändra #{ @user.name}")}
         end
       end
     end
@@ -156,7 +156,7 @@ describe "User pages" do
     shared_examples_for "viewing any user" do
       it{ should have_selector( "h1",    :text => @shown.name)}
       it{ should have_selector(
-        "title", :text => "Bokning av vittnesstöd | #{ @shown.name}")}
+        "title", :text => "#{ APPLICATION_NAME} | #{ @shown.name}")}
     end
 
     context "self" do
@@ -237,20 +237,20 @@ describe "User pages" do
     shared_examples_for "any logged in user" do
       it{ should have_selector( "h1",    :text => "Ändra #{ @user.name}")}
       it{ should have_selector(
-        "title", :text => "Bokning av vittnesstöd | Ändra #{ @user.name}")}
+        "title", :text => "#{ APPLICATION_NAME} | Ändra #{ @user.name}")}
     end
 
     shared_examples_for "password change" do
       it "old password does not work" do
         fake_log_in @user, @old_pw
         should have_selector( "title",
-                              :text => "Bokning av vittnesstöd | Logga in")
+                              :text => "#{ APPLICATION_NAME} | Logga in")
         should have_selector( "div.alert.alert-error")
       end
       it "new password works" do
         fake_log_in @user, @new_pw
         should have_selector( "title",
-                              :text => "Bokning av vittnesstöd | Rondningar")
+                              :text => "#{ APPLICATION_NAME} | Rondningar")
       end
     end
 
@@ -281,7 +281,7 @@ describe "User pages" do
 
         it_behaves_like "password change"
         it{ should have_selector(
-          "title", :text => "Bokning av vittnesstöd | Rondningar")}
+          "title", :text => "#{ APPLICATION_NAME} | Rondningar")}
         it{ within( "div.alert.alert-success"
                   ){ should have_content( "Uppgifterna sparade")}}
         it{ should have_link( "Logga ut", :href => log_out_path)}
@@ -326,7 +326,7 @@ describe "User pages" do
         end
 
         it{ should have_selector(
-          "title", :text => "Bokning av vittnesstöd | Användare")}
+          "title", :text => "#{ APPLICATION_NAME} | Användare")}
         it{ within( "div.alert.alert-success"
                   ){ should have_content( "Lösenordet ändrat")}}
         specify "still logged in as admin" do

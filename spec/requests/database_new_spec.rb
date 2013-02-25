@@ -17,7 +17,7 @@ describe "Database load form" do
     it{ should have_selector( "h1", :text => "VARNING!")}
     it{ should have_content( "RADERA HELA DATABASEN")}
     it{ should have_selector(
-      "title", :text => "Bokning av vittnesstöd | Läs in fil")}
+      "title", :text => "#{ APPLICATION_NAME} | Läs in fil")}
   end
 
   context "when file is loaded" do
@@ -45,7 +45,7 @@ describe "Database load form" do
     end
 
     it{ should have_selector(
-      "title", :text => "Bokning av vittnesstöd | Läs in fil")}
+      "title", :text => "#{ APPLICATION_NAME} | Läs in fil")}
 
     context "with error in data" do
       before do
@@ -81,7 +81,7 @@ describe "Database load form" do
         it{ @second_admin.should be_admin}
         it "can log in with old password" do
           should have_selector( "title",
-                   :text => "Bokning av vittnesstöd | Rondningar")
+                   :text => "#{ APPLICATION_NAME} | Rondningar")
         end
       end
 

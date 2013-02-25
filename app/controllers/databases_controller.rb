@@ -23,6 +23,6 @@ class DatabasesController < ApplicationController
 
   def show
     send_data Database.new.all_data, :type => "text/xml",
-              :filename => "bokning_av_vittnesstöd_databas.xml"
+              :filename => "#{ ALL_DATA_FILE_NAME}.xml"
   end
 end
