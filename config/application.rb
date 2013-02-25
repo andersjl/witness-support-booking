@@ -64,5 +64,9 @@ module WitnessSupportBooking
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # To enable precompiling assets in Heroku without initalizers, necessary because we use the
+    # environment variable WITNESS_SUPPORT_BOOKING_SECRET when initializing the application.
+    config.assets.initialize_on_precompile = false
   end
 end
