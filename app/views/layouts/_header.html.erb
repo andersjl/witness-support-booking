@@ -8,13 +8,13 @@
           <li><%= link_to "Hjälp", help_path %></li>
 <% if logged_in? %>
   <% if enabled? %>
-            <li><%= link_to "Rondningar", court_days_path %></li>
-            <li><%= link_to "Användare", users_path %></li>
+          <li><%= link_to "Rondningar", court_days_path %></li>
+          <li><%= link_to "Användare", users_path %></li>
   <% end %>
-            <li><%= link_to "Logga ut", log_out_path, :method => "delete"
-                 %></li>
+          <li><%= link_to "Logga ut", log_out_path, :method => "delete"
+               %></li>
 <% else %>
-            <li><%= link_to "Logga in", log_in_path %></li>
+          <li><%= link_to "Logga in", log_in_path %></li>
 <% end %>
         </ul>
       </nav>

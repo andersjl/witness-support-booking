@@ -2,10 +2,7 @@ require 'spec_helper'
 
 describe "User model" do
 
-  before{ @user = User.new( :name => "Example User",
-                            :email => "user@example.com",
-                            :password => "foobaz",
-                            :password_confirmation => "foobaz")}
+  before{ @user = create_test_user :do_not_save => true}
 
   subject{ @user}
 
@@ -35,58 +32,78 @@ describe "User model" do
 
   context "with role attribute set to 'admin'" do
     before do
+      @user.role = "admin"
       @user.save!
-      @user.update_attribute :role, "admin"
     end
     it{ should be_admin}
   end
-
-  context "when name is not present" do
-    before{ @user.name = " "}
-    it{ should_not be_valid}
+ 
+  context ".order_by_role_and_name" do
+    before{
+      [ lambda{ create_test_user :name => "a", :role => "disabled",
+                                 :email => "11"},
+        lambda{ create_test_user :name => "z", :role => "disabled",
+                                 :email => "12"},
+        lambda{ create_test_user :name => "a", :role => "normal",
+                                 :email => "21"},
+        lambda{ create_test_user :name => "z", :role => "normal",
+                                 :email => "22"},
+        lambda{ create_test_user :name => "a", :role => "admin",
+                                 :email => "31"},
+        lambda{ create_test_user :name => "z", :role => "admin",
+                                 :email => "32"}
+      ].shuffle.each{ |creation| creation.call}}
+    specify{ User.order_by_role_and_name.should ==
+               User.find( :all, :order => "email")}
   end
 
-  context "when email is not present" do
-    before{ @user.email = " "}
-    it{ should_not be_valid}
-  end
+  context "validation" do
 
-  context "when email address is already taken" do
-    before do
-      ( user_with_same_email = @user.dup).email.upcase!
-      user_with_same_email.save!
+    context "when name is not present" do
+      before{ @user.name = " "}
+      it{ should_not be_valid}
     end
-    it{ should_not be_valid}
-  end
 
-  context "when password is not present" do
-    before{ @user.password = @user.password_confirmation = " "}
-    it{ should_not be_valid}
-  end
+    context "when email is not present" do
+      before{ @user.email = " "}
+      it{ should_not be_valid}
+    end
 
-  context "when password confirmation is nil" do
-    before{ @user.password_confirmation = nil}
-    it{ should_not be_valid}
-  end
+    context "when email address is taken" do
+      before{ @user_with_same_email =
+                create_test_user :email => @user.email.upcase}
+      it{ should_not be_valid}
+    end
 
-  describe "when password doesn't match confirmation" do
-    before{ @user.password_confirmation = "mismatch"}
-    it{ should_not be_valid}
-  end
+    context "when password is not present" do
+      before{ @user.password = @user.password_confirmation = " "}
+      it{ should_not be_valid}
+    end
 
-  describe "with a password that's too short" do
-    before{ @user.password = @user.password_confirmation = "a" * 5}
-    it{ should be_invalid}
-  end
+    context "when password confirmation is nil" do
+      before{ @user.password_confirmation = nil}
+      it{ should_not be_valid}
+    end
 
-  describe "when role is missing" do
-    before{ @user.role = nil}
-    it{ should be_invalid}
-  end
+    describe "when password doesn't match confirmation" do
+      before{ @user.password_confirmation = "mismatch"}
+      it{ should_not be_valid}
+    end
 
-  describe "with an undefined role" do
-    before{ @user.role = "unknown"}
-    it{ should be_invalid}
+    describe "with a password that's too short" do
+      before{ @user.password = @user.password_confirmation = "a" * 5}
+      it{ should be_invalid}
+    end
+
+    describe "when role is missing" do
+      before{ @user.role = nil}
+      it{ should be_invalid}
+    end
+
+    describe "with an undefined role" do
+      before{ @user.role = "unknown"}
+      it{ should be_invalid}
+    end
   end
 
   describe "#enabled?" do
@@ -135,7 +152,7 @@ describe "User model" do
 
     before do
       @user.save!
-      @court_day = create_test_court_day :morning => 1, :afternoon => 2
+      @court_day = create_test_court_day :morning => 2, :afternoon => 2
     end
 
     [ :morning, :afternoon].each do |session|
@@ -154,9 +171,13 @@ describe "User model" do
             @user.bookings.first.session.should == session
           end
 
-          it "second booking fails" do
+          specify "second booking fails" do
             lambda{ @user.book! @court_day, session
                   }.should raise_error( ActiveRecord::RecordNotUnique)
+          end
+
+          specify "destroyed along with self" do
+            expect{ @user.destroy}.to change( Booking, :count).by( -1)
           end
         end
       end

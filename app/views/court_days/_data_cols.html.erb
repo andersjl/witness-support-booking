@@ -67,7 +67,10 @@
            if current_user.admin? %>
                 <%= link_to booking.user.name, booking_path( booking),
                             :method => :delete,
-                            :data => { :confirm => "Avboka #{ booking.user.name}?"} %>
+                            :data => { :confirm => "Avboka #{
+                              booking.user.name} #{
+                              booking.court_day.date} #{
+                              CourtDay.session_sv booking.session}?"} %>
 <%         else %>
                 <%= booking.user.name %>
 <%         end

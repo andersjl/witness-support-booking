@@ -18,23 +18,24 @@ class CourtDay < ActiveRecord::Base
   end
 
   def morning_bookings
-    bookings.find :all, :conditions => "session = 0"
+    bookings.where "session = 0"
   end
 
   def afternoon_bookings
-    bookings.find :all, :conditions => "session = 1"
+    bookings.where "session = 1"
   end
 
   def self.page( first_monday)
-    defined_days = find :all, :conditions => [ "date >= ? and date < ?",
-      first_monday, first_monday +  7 * WEEKS_P_PAGE]
+    defined_days =
+      where "date >= ? and date < ?",
+            first_monday, first_monday +  7 * WEEKS_P_PAGE
     (5 * WEEKS_P_PAGE).times.collect do |n|
       weeks, days = n.divmod 5
       date = first_monday + 7 * weeks + days
       if defined_days.first && defined_days.first.date == date
         defined_days.shift
       else
-        CourtDay.new :date => date, :morning => 0, :afternoon => 0
+        new :date => date, :morning => 0, :afternoon => 0
       end
     end
   end
@@ -50,6 +51,10 @@ class CourtDay < ActiveRecord::Base
     when 7 then date += 1
     else        date
     end
+  end
+
+  def self.session_sv( session)
+    session == :morning ? "fm" : "em"
   end
 
   def never_on_weekends
@@ -68,10 +73,6 @@ class CourtDay < ActiveRecord::Base
 
   def something_to_do?
     (morning && morning > 0) || (afternoon && afternoon > 0) || !notes.blank?
-  end
-
-  def before_save(record)
-    record.notes = record.notes.gsub( "\r", " *** ")
   end
 end
 

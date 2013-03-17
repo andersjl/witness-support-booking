@@ -33,6 +33,20 @@ textarea {
   }
 }
 
+.index {
+  list-style: none;
+  margin: 0;
+  li {
+    overflow: auto;
+    padding: 10px 0;
+    border-top: 1px solid $grayLight;
+    &:last-child {
+      border-bottom: 1px solid $grayLight;
+    }
+  }
+}
+
+
 /* typography */
 
 h1, h2, h3, h4, h5, h6 {
@@ -60,6 +74,7 @@ p {
   font-size: 1.1em;
   line-height: 1.2;
 }
+
 
 /* header */
 
@@ -144,19 +159,6 @@ input, select {
 
 
 /* users index */
-
-.users {
-  list-style: none;
-  margin: 0;
-  li {
-    overflow: auto;
-    padding: 10px 0;
-    border-top: 1px solid $grayLight;
-    &:last-child {
-      border-bottom: 1px solid $grayLight;
-    }
-  }
-}
 
 a.disabled-user {
   color: $ajlRed;

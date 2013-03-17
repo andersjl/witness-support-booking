@@ -1,9 +1,8 @@
 
 class DatabasesController < ApplicationController
+extend Authorization
 
-  before_filter :logged_in_user
-  before_filter :enabled_user
-  before_filter :admin_user
+  authorize [ :new, :create, :show], "admin"
 
   def new
     @database = Database.new
@@ -17,6 +16,10 @@ class DatabasesController < ApplicationController
     rescue AllDataDoc::XmlParseError => e
       flash[ :error] =
         "Inläsningen misslyckades: #{ e.message}. Databasen är orörd."
+      redirect_to new_database_path
+    rescue Exception => e
+      flash[ :error] =
+        "Undantag #{ e.class.name}: #{ e.message}. Databasen är orörd."
       redirect_to new_database_path
     end
   end

@@ -20,8 +20,8 @@ describe "CourtDay model" do
   end
 
   context "when date is taken" do
-    before{ create_test_court_day :date => @court_day.date, :morning => 1,
-                                  :afternoon => 2, :notes => "Babbel"}
+    before{ @other_court_day =
+              create_test_court_day :date => @court_day.date, :morning => 1}
     it{ should_not be_valid}
   end
 
@@ -65,10 +65,11 @@ describe "CourtDay model" do
 
   context "earliest first" do
     before do
+      create_test_court_day :date => Date.tomorrow + 2
       @court_day.save!
-      @later = create_test_court_day :date => Date.tomorrow
+      create_test_court_day :date => Date.tomorrow
     end
-    it{ CourtDay.find( :first).should == @court_day}
+    it{ CourtDay.first.should == @court_day}
   end
 
   [ :morning, :afternoon].each do |session|
@@ -79,10 +80,13 @@ describe "CourtDay model" do
         @user = create_test_user
         @user.book! @court_day, session
       end
-      it{ @court_day.send( "#{ session}_bookings").count.should == 1}
-      it "correct user and session" do
+      specify{ @court_day.send( "#{ session}_bookings").count.should == 1}
+      specify "correct user and session" do
         @court_day.bookings.first.user.should == @user
         @court_day.bookings.first.session.should == session
+      end
+      specify "destroyed along with self" do
+        expect{ @court_day.destroy}.to change( Booking, :count).by( -1)
       end
     end
   end

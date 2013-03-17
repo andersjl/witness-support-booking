@@ -13,7 +13,36 @@ describe "Authentication pages" do
   end
 
   describe "log_in" do
-    
+
+    def self.test_log_in( role)
+
+      context role do
+
+        before do
+          @user = create_test_user :email => "#{ role}@example.com",
+                                   :name => role.capitalize,
+                                   :role => role,
+                                   :password => "vittne"
+          visit log_in_path
+          fill_in "session_email", :with => "#{ role}@example.com"
+          fill_in "session_password", :with => "vittne"
+          click_button "Logga in"
+        end
+
+        if role != "disabled"
+          it{ should have_selector(
+            "title", :text => "#{ APPLICATION_NAME} | Rondningar")}
+        end
+        it{ should have_link( "Logga ut", :href => log_out_path)}
+        it{ should_not have_link( "Logga in", :href => log_in_path)}
+
+        context "followed by log out" do
+          before{ click_link "Logga ut"}
+          it{ should have_link( "Logga in")}
+        end
+      end
+    end
+
     before{ visit log_in_path}
 
     context "with invalid information" do
@@ -28,23 +57,7 @@ describe "Authentication pages" do
     end
 
     context "with valid information" do
-
-      before do
-        @user = create_test_user
-        fake_log_in @user
-      end
-
-      it{ should have_selector(
-        "title", :text => "#{ APPLICATION_NAME} | Rondningar")}
-      it{ should have_link( "Rondningar", :href => court_days_path)}
-      it{ should have_link( "Användare", :href => users_path)}
-      it{ should have_link( "Logga ut", :href => log_out_path)}
-      it{ should_not have_link( "Logga in", :href => log_in_path)}
-
-      describe "followed by log out" do
-        before{ click_link "Logga ut"}
-        it{ should have_link( "Logga in")}
-      end
+      USER_ROLES.each{ |role| test_log_in role}
     end
   end
 end

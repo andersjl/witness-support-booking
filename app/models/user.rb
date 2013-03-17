@@ -1,5 +1,7 @@
 class User < ActiveRecord::Base
 
+  class UserModelRoleError < StandardError; end
+
   attr_accessible :email, :name, :password, :password_confirmation
   has_secure_password
 
@@ -7,12 +9,11 @@ class User < ActiveRecord::Base
   before_save :create_remember_token
 
   validates :role,
-            :presence   => true,
-            :inclusion  => { :in => [ "disabled", "normal", "admin"]}
+            :presence   => true, :inclusion  => { :in => USER_ROLES}
   validates :email, 
             :presence   => { :message => "Mejladress saknas"},
             :uniqueness => { :case_sensitive => false,
-                             :message => "Adressen är redan använd"}
+                             :message => "Mejadressen är redan använd"}
   validates :name,
             :presence   => { :message => "Namn saknas"}
   validates :password,
@@ -47,24 +48,34 @@ class User < ActiveRecord::Base
   end
 
   def self.order_by_role_and_name
-    find( :all).sort do |u1, u2|
+    all.sort do |u1, u2|
       if u1.role == u2.role
         u1.name <=> u2.name
       else
-        case u1.role
-        when "disabled" then -1
-        when "normal"
-          if u2.role == "disabled" then 1 else -1 end
-        else 1
-        end
+        role_to_order( u1.role) <=> role_to_order( u2.role)
       end
     end
+  end
+
+  def self.valid_role?( role)
+    USER_ROLES.include? role
+  end
+
+  def self.role_to_order( role)
+    unless valid_role? role
+      raise UserModelRoleError.new( "unknown role \"#{ role}\"")
+    end
+    USER_ROLES.index role
+  end
+
+  def >( other_user)
+    self.class.role_to_order( role) >
+      self.class.role_to_order( other_user.role)
   end
 
   def create_remember_token
     self.remember_token = SecureRandom.hex
   end
   private :create_remember_token
-
 end
 

@@ -6,14 +6,13 @@
 <% end
    session_span = 2
    notes_span = 6 %>
-   <%= @xml_data %>
     <div id="court-days">
       <div class="row heading">
         <div class="offset1 span1">Datum</div>
         <div class="span<%= session_span %>">Förmiddag</div>
         <div class="span<%= session_span %>">Eftermiddag</div>
         <div class="span<%= notes_span %>">
-<% disabled = User.find :all, :conditions => [ "role = ?", "disabled"]
+<% disabled = User.where "role = ?", "disabled"
    if  disabled.count > 0 && current_user.admin? %>
           <%= link_to "#{ disabled.count} ny att aktivera", users_path,
                   :class => "disabled-user" %>

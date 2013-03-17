@@ -1,16 +1,16 @@
 <li id="user-<%= user.id %>">
   <%= link_to user.name, user %>
-  <% if current_user.admin? && !current_user?( user) %>
-    <% unless user.enabled? %>
+<% if admin? && current_user > user %>
+  <% unless user.enabled? %>
     | <%= link_to "Aktivera", enable_user_path( user),
                   :method => :put,
                   :data => { :confirm => "Aktivera #{ user.name}?"},
                   :class => "disabled-user" %>
-    <% end %>
+  <% end %>
     | <%= link_to "Sätt nytt lösenord", edit_user_path( user) %>
     | <%= link_to "Ta bort", user,
                   :method => :delete,
                   :data => { :confirm => "Ta bort #{ user.name}?"} %>
-  <% end %>
+<% end %>
 </li>
 

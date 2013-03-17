@@ -1,4 +1,3 @@
 describe "Simulate" do
-  it "admin use"
-  it "witness support use"
+  it "role game"
 end

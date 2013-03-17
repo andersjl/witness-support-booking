@@ -1,8 +1,8 @@
 class CourtDaysController < ApplicationController
+extend Authorization
 
-  before_filter :logged_in_user
-  before_filter :enabled_user
-  before_filter :admin_user, :only => :update
+  authorize :index, [ "normal", "admin"]
+  authorize :update, "admin"
 
   def index
     if params[ :start_date]
@@ -27,12 +27,12 @@ class CourtDaysController < ApplicationController
   end
 
   def update_or_destroy
-    updated = params_to_court_day
+    updated = params_to_court_day  # we never save updated ...
     if updated.something_to_do?
       @court_day.morning = updated.morning
       @court_day.afternoon = updated.afternoon
       @court_day.notes = updated.notes
-      @court_day.save
+      @court_day.save!             # we save @court_day instead!
     else
       @court_day.destroy
       @court_day = nil
@@ -41,7 +41,7 @@ class CourtDaysController < ApplicationController
 
   def create
     @court_day = params_to_court_day
-    @court_day.save if @court_day.something_to_do?
+    @court_day.save! if @court_day.something_to_do?
   end
 
   # params[ :id] is not the DB id, and there are dates in the field names
@@ -51,8 +51,8 @@ class CourtDaysController < ApplicationController
       :date => params[ :id],
       :morning => params[ "morning" + date],
       :afternoon => params[ "afternoon" + date],
-      :notes => params[ "notes" + date].blank? ? nil : params[ "notes" + date
-                                                             ].strip)
+      :notes => params[ "notes" + date].blank? ?
+                  nil : params[ "notes" + date].strip)
   end
 end
 

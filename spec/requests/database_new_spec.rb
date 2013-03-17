@@ -33,6 +33,10 @@ describe "Database load form" do
       xml_data = Database.new.all_data
       File.open( correct_xml, "w"){ |f| f.write( xml_data)}
       File.open( erronous_xml, "w"){ |f| f.write( xml_data + "<extra>")}
+      @orig_count = [ User, CourtDay, Booking].inject( { }) do |a, mdl|
+        a[ mdl] = mdl.count
+        a
+      end
       Booking.delete_all
       CourtDay.delete_all
       User.delete_all
@@ -41,6 +45,10 @@ describe "Database load form" do
     before do
       fake_log_in( create_test_user( :email => email2, :role => "admin",
                                      :password => email2))
+      @curr_count = [ User, CourtDay, Booking].inject( { }) do |a, mdl|
+        a[ mdl] = mdl.count
+        a
+      end
       visit new_database_path
     end
 
@@ -55,9 +63,10 @@ describe "Database load form" do
 
       it{ should have_content( "Inläsningen misslyckades")}
       context "database is intact" do
-        context( "User.count"){ it{ User.count.should == 1}}
-        context( "CourtDay.count"){ it{ CourtDay.count.should == 0}}
-        context( "Booking.count"){ it{ Booking.count.should == 0}}
+        [ User, CourtDay, Booking].each do |model|
+          context( "#{ model}.count"
+                 ){ specify{ model.count.should == @curr_count[ model]}}
+        end
       end
     end
 
@@ -103,26 +112,22 @@ describe "Database load form" do
 
       context "restored database" do
         let :users do
-          result = User.find( :all).sort{ |u1, u2| u1.name <=> u2.name}
+          result = User.all.sort{ |u1, u2| u1.name <=> u2.name}
           result.delete_if{ |u| [ email1, email2].include?( u.email)}
-        # puts result.collect{ |u| u.email}.inspect
           result
         end
-        let( :court_days){
-          result = CourtDay.find( :all)
-        # puts result.collect{ |u| u.date.to_s}.inspect
-          result
-        }  # date order
+        let( :court_days){ CourtDay.all}  # date order
 
-        context( "User.count"){ it{ User.count.should == 5}}
-        context( "CourtDay.count"){ it{ CourtDay.count.should == 3}}
-        context( "Booking.count"){ it{ Booking.count.should == 6}}
+        [ User, CourtDay, Booking].each do |model|
+          context( "#{ model}.count") do
+            specify{ model.count.should ==
+                              @orig_count[ model] + ((model == User) ? 1 : 0)}
+          end
+        end
 
         booking_schema.each do |user_ix, court_day_ix, session|
-          it{ 
-            # puts "#{ users.collect{ |u| u.email}.inspect}[ #{ user_ix - 1}]";
-            # puts "#{ court_days.collect{ |c| c.date.to_s}.inspect}[ #{ court_day_ix - 1}]"
-              users[ user_ix - 1].should be_booked( court_days[ court_day_ix - 1], session)}
+          it{ users[ user_ix - 1].
+                should be_booked( court_days[ court_day_ix - 1], session)}
         end
       end
     end
