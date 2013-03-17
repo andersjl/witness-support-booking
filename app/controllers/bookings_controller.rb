@@ -1,7 +1,9 @@
 class BookingsController < ApplicationController
 extend Authorization
 
-  authorize :destroy, "admin"
+  authorize :destroy, [ "admin", "master"] do |id, user|
+    Booking.find( id).user.court == user.court
+  end
 
   def destroy
     destroyed = Booking.find( params[ :id])

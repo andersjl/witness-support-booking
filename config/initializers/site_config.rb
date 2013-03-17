@@ -1,4 +1,4 @@
-USER_ROLES = [ "disabled", "normal", "admin"]
+USER_ROLES = [ "disabled", "normal", "admin", "master"]
 
 # court_days index submit values
 VALUE_SAVE             = "Spara"

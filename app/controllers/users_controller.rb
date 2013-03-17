@@ -1,32 +1,50 @@
 class UsersController < ApplicationController
 extend Authorization
 
-  authorize [ :index, :show], [ "normal", "admin"]
-  authorize [ :edit, :update], [ "disabled", "normal", "admin"] do |id, user|
-    user.id == id.to_i || user.admin?
+  authorize [ :index, :show], [ "normal", "admin", "master"]
+  authorize [ :edit, :update],
+            [ "disabled", "normal", "admin", "master"] do |id, user|
+    user.id == id.to_i || user.master? ||
+      (user.admin? && User.find( id).court == user.court)
   end
-  authorize [ :enable, :destroy], "admin" do |id, user|
-    affected_user = User.find( id)
-    affected_user != user && !affected_user.admin?
+  authorize [ :disable, :enable, :promote, :destroy],
+            [ "admin", "master"] do |id, user|
+    if user.id == id.to_i
+      false
+    else
+      affected_user = User.find id
+      (user.master? && !affected_user.master?) ||
+        (!affected_user.admin? && affected_user.court == user.court)
+    end
   end
 
   def new
     @user = User.new
+    @courts = Court.all
   end
  
   def create
+    court_id = params[ :user].delete( :court_id)
     @user = User.new( params[ :user])
+    @user.court_id = court_id
     if @user.save
       log_in @user
       flash[ :success] = "Välkommen #{ @user.name}!"
       redirect_to root_path
     else
+      @courts = Court.all
       render "new"
     end
   end
 
   def index
-    @users = User.order_by_role_and_name
+    if current_user.master?
+      @users =
+        Court.all.inject( [ ]){ |a, c| a += User.order_by_role_and_name( c)}
+    else
+      @users = User.order_by_role_and_name( current_user.court)
+      @court = current_user.court
+    end
   end
 
   def show
@@ -60,8 +78,15 @@ extend Authorization
     end
   end
 
+  def disable
+    update_role_do( "disabled"){ [ "deaktiverad", "deaktiveras"]}
+  end
   def enable
     update_role_do( "normal"){ [ "aktiverad", "aktiveras"]}
+  end
+  def promote
+    update_role_do( "admin"){
+      [ "aktiverad som administratör", "aktiveras som administratör"]}
   end
 
   def destroy

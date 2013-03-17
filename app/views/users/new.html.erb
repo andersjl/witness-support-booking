@@ -5,6 +5,9 @@
     <%= form_for( @user) do |f| %>
       <%= render :partial => "shared/error_messages",
                  :locals => { :model => @user} %>
+      <%= f.label :court_id, "Domstol" %>
+      <%= f.collection_select :court_id, @courts, :id, :name,
+                              :prompt => "Välj domstol" %>
       <%= f.label :name, "Namn" %>
       <%= f.text_field :name %>
       <%= f.label :email, "E-post"%>

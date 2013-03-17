@@ -5,7 +5,8 @@ describe UsersController do
     it_is_open :new, :create
     it_is_private :edit, :update
     it_requires_enabled :index, :show
-    it_requires_admin [ :enable, :put, :member], :destroy do
+    it_requires_admin [ :disable, :put, :member], [ :enable, :put, :member],
+                      [ :promote, :put, :member], :destroy do
       create_test_user.id
     end
   end

@@ -3,6 +3,13 @@
     <div class="container">
       <%= link_to "Vittnesstöd", root_path, :id => "logo" %>
       <nav>
+<% if logged_in? %>
+        <ul class="nav">
+          <li>
+            <%= link_to current_user.court.name, current_user.court.link %>
+          </li>
+        </ul>
+<% end %>
         <ul class="nav pull-right">
           <li><%= link_to "Start", root_path %></li>
           <li><%= link_to "Hjälp", help_path %></li>

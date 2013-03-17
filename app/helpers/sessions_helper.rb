@@ -12,6 +12,7 @@ module SessionsHelper
   def log_in( user)
     reset_session
     session[ :remember_token] = user.remember_token
+    cookies.permanent[ :court_id] = user.court.id
     @current_user = user
   end
 
@@ -30,6 +31,10 @@ module SessionsHelper
 
   def admin?
     current_user && current_user.admin?
+  end
+
+  def master?
+    current_user && current_user.master?
   end
 end
 

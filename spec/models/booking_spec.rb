@@ -44,6 +44,17 @@ describe "Booking model" do
       before{ @booking.session = 0}
       it{ should_not be_valid}
     end
+
+    context "when user and court_day have different courts" do
+      before do
+        @court_day = create_test_court_day :court => create_test_court(
+                                                       :name => "Other"),
+                                           :morning => 1, :afternoon => 2
+        @booking = @user.bookings.build :court_day_id => @court_day.id,
+                                        :session => :morning
+      end
+      it{ should_not be_valid}
+    end
   end
 
   describe "cascading" do

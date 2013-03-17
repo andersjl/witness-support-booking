@@ -9,13 +9,13 @@ class Booking < ActiveRecord::Base
   validates :session,
             :presence  => { :message => "Val för/eftermiddag saknas"},
             :inclusion => { :in => [ :morning, :afternoon]}
-  validate :not_overbooked
+  validate :not_overbooked, :within_one_court
 
   belongs_to :user
   belongs_to :court_day
 
   def inspect
-    "##{ user && user.email
+    "##{ user && user.court && user.court.name}##{ user && user.email
       }##{ court_day && court_day.date.to_s}##{ session}#"
   end
 
@@ -38,6 +38,14 @@ class Booking < ActiveRecord::Base
     if booked >= court_day.send( session)
       errors[ :base] <<
         "#{ court_day.inspect} är fullbokad #{ CourtDay.session_sv session}"
+    end
+  end
+
+  def within_one_court
+    return unless user && court_day  # handled by other validations
+    if user.court != court_day.court
+      errors[ :base] <<
+        "#{ court_day.inspect} och #{ user.inspect} tillhör olika domstolar"
     end
   end
 end

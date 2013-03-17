@@ -9,7 +9,7 @@ describe "Database load form" do
   context "before loading" do
 
     before do
-      fake_log_in( create_test_user( :email => email1, :role => "admin",
+      fake_log_in( create_test_user( :email => email1, :role => "master",
                                      :password => email1))
       visit new_database_path
     end
@@ -27,25 +27,27 @@ describe "Database load form" do
     let( :email2){ "second@admin"}
 
     before :all do
-      create_test_user( :email => email1, :role => "admin",
-                        :password => email1)
+      create_test_court :name => "Other"
+      create_test_user :email => email1, :role => "master",
+                       :password => email1
       create_test_bookings
       xml_data = Database.new.all_data
       File.open( correct_xml, "w"){ |f| f.write( xml_data)}
       File.open( erronous_xml, "w"){ |f| f.write( xml_data + "<extra>")}
-      @orig_count = [ User, CourtDay, Booking].inject( { }) do |a, mdl|
+      @orig_count = [ Court, User, CourtDay, Booking].inject( { }) do |a, mdl|
         a[ mdl] = mdl.count
         a
       end
       Booking.delete_all
       CourtDay.delete_all
       User.delete_all
+      Court.delete_all
     end
 
     before do
-      fake_log_in( create_test_user( :email => email2, :role => "admin",
+      fake_log_in( create_test_user( :email => email2, :role => "master",
                                      :password => email2))
-      @curr_count = [ User, CourtDay, Booking].inject( { }) do |a, mdl|
+      @curr_count = [ Court, User, CourtDay, Booking].inject( { }) do |a, mdl|
         a[ mdl] = mdl.count
         a
       end
@@ -63,7 +65,7 @@ describe "Database load form" do
 
       it{ should have_content( "Inläsningen misslyckades")}
       context "database is intact" do
-        [ User, CourtDay, Booking].each do |model|
+        [ Court, User, CourtDay, Booking].each do |model|
           context( "#{ model}.count"
                  ){ specify{ model.count.should == @curr_count[ model]}}
         end
@@ -79,30 +81,30 @@ describe "Database load form" do
 
       it{ should have_content( "Ny databas inläst")}
 
-      context "user that was admin when restoring" do
+      context "user that was master when restoring" do
 
         before do
-          @second_admin = User.find_by_email( email2)
-          @second_admin.password = email2
-          fake_log_in @second_admin
+          @second_master = User.find_by_email( email2)
+          @second_master.password = email2
+          fake_log_in @second_master
         end
 
-        it{ @second_admin.should be_admin}
+        it{ @second_master.should be_master}
         it "can log in with old password" do
           should have_selector( "title",
                    :text => "#{ APPLICATION_NAME} | Rondningar")
         end
       end
 
-      context "user that was admin when saving but not when restoring" do
+      context "user that was master when saving but not when restoring" do
 
         before do
-          @first_admin = User.find_by_email( email1)
-          @first_admin.password = email1
-          fake_log_in @first_admin
+          @first_master = User.find_by_email( email1)
+          @first_master.password = email1
+          fake_log_in @first_master
         end
 
-        it{ @first_admin.should_not be_enabled}
+        specify{ @first_master.should_not be_enabled}
 
         it "can log in with restored password" do
           should have_content(
@@ -112,13 +114,20 @@ describe "Database load form" do
 
       context "restored database" do
         let :users do
-          result = User.all.sort{ |u1, u2| u1.name <=> u2.name}
+          result = User.where( "court_id = ?",
+                               Court.find_by_name( "This Court")
+                             ).sort{ |u1, u2| u1.name <=> u2.name}
           result.delete_if{ |u| [ email1, email2].include?( u.email)}
           result
         end
-        let( :court_days){ CourtDay.all}  # date order
+        let( :court_days) do
+          result = CourtDay.where( "court_id = ?",  # date order
+                                   Court.find_by_name( "This Court"))
+          result.each{ |cd| cd.court}  # (sic!) some lazy eval problem???
+          result
+        end
 
-        [ User, CourtDay, Booking].each do |model|
+        [ Court, User, CourtDay, Booking].each do |model|
           context( "#{ model}.count") do
             specify{ model.count.should ==
                               @orig_count[ model] + ((model == User) ? 1 : 0)}

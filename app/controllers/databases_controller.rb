@@ -2,7 +2,7 @@
 class DatabasesController < ApplicationController
 extend Authorization
 
-  authorize [ :new, :create, :show], "admin"
+  authorize [ :new, :create, :show], "master"
 
   def new
     @database = Database.new
@@ -29,3 +29,4 @@ extend Authorization
               :filename => "#{ ALL_DATA_FILE_NAME}.xml"
   end
 end
+

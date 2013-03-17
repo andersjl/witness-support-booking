@@ -1,6 +1,7 @@
 WitnessSupportBooking::Application.routes.draw do
 
-  resources( :users){ member{ put :enable}}
+  resources :courts, :only => [ :create, :index, :edit, :update, :destroy]
+  resources( :users){ member{ put :disable; put :enable; put :promote}}
   resources :sessions, :only => [:new, :create, :destroy]
   # CourtDay business logic needs update-or-create( date), in which case PUT
   # is correct (idempotent!) and hence #update handles creation as well.

@@ -4,6 +4,9 @@
 <div class="row">
   <div class="span6 offset3">
     <%= form_for( :session, :url => sessions_path) do |f| %>
+      <%= f.label :court_id, "Domstol" %>
+      <%= f.collection_select :court_id, @courts, :id, :name,
+                              :prompt => "Välj domstol" %>
       <%= f.label :email, "E-post" %>
       <%= f.text_field :email %>
       <%= f.label :password, "Lösenord" %>

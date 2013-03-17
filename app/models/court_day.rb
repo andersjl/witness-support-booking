@@ -1,9 +1,13 @@
 
 class CourtDay < ActiveRecord::Base
 
-  attr_accessible :afternoon, :date, :morning, :notes
-  validates :date, :presence => { :message => "Datum saknas"},
-                   :uniqueness => { :message => "Datumet är redan använt"}
+  attr_accessible :afternoon, :court, :date, :morning, :notes
+  validates :court, :presence => { :message => "Domstol saknas"}
+  validates :date,
+            :presence => { :message => "Datum saknas"},
+            :uniqueness =>
+            { :scope => :court_id,
+              :message => "Datumet är redan använt för denna domstol"}
   validates :morning, :inclusion => { :in => 0 .. PARALLEL_SESSIONS_MAX}
   validates :afternoon, :inclusion => { :in => 0 .. PARALLEL_SESSIONS_MAX}
   validate :never_on_weekends
@@ -11,10 +15,11 @@ class CourtDay < ActiveRecord::Base
 
   default_scope :order => "court_days.date"
 
+  belongs_to :court
   has_many :bookings, :dependent => :destroy
 
   def inspect
-    "##{ date.to_s}##{ morning}##{ afternoon}#"
+    "##{ court && court.name}##{ date.to_s}##{ morning}##{ afternoon}#"
   end
 
   def morning_bookings
@@ -25,10 +30,10 @@ class CourtDay < ActiveRecord::Base
     bookings.where "session = 1"
   end
 
-  def self.page( first_monday)
+  def self.page( court, first_monday)
     defined_days =
-      where "date >= ? and date < ?",
-            first_monday, first_monday +  7 * WEEKS_P_PAGE
+      where [ "court_id = ? and date >= ? and date < ?",
+              court.id, first_monday, first_monday + 7 * WEEKS_P_PAGE]
     (5 * WEEKS_P_PAGE).times.collect do |n|
       weeks, days = n.divmod 5
       date = first_monday + 7 * weeks + days

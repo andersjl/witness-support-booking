@@ -6,6 +6,7 @@ describe "User model" do
 
   subject{ @user}
 
+  it{ should respond_to( :court)}
   it{ should respond_to( :name)}
   it{ should respond_to( :email)}
   it{ should respond_to( :password_digest)}
@@ -14,6 +15,7 @@ describe "User model" do
   it{ should respond_to( :remember_token)}
   it{ should respond_to( :role)}
   it{ should respond_to( :admin?)}
+  it{ should respond_to( :master?)}
   it{ should respond_to( :enabled?)}
   it{ should respond_to( :authenticate)}
   it{ should respond_to( :bookings)}
@@ -22,12 +24,32 @@ describe "User model" do
 
   it{ should be_valid}
   it{ should_not be_admin}
+  it{ should_not be_admin( court_this)}
+  it{ should_not be_admin( court_other)}
+  it{ should_not be_master}
 
   describe "accessible attributes" do
+
+    it "should not allow access to court" do
+      lambda{ User.new( :court => create_test_court)}.should raise_error(
+        ActiveModel::MassAssignmentSecurity::Error)
+    end    
+
     it "should not allow access to role" do
       lambda{ User.new( :role => "disabled")}.should raise_error(
         ActiveModel::MassAssignmentSecurity::Error)
     end    
+  end
+
+  context "with role attribute set to 'master'" do
+    before do
+      @user.role = "master"
+      @user.save!
+    end
+    it{ should be_admin}
+    it{ should be_admin( @user.court)}
+    it{ should be_admin( Court.find_by_name( "Other Court"))}
+    it{ should be_master}
   end
 
   context "with role attribute set to 'admin'" do
@@ -36,8 +58,10 @@ describe "User model" do
       @user.save!
     end
     it{ should be_admin}
+    it{ should be_admin( @user.court)}
+    it{ should_not be_admin( Court.find_by_name( "Other Court"))}
   end
- 
+
   context ".order_by_role_and_name" do
     before{
       [ lambda{ create_test_user :name => "a", :role => "disabled",
@@ -51,13 +75,24 @@ describe "User model" do
         lambda{ create_test_user :name => "a", :role => "admin",
                                  :email => "31"},
         lambda{ create_test_user :name => "z", :role => "admin",
-                                 :email => "32"}
+                                 :email => "32"},
+        lambda{ create_test_user :name => "a", :role => "master",
+                                 :email => "41"},
+        lambda{ create_test_user :name => "z", :role => "master",
+                                 :email => "42"}
       ].shuffle.each{ |creation| creation.call}}
-    specify{ User.order_by_role_and_name.should ==
-               User.find( :all, :order => "email")}
+    specify{ User.order_by_role_and_name( court_this).should ==
+               User.find( :all,
+                          :conditions => [ "court_id = ?", court_this.id],
+                          :order => "email")}
   end
 
   context "validation" do
+
+    context "when court is not present" do
+      before{ @user.court = nil}
+      it{ should_not be_valid}
+    end
 
     context "when name is not present" do
       before{ @user.name = " "}
@@ -73,6 +108,11 @@ describe "User model" do
       before{ @user_with_same_email =
                 create_test_user :email => @user.email.upcase}
       it{ should_not be_valid}
+      context "on another court" do
+        before{ @user_with_same_email.
+                  update_attribute :court, Court.find_by_name( "Other Court")}
+        it{ should be_valid}
+      end
     end
 
     context "when password is not present" do
@@ -122,13 +162,22 @@ describe "User model" do
       before{ @user.role = "admin"}
       it{ should be_enabled}
     end
+
+    context "when role is 'master'" do
+      before{ @user.role = "master"}
+      it{ should be_enabled}
+    end
   end
   
   describe "return value of authenticate method" do
 
     before do
       @user.save!
-      @found_user = User.find_by_email( @user.email)
+      @found_user =
+        User.find_by_court_id_and_email( @user.court.id, @user.email)
+      # in absence of the next line we get an error later that seems to
+      # indicate that @found_user.inspect evaluates court to nil
+      @found_user.court
     end
 
     context "with valid password" do

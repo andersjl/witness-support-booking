@@ -7,7 +7,7 @@ def it_is_open( *actions)
     context "allowed for unknown user:" do
       verify_reachable actions
     end
-    [ "disabled", "normal", "admin"].each do |role|
+    USER_ROLES.each do |role|
       context "allowed for #{ role} user:" do
         before{ @user = create_test_user :role => role}
         verify_reachable actions
@@ -62,10 +62,19 @@ def it_is_private( *actions)
         verify_reachable actions, false
       end
     end
-    context "allowed for admin:" do
+    context "protected from wrong court admin:" do
+      before{ @user = create_test_user(
+                        :name  => "Wrong Admin",
+                        :email => "admin.other.court@example.com",
+                        :court => court_other,
+                        :role  => "admin")}
+      verify_reachable actions, false
+    end
+    context "allowed for court admin:" do
       before{ @user = create_test_user(
                         :name  => "Court Admin",
                         :email => "admin.this.court@example.com",
+                        :court => User.find( @tested_member_id).court,
                         :role  => "admin")}
       verify_reachable actions
     end
@@ -93,9 +102,41 @@ def it_requires_admin( *actions)
         verify_reachable actions, false
       end
     end
-    context "allowed for admin:" do
+    context "protected from wrong court admin:" do
+      before do
+        if @tested_member_id_info == :cannot_test_other_court_admin
+          @user = :not_testable
+        else
+          @user = create_test_user(
+                          :court => create_test_court( :name => "Other"),
+                          :email => "admin@example.com", :role => "admin")
+        end
+      end
+      verify_reachable actions, false
+    end
+    context "allowed for court admin:" do
       before{ @user = create_test_user :email => "admin@example.com",
                                        :role => "admin"}
+      verify_reachable actions
+    end
+  end
+end
+
+def it_requires_master( *actions)
+  context "requires master" do
+    context "protected from unknown user:" do
+      verify_reachable actions, false
+    end
+    (USER_ROLES - [ "master"].each do |role|
+      context "protected from #{ role} user:" do
+        before{ @user = create_test_user :email => "#{ role}@example.com",
+                                         :role => role}
+        verify_reachable actions, false
+      end
+    end
+    context "allowed for master:" do
+      before{ @user = create_test_user :email => "admin@example.com",
+                                       :role => "master"}
       verify_reachable actions
     end
   end

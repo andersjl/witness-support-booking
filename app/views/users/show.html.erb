@@ -14,8 +14,11 @@
     </section>
 <%   end %>
 <% end %>
+<% if current_user.master? %>
+    <section><%= link_to "Domstolar", courts_path %></section>
+<% end %>
   </aside>
 </div>
-<% if current_user.admin? && current_user == @user %>
+<% if current_user.master? && current_user == @user %>
 <%= render :partial => "shared/xml_dump_n_restore" %>
 <% end %>

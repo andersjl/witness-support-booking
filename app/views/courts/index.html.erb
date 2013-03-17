@@ -1,0 +1,18 @@
+<% provide( :title, "Domstolar") %>
+<h1>Domstolar</h1>
+
+<%= render :partial => "shared/error_messages",
+           :locals => { :model => @new_court} %>
+<ul class="index">
+  <%= render @courts %>
+  <li id="court-new">
+    <%= form_for @new_court, :html => { :class => "form-inline"} do |f| %> 
+      <%= f.label :name, "Skapa ny domstol" %>
+      <%= f.text_field :name %>
+      <%= f.label :link, "Länk till hemsida" %>
+      <%= f.text_field :link %>
+      <%= f.submit "Spara" %>
+    <% end %>
+  </li>
+</ul>
+

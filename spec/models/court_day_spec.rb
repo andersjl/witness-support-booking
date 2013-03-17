@@ -9,10 +9,16 @@ describe "CourtDay model" do
   it{ should respond_to( :morning)}
   it{ should respond_to( :afternoon)}
   it{ should respond_to( :notes)}
+  it{ should respond_to( :court)}
   it{ should respond_to( :bookings)}
   it{ should respond_to( :morning_bookings)}
   it{ should respond_to( :afternoon_bookings)}
   it{ should be_valid}
+
+  context "when court is missing" do
+    before{ @court_day.court = nil}
+    it{ should_not be_valid}
+  end
 
   context "when date is missing" do
     before{ @court_day.date = nil}
@@ -23,6 +29,11 @@ describe "CourtDay model" do
     before{ @other_court_day =
               create_test_court_day :date => @court_day.date, :morning => 1}
     it{ should_not be_valid}
+    context "on another court" do
+      before{ @other_court_day.
+                update_attribute :court, Court.create!( :name => "Other")}
+      it{ should be_valid}
+    end
   end
 
   context "when morning is missing" do
@@ -69,7 +80,9 @@ describe "CourtDay model" do
       @court_day.save!
       create_test_court_day :date => Date.tomorrow
     end
-    it{ CourtDay.first.should == @court_day}
+    it{ CourtDay.find( :first,
+                       :conditions => ["court_id = ?", court_this.id]
+                     ).should == @court_day}
   end
 
   [ :morning, :afternoon].each do |session|
@@ -89,6 +102,15 @@ describe "CourtDay model" do
         expect{ @court_day.destroy}.to change( Booking, :count).by( -1)
       end
     end
+  end
+
+  context "when court is destroyed" do
+    before do
+      @court_day.save!
+      @court_day.court.destroy
+    end
+    specify{ expect{ @court_day.reload
+                   }.to raise_error ActiveRecord::RecordNotFound}
   end
 end
 

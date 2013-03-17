@@ -1,4 +1,7 @@
 <li id="user-<%= user.id %>">
+<% if master? %>
+  <%= link_to user.court.name, user.court.link %> |
+<% end %>
   <%= link_to user.name, user %>
 <% if admin? && current_user > user %>
   <% unless user.enabled? %>
@@ -11,6 +14,18 @@
     | <%= link_to "Ta bort", user,
                   :method => :delete,
                   :data => { :confirm => "Ta bort #{ user.name}?"} %>
+  <% if user.enabled? %>
+    | <%= link_to "Deaktivera", disable_user_path( user),
+                  :method => :put,
+                  :data => { :confirm => "Deaktivera #{ user.name}?"} %>
+  <% end %>
+  <% if master? && !user.admin? %>
+    | <%= link_to "Bemyndiga", promote_user_path( user),
+                  :method => :put,
+                  :data => { :confirm => "Bemyndiga #{ user.name} att" +
+                                         " administrera vittnesstöd vid #{
+                                         user.court.name}?"} %>
+  <% end %>
 <% end %>
 </li>
 

@@ -1,5 +1,5 @@
 <% provide( :title, 'Användare') %>
-<h1>Alla användare</h1>
+<h1>Alla användare<%= @court && " vid #{ @court.name}" %></h1>
 
 <ul class="index"><%= render @users %></ul>
 

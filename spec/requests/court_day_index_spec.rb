@@ -138,7 +138,7 @@ describe "CourtDay index" do
       end
     end
   end
- 
+
   shared_examples_for "any changed day" do
     # @morning, @afternoon, @notes, @first_line,
     # @changed_date, @changed_id, @changed_obj,
@@ -176,7 +176,7 @@ describe "CourtDay index" do
             should have_selector( "textarea")
             should have_selector(
               "input[value='#{ VALUE_SAVE} #{ day_of_week( date)}']")
-            court_day = CourtDay.find_by_date date
+            court_day = CourtDay.find_by_court_id_and_date( court_this, date)
             court_day && court_day.bookings.each do |booking|
               should have_link( booking.user.name,
                                 :href => booking_path( booking))
@@ -197,7 +197,8 @@ describe "CourtDay index" do
           fill_in( "notes-#{ date}", :with => @notes)
           click_button( "#{ VALUE_SAVE} #{ day_of_week( date)}")
         end
-        @changed_obj = CourtDay.find_by_date date
+        @changed_obj =
+          CourtDay.find_by_court_id_and_date( @admin.court.id, date)
       end
 
       before do
@@ -417,7 +418,7 @@ describe "CourtDay index" do
             should have_selector( "input[value='#{ @value_book}']")}}
         end
       end
- 
+
       context "overbooked" do
 
         before do
@@ -455,12 +456,36 @@ describe "CourtDay index" do
     end
   end
 
+  context "other court user" do
+    before do
+      other = User.find_by_court_id court_other.id
+      unless CourtDay.find_by_court_id_and_date court_other.id, @cd.date
+        create_test_court_day :court => court_other, :date => @cd.date,
+                              :notes => "Other notes"
+      end
+      fake_log_in other, "otheru"
+    end
+    it{ within( :id, @cd_id){ should_not have_content( @cd.notes)}}
+  end
+
   context "when admin" do
 
     before do
       @admin = create_test_user( :name => "Admin",
                                  :email => "admin@exempel.se",
                                  :role => "admin")
+      fake_log_in @admin
+    end
+
+    it_behaves_like "any court admin"
+  end
+
+  context "when master" do
+
+    before do
+      @admin = create_test_user( :name => "Master",
+                                 :email => "master@exempel.se",
+                                 :role => "master")
       fake_log_in @admin
     end
 

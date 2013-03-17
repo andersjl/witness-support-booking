@@ -2,6 +2,11 @@ require "spec_helper"
 
 describe "User pages" do
 
+  before do
+    @court = court_this
+    @other_court = court_other
+  end
+
   subject{ page}
 
   describe "sign_up process" do
@@ -22,6 +27,7 @@ describe "User pages" do
     context "with valid information" do
 
       before do
+        select  @court.name,     :from => "user_court_id"
         fill_in "user_name",     :with => "Example User"
         fill_in "user_email",    :with => "user@example.com"
         fill_in "user_password", :with => "foobar"
@@ -35,7 +41,7 @@ describe "User pages" do
       context "after saving the user" do
         before do
           click_button submit
-          @user = User.find_by_email( "user@example.com")
+          @user = User.find_by_court_id_and_email( @court, "user@example.com")
         end
         it{ @user.should_not be_enabled}
         it{ should_not have_selector(
@@ -44,6 +50,7 @@ describe "User pages" do
     "Du kommer att få ett mejl till user@example.com när du kan börja boka!")}
         it{ should have_selector( "div.alert.alert-success",
                                   :text => "Välkommen #{ @user.name}")}
+        it{ should have_link( @user.court.name, :href => @user.court.link)}
         it{ should_not have_link( "Rondningar")}
         it{ should_not have_link( "Användare")}
         it{ should have_link( "Logga ut", :href => log_out_path)}
@@ -53,7 +60,7 @@ describe "User pages" do
         context "when enabled by admin" do
 
           before do
-            @admin = create_test_user :email => "ad@min",
+            @admin = create_test_user :court => @court, :email => "ad@min",
                                       :role => "admin", :name => "Admin"
             fake_log_in @admin
             visit users_path
@@ -100,6 +107,17 @@ describe "User pages" do
                                          }.to change( User, :count).by( -1)}
       end
 
+      it{ within( "li#user-#{ @disabl.id}"
+                ){ should_not have_content( "Deaktivera")}}
+      it{ within( "li#user-#{ @normal.id}"){ should have_link(
+            "Deaktivera", :href => disable_user_path( @normal))}}
+      it{ within( "li#user-#{ @admin.id}"
+                ){ should_not have_content( "Deaktivera")}}
+      it "disable a normal user" do
+        within( "li#user-#{ @normal.id}"){ click_link( "Deaktivera")}
+        @normal.reload.role.should == "disabled"
+      end
+
       it{ within( "li#user-#{ @disabl.id}"){ should have_link(
             "Aktivera", :href => enable_user_path( @disabl))}}
       it{ within( "li#user-#{ @normal.id}"
@@ -113,14 +131,15 @@ describe "User pages" do
     end
 
     before do
-      @user = create_test_user( :count => 3).choice
+      @user = create_test_user( :court => @court, :count => 3).choice
       fake_log_in @user
       visit users_path
     end
 
     it{ should have_selector(
       "title", :text => "#{ APPLICATION_NAME} | Användare")}
-    it{ should have_selector( "h1", :text => "Alla användare")}
+    it{ should have_selector "h1",
+            :text => "Alla användare vid #{ @user.court.name}"}
     it{ should_not have_content( "Sätt nytt lösenord")}
     it{ should_not have_content( "Ta bort")}
     it{ should_not have_content( "Dektivera")}
@@ -129,7 +148,8 @@ describe "User pages" do
 
     context "when clicking a user" do
       before do
-        @other = User.where( "id != ?", @user.id).choice
+        @other = User.where( "id != ? and court_id = ?",
+                             @user.id, @user.court.id).choice
         click_link( @other.name)
       end
       it{ should have_selector(
@@ -137,7 +157,7 @@ describe "User pages" do
     end
  
     it "lists each user with link" do
-      User.order_by_role_and_name.each do |user|
+      User.order_by_role_and_name( @court).each do |user|
         page.should have_selector( "li", :text => user.name)
         page.should have_link( user.name)
         page.should_not have_content( user.email)
@@ -147,16 +167,84 @@ describe "User pages" do
     context "as admin" do
 
       before do
-        @disabl = create_test_user :email => "dis@abl",
+        @disabl = create_test_user :court => @court,    :email => "dis@abl",
                                    :name => "Disabled", :role  => "disabled"
         @normal = @user
-        @admin  = create_test_user :email => "ad@min",
+        @admin  = create_test_user :court => @court,    :email => "ad@min",
                                    :name => "Admin",    :role  => "admin"
         fake_log_in @admin
         visit users_path
       end
 
       it_behaves_like "any admin"
+
+      it{ should_not have_content( "Bemyndiga")}
+    end
+
+    context "as master" do
+      before do
+        @disabl = create_test_user :court => @court,    :email => "dis@abl",
+                                   :name => "Disabled", :role  => "disabled"
+        @normal = @user
+        @courta = create_test_user :court => @court,    :email => "ad@min",
+                                   :name => "Court A",  :role  => "admin"
+        @admin  = create_test_user :court => @other_court, :email => "m@st",
+                                   :name => "Master",   :role  => "master"
+
+        fake_log_in @admin  # has role "master"!
+        visit users_path
+      end
+
+      it{ should have_selector "h1", :text => "Alla användare"}
+
+      it_behaves_like "any admin"
+
+      [ "disabl", "normal", "courta", "admin"].each do |u|
+        it "has link to @#{ u}.court" do
+          user = eval "@#{ u}"
+          court = user.court
+          within( "li#user-#{ user.id}"
+                ){ should have_link( court.name, :href => court.link)}
+        end
+      end
+
+      it{ within( "li#user-#{ @courta.id}"
+                ){ should have_link( "Sätt nytt lösenord",
+                                     :href => edit_user_path( @courta))}}
+
+      it{ within( "li#user-#{ @courta.id}"){
+            should have_link( "Ta bort", :href => user_path( @courta))}}
+      it "delete a court admin" do
+        within( "li#user-#{ @courta.id}"){ expect{ click_link( "Ta bort")
+                                         }.to change( User, :count).by( -1)}
+      end
+
+      it{ within( "li#user-#{ @courta.id}"){ should have_link(
+            "Deaktivera", :href => disable_user_path( @courta))}}
+      it "disable a court admin" do
+        within( "li#user-#{ @courta.id}"){ click_link( "Deaktivera")}
+        @courta.reload.role.should == "disabled"
+      end
+
+      it{ within( "li#user-#{ @courta.id}"
+                ){ should_not have_content( "Aktivera")}}
+
+      it{ within( "li#user-#{ @disabl.id}"){ should have_link( "Bemyndiga",
+            :href => promote_user_path( @disabl))}}
+      it{ within( "li#user-#{ @normal.id}"){ should have_link( "Bemyndiga",
+            :href => promote_user_path( @normal))}}
+      it{ within( "li#user-#{ @courta.id}"
+                ){ should_not have_content( "Bemyndiga")}}
+      it{ within( "li#user-#{ @admin.id}"
+                ){ should_not have_content( "Bemyndiga")}}
+      it "promote a disabled user" do
+        within( "li#user-#{ @disabl.id}"){ click_link( "Bemyndiga")}
+        @disabl.reload.role.should == "admin"
+      end
+      it "promote a normal user" do
+        within( "li#user-#{ @normal.id}"){ click_link( "Bemyndiga")}
+        @normal.reload.role.should == "admin"
+      end
     end
   end
 
@@ -184,7 +272,8 @@ describe "User pages" do
 
     context "other user" do
       before do
-        @other = create_test_user :name => "Other", :email => "ot@her"
+        @other = create_test_user :court => @court, :name => "Other",
+                                  :email => "ot@her"
         @shown = @other
         visit user_path( @other)
       end
@@ -196,7 +285,7 @@ describe "User pages" do
     context "admin" do
 
       before do
-        @admin = create_test_user :name => "Ad Min",
+        @admin = create_test_user :court => @court, :name => "Ad Min",
                                   :email => "ad@min", :role => "admin"
         fake_log_in @admin
         visit user_path( @admin)
@@ -206,10 +295,7 @@ describe "User pages" do
         before{ @shown = @admin}
         it_behaves_like "viewing any user"
         it{ should have_content( @admin.email)}
-        it{ should have_link "Läs ut hela databasen till en fil", 
-                             :href => database_path}
-        it{ should have_link "RADERA HELA DATABASEN och läs in en fil",
-                             :href => new_database_path}
+        it{ should_not have_content( "en fil")}
       end
 
       context "viewing other" do
@@ -222,6 +308,38 @@ describe "User pages" do
       # below is not a requirement?
       # it{ should have_content( @shown.email)}
       # it{ should_not have_content( @shown.email)}
+      end
+    end
+
+    context "master" do
+
+      before do
+        @admin = create_test_user :court => @court, :name => "Ad Min",
+                                  :email => "ad@min", :role => "admin"
+        @master = create_test_user :court => court_other, :name => "Master",
+                                   :email => "ma@ster", :role => "master"
+        fake_log_in @master
+        visit user_path( @master)
+      end
+
+      context "viewing self" do
+        before{ @shown = @master}
+        it_behaves_like "viewing any user"
+        it{ should have_content @master.email}
+        it{ should have_link "Domstolar", :href => courts_path}
+        it{ should have_link "Läs ut hela databasen till en fil", 
+                             :href => database_path}
+        it{ should have_link "RADERA HELA DATABASEN och läs in en fil",
+                             :href => new_database_path}
+      end
+
+      context "viewing other" do
+        before do
+          @shown = User.where( "role != ?", "master").choice
+          visit user_path( @shown)
+        end
+        it_behaves_like "viewing any user"
+        it{ should_not have_content( "en fil")}
       end
 
       context "saving database" do
@@ -239,7 +357,7 @@ describe "User pages" do
     def self.admin_examples
       # @editor, @edited, @new_email, @new_name, @new_pw
 
-      context "admin" do
+      context "court admin" do
 
         before do
           visit edit_user_path( @edited)
@@ -250,6 +368,7 @@ describe "User pages" do
         context "changing other attributes" do
 
           before do
+            @old_court_id = @edited.court.id
             @old_email    = @edited.email
             @old_name     = @edited.name
             fill_in "user_email",                 :with => @new_email
@@ -260,6 +379,7 @@ describe "User pages" do
             @edited.reload
           end
 
+          specify{ @edited.court.id.should  == @old_court_id}
           specify{ @edited.email.should     == @old_email}
           specify{ @edited.name.should      == @old_name}
         end
@@ -267,6 +387,7 @@ describe "User pages" do
         context "changing password" do
 
           before do
+            @old_court_id = @edited.court.id
             @old_email    = @edited.email
             @old_name     = @edited.name
             @old_pw       = @edited.password
@@ -280,11 +401,12 @@ describe "User pages" do
             "title", :text => "#{ APPLICATION_NAME} | Användare")}
           it{ within( "div.alert.alert-success"
                     ){ should have_content( "Lösenordet ändrat")}}
-          specify "still logged in as admin" do
+          specify "still logged in as court admin" do
             click_link( @editor.name)
             should have_content( @editor.email)
           end
           it_behaves_like "password change"
+          specify{ @edited.court.id.should  == @old_court_id}
           specify{ @edited.email.should     == @old_email}
           specify{ @edited.name.should      == @old_name}
         end
@@ -292,7 +414,7 @@ describe "User pages" do
     end
 
     before do
-      @user = create_test_user
+      @user = create_test_user :court => @court
       @old_pw = @user.password
       @new_name = "Nytt Namn"
       @new_email = "ny@mejl"
@@ -347,6 +469,19 @@ describe "User pages" do
         it{ should have_selector( "div.alert.alert-error")}
       end
 
+      describe "email collision but different court" do
+        before do
+          other = create_test_user :court => court_other,
+                                   :email => @new_email
+          fill_in "user_email",                 :with => @new_email
+          fill_in "user_name",                  :with => @new_name
+          fill_in "user_password",              :with => @new_pw
+          fill_in "user_password_confirmation", :with => @new_pw
+          click_button "Spara ändringar"
+        end
+        it{ should_not have_selector( "div.alert.alert-error")}
+      end
+
       describe "with valid information" do
 
         before do
@@ -373,7 +508,7 @@ describe "User pages" do
     context "admin" do
 
       before do
-        @admin = create_test_user :role => "admin",
+        @admin = create_test_user :court => @court, :role => "admin",
                                   :name => "Admin", :email => "ad@min"
         fake_log_in @admin
         @editor = @admin
@@ -381,6 +516,39 @@ describe "User pages" do
       end
 
       admin_examples
+
+      context "trying to edit user on other court" do
+        before do
+          @other_user = create_test_user( :court => court_other, :count => 3
+                                        ).choice
+          visit edit_user_path @other_user
+        end
+        it{ should_not have_selector( "h1", :text => @other_user.name)}
+      end
+    end
+
+    context "master" do
+
+      before do
+        @master = create_test_user :court => @court, :email => "ma@ster",
+                                   :name => "Master", :role => "master"
+        fake_log_in @master
+        @editor = @master
+      end
+
+      context "editing user at own court" do
+        before{ @edited = @user}
+        admin_examples
+      end
+
+      context "editing user on other court" do
+        before do
+          @edited = create_test_user( :court => court_other, :count => 3
+                                    ).choice
+          @old_pw = @edited.password
+        end
+        admin_examples
+      end
     end
   end
 end

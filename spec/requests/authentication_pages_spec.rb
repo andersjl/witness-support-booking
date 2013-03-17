@@ -19,11 +19,13 @@ describe "Authentication pages" do
       context role do
 
         before do
-          @user = create_test_user :email => "#{ role}@example.com",
+          @user = create_test_user :court => Court.find_by_name( "Domstol 1"),
+                                   :email => "#{ role}@example.com",
                                    :name => role.capitalize,
                                    :role => role,
                                    :password => "vittne"
           visit log_in_path
+          select "Domstol 1", :from => "session_court_id"
           fill_in "session_email", :with => "#{ role}@example.com"
           fill_in "session_password", :with => "vittne"
           click_button "Logga in"
@@ -33,6 +35,7 @@ describe "Authentication pages" do
           it{ should have_selector(
             "title", :text => "#{ APPLICATION_NAME} | Rondningar")}
         end
+        it{ should have_link( @user.court.name, :href => @user.court.link)}
         it{ should have_link( "Logga ut", :href => log_out_path)}
         it{ should_not have_link( "Logga in", :href => log_in_path)}
 
@@ -57,6 +60,7 @@ describe "Authentication pages" do
     end
 
     context "with valid information" do
+      before{ create_test_court :name => "Domstol", :count => 3}
       USER_ROLES.each{ |role| test_log_in role}
     end
   end

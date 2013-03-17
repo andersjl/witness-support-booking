@@ -8,12 +8,15 @@ class User < ActiveRecord::Base
   before_save { |user| user.email = email.downcase}
   before_save :create_remember_token
 
+  validates :court,
+            :presence   => { :message => "Domstol saknas"}
   validates :role,
             :presence   => true, :inclusion  => { :in => USER_ROLES}
   validates :email, 
             :presence   => { :message => "Mejladress saknas"},
-            :uniqueness => { :case_sensitive => false,
-                             :message => "Mejadressen är redan använd"}
+            :uniqueness => { :scope => :court_id, :case_sensitive => false,
+                             :message =>
+                             "Mejladressen är redan använd vid denna domstol"}
   validates :name,
             :presence   => { :message => "Namn saknas"}
   validates :password,
@@ -23,15 +26,20 @@ class User < ActiveRecord::Base
   validates :password_confirmation,
             :presence   => { :message => "Bekräftelse av lösenord saknas"}
 
+  belongs_to :court
   has_many :bookings, :dependent => :destroy
   has_many :court_days, :through => :bookings
 
   def inspect
-    "##{ name}##{ email}##{ role}#"
+    "##{ court && court.name}##{ name}##{ email}##{ role}#"
   end
 
-  def admin?
-    role == "admin"
+  def admin?( court = nil)
+    role == "master" || (role == "admin" && (!court || self.court == court))
+  end
+
+  def master?
+    role == "master"
   end
 
   def enabled?
@@ -47,8 +55,8 @@ class User < ActiveRecord::Base
       court_day.id, Booking.session_to_attribute( session))
   end
 
-  def self.order_by_role_and_name
-    all.sort do |u1, u2|
+  def self.order_by_role_and_name( court)
+    where( "court_id = ?", court.id).sort do |u1, u2|
       if u1.role == u2.role
         u1.name <=> u2.name
       else
