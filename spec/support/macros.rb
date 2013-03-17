@@ -1,7 +1,7 @@
 # Authorization tests ========================================================
 # Each action is a method symbol, i.e. :index.  The request used is inferred
 # from the method.
- 
+
 def it_is_open( *actions)
   context "requires no login" do
     context "allowed for unknown user:" do
@@ -127,7 +127,7 @@ def it_requires_master( *actions)
     context "protected from unknown user:" do
       verify_reachable actions, false
     end
-    (USER_ROLES - [ "master"].each do |role|
+    (USER_ROLES - [ "master"]).each do |role|
       context "protected from #{ role} user:" do
         before{ @user = create_test_user :email => "#{ role}@example.com",
                                          :role => role}
@@ -179,7 +179,7 @@ def verify_reachable( actions, reachable = true)
     end
   end
 end
- 
+
 def verify_reachable_trigger( action, method, target)
   if target == :collection
     send method, action, { },

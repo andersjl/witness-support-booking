@@ -9,6 +9,7 @@ class CreateCourts < ActiveRecord::Migration
       t.timestamps
     end
     add_index :courts, :name, :unique => true
+    court_default = Court.create! :name => "Default"
 
     change_table :bookings do |t|
       t.remove_index [ :court_day_id, :user_id, :session]
@@ -24,7 +25,7 @@ class CreateCourts < ActiveRecord::Migration
       t.index :date  # no longer unique
       t.index [ :court_id, :date], :unique => true
       CourtDay.reset_column_information
-      CourtDay.all.each{ |cd| cd.update_attribute :court_id, Court.default.id}
+      CourtDay.all.each{ |cd| cd.update_attribute :court_id, court_default.id}
       t.change :date, :date, :null => false
       t.change :morning, :integer, :null => false
       t.change :afternoon, :integer, :null => false
@@ -37,7 +38,10 @@ class CreateCourts < ActiveRecord::Migration
       t.index :email  # no longer unique
       t.index [ :court_id, :email], :unique => true
       User.reset_column_information
-      User.all.each{ |u| u.update_attribute :court_id, Court.default.id}
+      User.all.each do |u|
+        u.update_attribute :court_id, court_default.id
+        u.update_attribute( :role, "master") if u.role == "admin"
+      end
       t.change :name, :string, :null => false
       t.change :email, :string, :null => false
       t.change :court_id, :integer, :null => false

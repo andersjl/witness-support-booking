@@ -10,7 +10,7 @@ namespace :db do
     puts "==  Create courts ============================================================"
     COURT_COUNT.times{ |c| court = Court.create! :name => "Domstol #{ c + 1}"}
     puts "  #{ COURT_COUNT} courts created"
-    
+
     puts "==  Create users ============================================================="
     master = User.new :name => "Webbmaster",
                       :email => "master@example.com",

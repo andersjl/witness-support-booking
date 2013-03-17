@@ -168,7 +168,7 @@ describe "User model" do
       it{ should be_enabled}
     end
   end
-  
+
   describe "return value of authenticate method" do
 
     before do

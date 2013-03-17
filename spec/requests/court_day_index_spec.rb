@@ -185,7 +185,7 @@ describe "CourtDay index" do
         end
       end
     end
-    
+
     context "changing and saving" do
 
       def change( date)

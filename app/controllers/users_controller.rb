@@ -22,7 +22,7 @@ extend Authorization
     @user = User.new
     @courts = Court.all
   end
- 
+
   def create
     court_id = params[ :user].delete( :court_id)
     @user = User.new( params[ :user])

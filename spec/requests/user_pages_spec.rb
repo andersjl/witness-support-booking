@@ -66,7 +66,7 @@ describe "User pages" do
             visit users_path
             within( "li#user-#{ @user.id}"){ click_link( "Aktivera")}
           end
-          
+
           it{ @user.reload.should be_enabled}
           it "should send an email to the enabled user"
 
@@ -82,7 +82,7 @@ describe "User pages" do
   end
 
   describe "index" do
-    
+
     shared_examples_for "any admin" do  # @disabl, @normal, @admin
 
       it{ within( "li#user-#{ @disabl.id}"
@@ -155,7 +155,7 @@ describe "User pages" do
       it{ should have_selector(
             "title", :text => "#{ APPLICATION_NAME} | #{ @other.name}")}
     end
- 
+
     it "lists each user with link" do
       User.order_by_role_and_name( @court).each do |user|
         page.should have_selector( "li", :text => user.name)
@@ -353,7 +353,7 @@ describe "User pages" do
   end
 
   describe "edit" do
- 
+
     def self.admin_examples
       # @editor, @edited, @new_email, @new_name, @new_pw
 
@@ -456,7 +456,7 @@ describe "User pages" do
         before{ click_button "Spara ändringar"}
         it{ should have_selector( "div.alert.alert-error")}
       end
- 
+
       describe "email collision" do
         before do
           create_test_user :email => @new_email

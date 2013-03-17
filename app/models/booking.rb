@@ -27,7 +27,7 @@ class Booking < ActiveRecord::Base
   def session=( s)
     write_attribute :session, self.class.session_to_attribute( s)
   end
-  
+
   def self.session_to_attribute( s)
     case s; when :morning then 0; when :afternoon then 1 end
   end

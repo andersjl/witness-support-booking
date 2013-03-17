@@ -24,7 +24,7 @@ module SessionsHelper
   def logged_in?
     !current_user.nil?
   end
-  
+
   def enabled?
     current_user && current_user.enabled?
   end

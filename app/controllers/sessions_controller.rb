@@ -1,7 +1,15 @@
 class SessionsController < ApplicationController
 
+  class Session
+    attr_reader :court_id, :email
+    def initialize( court_id)
+      @court_id = court_id
+    end
+  end
+
   def new
     @courts = Court.all
+    @session = Session.new cookies[ :court_id]
   end
 
   def create

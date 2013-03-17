@@ -133,7 +133,7 @@ include AllDataDefs
   def end_file( tag_name)
     expect( tag_name, "no start tag after db_dump end tag")
   end
-  
+
   def characters( str)
     @value += str if @state == :read_attr
   end
