@@ -4,8 +4,8 @@
 <%= render :partial => "shared/error_messages",
            :locals => { :model => @court_day} %>
 <% end
-   session_span = 2
-   notes_span = 6 %>
+   session_span = 3
+   notes_span = 4 %>
     <div id="court-days">
       <div class="row heading">
         <div class="offset1 span1">Datum</div>
@@ -28,8 +28,6 @@
                                        user_path( current_user) %>
       <div class="row court-day<%= ix == @court_days.count - 1 ? ' last' : ''
                             %>" id="court-day-<%= date %>">
-        <div class="span1 weekday"><%= day_of_week court_day.date %></div>
-        <div class="span1"><%= date %></div>
 <%   if too_late %>
 <%= render :partial => "court_days/data_cols",
            :locals  => { :court_day => court_day,

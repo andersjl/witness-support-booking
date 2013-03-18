@@ -1,7 +1,15 @@
-<% offset = 0
-   date = court_day.date
+<% date = court_day.date
    admin = current_user.admin?
    too_late = court_day.date < Date.today
+   if admin && !too_late %>
+        <div class="span1">
+          <%= submit_tag( "#{ VALUE_SAVE} #{ day_of_week date}") %>
+        </div>
+<% else %>
+        <div class="span1 weekday"><%= day_of_week date %></div>
+<% end %>
+        <div class="span1"><%= date %></div>
+<% offset = 0
    [ :morning, :afternoon].each do |session|
      parallel = court_day.send( session)
      if (!admin || too_late) && parallel == 0
@@ -88,18 +96,10 @@
    if admin && !too_late
      # the following is to prevent browser automatic fill-in
      notes = court_day.notes.blank? ? " " : court_day.notes %>
-          <div class="span<%= notes_span - 1 %>">
+          <div class="span<%= notes_span %>">
             <div class="row">
-              <div class="span<%= notes_span - 1 %>">
+              <div class="span<%= notes_span %>">
                 <%= text_area_tag "notes-#{ date}", notes %>
-              </div>
-            </div>
-          </div>
-          <div class="span1">
-            <div class="row">
-              <div class="span1">
-                <%= submit_tag(
-                      "#{ VALUE_SAVE} #{ day_of_week court_day.date}") %>
               </div>
             </div>
           </div>

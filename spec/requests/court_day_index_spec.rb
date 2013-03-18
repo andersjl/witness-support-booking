@@ -91,7 +91,6 @@ describe "CourtDay index" do
       it_behaves_like "any week"
     end
 
-    it{ within( :id, @cd_id){ should have_content( day_of_week( @cd.date))}}
     it{ within( :id, @cd_id){ should have_content( @cd.date)}}
     it{ within( :id, "#{ @cd_id}-afternoon"
               ){ should have_content( @booked_user.name)}}
@@ -339,6 +338,7 @@ describe "CourtDay index" do
     end
 
     it_behaves_like "any user"
+    it{ within( :id, @cd_id){ should have_content( day_of_week( @cd.date))}}
     it_behaves_like "unbooked"
 
     context "when there are disabled users" do
