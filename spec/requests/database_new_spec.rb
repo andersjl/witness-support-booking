@@ -4,13 +4,13 @@ describe "Database load form" do
 
   subject{ page}
 
-  let( :email1){ "first@admin"}
+  let( :email_m1){ "first@admin"}
 
   context "before loading" do
 
     before do
-      fake_log_in( create_test_user( :email => email1, :role => "master",
-                                     :password => email1))
+      fake_log_in( create_test_user( :email => email_m1, :role => "master",
+                                     :password => email_m1))
       visit new_database_path
     end
 
@@ -24,13 +24,28 @@ describe "Database load form" do
 
     let( :correct_xml){ "tmp/test/witness_support_dump.xml"}
     let( :erronous_xml){ "tmp/test/witness_support_dump_munged.xml"}
-    let( :email2){ "second@admin"}
+    let( :email_m2){ "second@admin"}
+
+    shared_examples_for "logged in" do  # @logged_in
+      it "shows correct page after login" do
+        if @logged_in.enabled?
+          should have_selector( "title",
+                       :text => "#{ APPLICATION_NAME} | Rondningar")
+        else
+          should have_content(
+              "Du kommer att få ett mejl till #{ @logged_in.email
+                                               } när du kan börja boka!")
+        end
+      end
+    end
 
     before :all do
-      create_test_court :name => "Other"
-      create_test_user :email => email1, :role => "master",
-                       :password => email1
+      create_test_user :court => court_this, :email => email_m1,
+                       :role => "master", :password => email_m1
       create_test_bookings
+      @deleted_email = User.where( "role = ?", "normal").choice.email
+      @kept_email = User.where( "role = ? and email != ?",
+                                "normal", @deleted_email).choice.email
       xml_data = Database.new.all_data
       File.open( correct_xml, "w"){ |f| f.write( xml_data)}
       File.open( erronous_xml, "w"){ |f| f.write( xml_data + "<extra>")}
@@ -38,19 +53,20 @@ describe "Database load form" do
         a[ mdl] = mdl.count
         a
       end
-      Booking.delete_all
-      CourtDay.delete_all
-      User.delete_all
-      Court.delete_all
+      User.all.each{ |u| u.destroy if u.email != @kept_email}
+      @curr_count = [ Court, User, CourtDay, Booking].inject( { }) do |a, mdl|
+        a[ mdl] = mdl.count + (mdl == User ? 1 : 0)
+        a
+      end
+    end
+
+    after :all do
+      [ Booking, CourtDay, User, Court].each{ |model| model.destroy_all}
     end
 
     before do
-      fake_log_in( create_test_user( :email => email2, :role => "master",
-                                     :password => email2))
-      @curr_count = [ Court, User, CourtDay, Booking].inject( { }) do |a, mdl|
-        a[ mdl] = mdl.count
-        a
-      end
+      fake_log_in( create_test_user( :email => email_m2, :role => "master",
+                                     :password => email_m2))
       visit new_database_path
     end
 
@@ -64,6 +80,37 @@ describe "Database load form" do
       end
 
       it{ should have_content( "Inläsningen misslyckades")}
+
+      context "master before trying" do
+
+        before do
+          @logged_in = User.find_by_email( email_m2)
+          fake_log_in @logged_in, email_m2
+        end
+
+        it{ @logged_in.should be_master}
+        it_behaves_like "logged in"
+      end
+
+      context "normal before trying" do
+
+        before do
+          @logged_in = User.find_by_email( @kept_email)
+          fake_log_in @logged_in, "dåligt"
+        end
+
+        it{ @logged_in.should be_enabled}
+        it{ @logged_in.should_not be_admin}
+        it_behaves_like "logged in"
+      end
+
+      context "deleted before trying" do
+        context( "normal"){
+          specify{ User.find_by_email( @deleted_email).should be_nil}}
+        context( "master"){
+          specify{ User.find_by_email( email_m1).should be_nil}}
+      end
+
       context "database is intact" do
         [ Court, User, CourtDay, Booking].each do |model|
           context( "#{ model}.count"
@@ -81,34 +128,51 @@ describe "Database load form" do
 
       it{ should have_content( "Ny databas inläst")}
 
-      context "user that was master when restoring" do
+      context "master when restoring" do
 
         before do
-          @second_master = User.find_by_email( email2)
-          @second_master.password = email2
-          fake_log_in @second_master
+          @logged_in = User.find_by_email( email_m2)
+          fake_log_in @logged_in, email_m2
         end
 
-        it{ @second_master.should be_master}
-        it "can log in with old password" do
-          should have_selector( "title",
-                   :text => "#{ APPLICATION_NAME} | Rondningar")
-        end
+        it{ @logged_in.should be_master}
+        it_behaves_like "logged in"
       end
 
-      context "user that was master when saving but not when restoring" do
+      context "normal before restoring" do
 
         before do
-          @first_master = User.find_by_email( email1)
-          @first_master.password = email1
-          fake_log_in @first_master
+          @logged_in = User.find_by_email( @kept_email)
+          fake_log_in @logged_in, "dåligt"
         end
 
-        specify{ @first_master.should_not be_enabled}
+        it{ @logged_in.should be_enabled}
+        it{ @logged_in.should_not be_admin}
+        it_behaves_like "logged in"
+      end
 
-        it "can log in with restored password" do
-          should have_content(
-          "Du kommer att få ett mejl till #{ email1} när du kan börja boka!")
+      context "deleted before restoring" do
+
+        context "normal" do
+
+          before do
+            @logged_in = User.find_by_email( @deleted_email)
+            fake_log_in @logged_in, "dåligt"
+          end
+
+          it{ @logged_in.should_not be_enabled}
+          it_behaves_like "logged in"
+        end
+
+        context "master" do
+
+          before do
+            @logged_in = User.find_by_email( email_m1)
+            fake_log_in @logged_in, email_m1
+          end
+
+          it{ @logged_in.should_not be_enabled}
+          it_behaves_like "logged in"
         end
       end
 
@@ -117,7 +181,7 @@ describe "Database load form" do
           result = User.where( "court_id = ?",
                                Court.find_by_name( "This Court")
                              ).sort{ |u1, u2| u1.name <=> u2.name}
-          result.delete_if{ |u| [ email1, email2].include?( u.email)}
+          result.delete_if{ |u| [ email_m1, email_m2].include?( u.email)}
           result
         end
         let( :court_days) do

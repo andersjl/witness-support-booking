@@ -204,15 +204,14 @@ include AllDataDefs
   def replace!
     return unless @replace_descr
   # @replace_descr.each{ |object| puts object.inspect}
-    admin_digests = User.all.inject( [ ]) do |acc, user|
-      next acc unless user.admin?
+    digests = User.all.inject( [ ]) do |acc, user|
       acc << [ user.court.name, user.name, user.email, user.role,
                user.read_attribute( :password_digest)]
     end
-    Booking.delete_all
-    CourtDay.delete_all
-    User.delete_all
-    Court.delete_all
+    Booking.destroy_all
+    CourtDay.destroy_all
+    User.destroy_all
+    Court.destroy_all
     @replace_descr.each do |obj_descr|
       model_tag = obj_descr[ :model]
       model_obj = model_class( model_tag).new
@@ -228,21 +227,22 @@ include AllDataDefs
                                    obj_descr[ "password_digest"]
       end
     end
-    admin_digests.each do |cnam_unam_email_role_digest|
+    digests.each do |cnam_unam_email_role_digest|
       cnam, unam, email, role, digest = cnam_unam_email_role_digest
       court = Court.find_by_name( cnam) || Court.create!( :name => cnam)
-      admin = User.find_by_court_id_and_email court.id, email
-      if admin
-        admin.update_attribute :name, unam
+      user = User.find_by_court_id_and_email court.id, email
+      if user
+        user.update_attribute :name, unam
+        user.update_attribute :role, role
       else
-        admin = User.new :email => email, :name => unam,
+        user = User.new :email => email, :name => unam,
                          :password => "dummy_password",
                          :password_confirmation => "dummy_password"
-        admin.court = court
-        admin.save!
+        user.court = court
+        user.role = role
+        user.save!
       end
-      admin.update_attribute :password_digest, digest
-      admin.update_attribute :role, role
+      user.update_attribute :password_digest, digest
     end
   end
 end
