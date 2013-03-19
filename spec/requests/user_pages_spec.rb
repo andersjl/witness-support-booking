@@ -333,13 +333,18 @@ describe "User pages" do
                              :href => new_database_path}
       end
 
-      context "viewing other" do
-        before do
-          @shown = User.where( "role != ?", "master").choice
-          visit user_path( @shown)
+      (USER_ROLES - [ "master"]).each do |role|
+        context "viewing other #{ role}" do
+          before do
+            @shown = User.where( "role = ?", role).choice ||
+              create_test_user( :email => role, :role => role)
+            visit user_path( @shown)
+          end
+          it_behaves_like "viewing any user"
+          it{ should have_content( @shown.email)}
+          it{ should_not have_content( "en fil")}
+          it{ should_not have_content "Domstolar"}
         end
-        it_behaves_like "viewing any user"
-        it{ should_not have_content( "en fil")}
       end
 
       context "saving database" do
