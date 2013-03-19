@@ -50,6 +50,12 @@ class CreateCourts < ActiveRecord::Migration
 
   def down
 
+    default_court = Court.all.inject( [ nil, -1]){ |c_mx, c|
+      c.users.count > c_mx[ 1] ? [ c, c.users.count] : c_mx}.first
+    [ User, CourtDay].each{ |model|
+      model.all.each{ |obj| obj.destroy unless obj.court == default_court}}
+    User.where( "role = ?", "master").
+      each{ |u| u.update_attribute :role, "admin"}
     remove_index :users, [ :court_id, :email]
     remove_column :users, :court_id
     remove_index :users, :email
