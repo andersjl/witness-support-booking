@@ -14,8 +14,12 @@
  </div>
   <% end %>
 <% else %>
-  <%= link_to "Börja använda bokningen!", sign_up_path,
+  <%= link_to "Registrera dig", sign_up_path,
               :class => "btn btn-large btn-primary" %>
+  <p><small>
+    (Om du redan är registrerad ska du klicka på "Logga in" längst upp till
+    höger)
+  </small><p>
 <% end %>
 </div>
 
