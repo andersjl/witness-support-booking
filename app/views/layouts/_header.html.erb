@@ -3,25 +3,21 @@
     <div class="container">
       <%= link_to "Vittnesstöd", root_path, :id => "logo" %>
       <nav>
-<% if logged_in? %>
         <ul class="nav">
+<% if logged_in? %>
           <li>
             <%= link_to current_user.court.name, current_user.court.link %>
           </li>
-        </ul>
-<% end %>
-        <ul class="nav pull-right">
-          <li><%= link_to "Start", root_path %></li>
+          <li><%= link_to "Logga ut", log_out_path, :method => "delete"
+               %></li>
           <li><%= link_to "Hjälp", help_path %></li>
-<% if logged_in? %>
   <% if enabled? %>
           <li><%= link_to "Rondningar", court_days_path %></li>
           <li><%= link_to "Användare", users_path %></li>
   <% end %>
-          <li><%= link_to "Logga ut", log_out_path, :method => "delete"
-               %></li>
 <% else %>
           <li><%= link_to "Logga in", log_in_path %></li>
+          <li><%= link_to "Hjälp", help_path %></li>
 <% end %>
         </ul>
       </nav>

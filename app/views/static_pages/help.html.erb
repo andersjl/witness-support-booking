@@ -36,17 +36,18 @@
     </p>
     <p>
       OBS att du då <em>inte</em> ska klicka på "Registrera dig"!  I stället
-      ska du klicka på "Logga in" längst upp till höger, se nedan.
+      ska du klicka på <%= link_to '"Logga in"', log_in_path %> i menyraden
+      bredvid "VITTNESSTÖD" upptill.
     </p>
     <p>
-      (Om du i stället ser "Logga ut" längst upp till höger, klicka då på den
-      först så dyker "Logga in" upp.)
+      (Om du i stället ser "Logga ut" i menyraden, klicka då på den först så
+      dyker "Logga in" upp.)
     </p>
     <h2>Inloggning</h2>
     <ul>
       <li>
-        Gå in på <%= link_to '"Logga in"', log_in_path %> längst upp till
-        höger
+        Gå in på <%= link_to '"Logga in"', log_in_path %> i menyraden bredvid
+        "VITTNESSTÖD" upptill.
       </li>
       <li>
         Välj domstol från listan om inte din domstol visas
@@ -95,10 +96,11 @@
     </p>
     <h2>Ändra dina uppgifter</h2>
     <p>
-      Gå in på "Användare" uppe till höger. Då visas en lista på alla
-      användare.  Klicka på dit eget namn.  Då visas en sida med ditt eget
-      namn och mejladress, och en länk "Ändra".  Klicka på den så kommer du
-      till ett formulär, där du kan:
+      Gå in på <%= link_to '"Användare"', users_path %> i menyraden bredvid
+      "VITTNESSTÖD" upptill. Då visas en lista på alla användare.  Klicka på
+      ditt eget namn.  Då visas en sida med ditt eget namn och mejladress, och
+      en länk "Ändra".  Klicka på den så kommer du till ett formulär, där du
+      kan:
     </p>
     <ul>
       <li>Ändra ditt för- och efternamn</li>

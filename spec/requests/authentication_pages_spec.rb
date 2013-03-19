@@ -54,7 +54,7 @@ describe "Authentication pages" do
         "title", :text => "#{ APPLICATION_NAME} | Logga in")}
       it{ should have_selector( "div.alert.alert-error", :text => "Ogiltig")}
       describe "after visiting another page" do
-        before{ click_link "Start"}
+        before{ click_link "Vittnesstöd"}
         it{ should_not have_selector( "div.alert.alert-error")}
       end
     end
