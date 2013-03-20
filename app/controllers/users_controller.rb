@@ -20,6 +20,7 @@ extend Authorization
 
   def new
     @user = User.new
+    Court.create!( :name => "Default") if Court.count == 0
     @courts = Court.all
   end
 
