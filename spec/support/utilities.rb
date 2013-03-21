@@ -16,7 +16,7 @@ def court_default( name)
   other_court_user = create_test_user :court    => other_court,
                                       :email    => "other@example.com",
                                       :name     => "Other User",
-                                      :password => "otheru"
+                                      :password => "dåligt"
   other_court_day = create_test_court_day :court => other_court, :morning => 1
   other_court_user.book! other_court_day, :morning
   Court.find_by_name( name)

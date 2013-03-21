@@ -463,7 +463,7 @@ describe "CourtDay index" do
         create_test_court_day :court => court_other, :date => @cd.date,
                               :notes => "Other notes"
       end
-      fake_log_in other, "otheru"
+      fake_log_in other, "dåligt"
     end
     it{ within( :id, @cd_id){ should_not have_content( @cd.notes)}}
   end

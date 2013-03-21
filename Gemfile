@@ -2,10 +2,10 @@ source 'https://rubygems.org'
 
 ruby "1.8.7"
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.13'
 gem 'bootstrap-sass', '2.1'
 gem 'bcrypt-ruby', '3.0.1'
-gem 'nokogiri', '1.5.6'
+gem 'nokogiri'
 
 group :development, :test do
   gem 'sqlite3', '1.3.5'
@@ -30,5 +30,5 @@ end
 gem 'json'
 
 gem 'jquery-rails', '2.0.2'
-gem 'jquery-ui-rails', '3.0.1'
+gem 'jquery-ui-rails'
 
