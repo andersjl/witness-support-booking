@@ -24,6 +24,25 @@ describe "User pages" do
       end
     end
 
+    context "first user" do
+      before do
+        User.destroy_all
+        Court.destroy_all
+        visit sign_up_path
+        select  "Default",     :from => "user_court_id"
+        fill_in "user_name",     :with => "Example User"
+        fill_in "user_email",    :with => "user@example.com"
+        fill_in "user_password", :with => "foobar"
+        fill_in "user_password_confirmation", :with => "foobar"
+        click_button submit
+      end
+      it "creates a user and a default court" do
+        User.count.should == 1
+        Court.count.should == 1
+      end
+      specify{ User.first.should_not be_enabled}
+    end
+
     context "with valid information" do
 
       before do
