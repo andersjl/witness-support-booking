@@ -3,7 +3,7 @@ require "app/helpers/application_helper"
 include ApplicationHelper
 include SessionsHelper
 
-describe "CourtDay index" do
+describe "court_days/index" do
 
   def test_dates( date_in_week)
     (7 * (WEEKS_P_PAGE + 2) + 1).times do |n|
@@ -369,6 +369,7 @@ describe "CourtDay index" do
       end
 
       shared_examples_for "any booking button click" do
+        #  @tested_id, @value_book, @value_unbook, @bookings_left
 
         it_behaves_like "on court_days index page"
         it{ within( :id, @tested_id){ should have_content( @user.name)}}
@@ -377,8 +378,19 @@ describe "CourtDay index" do
           should_not have_selector( "input[value='#{ @value_book}']")}}
         it{ within( :id, @tested_id){
           should have_selector( "input[value='#{ @value_unbook}']")}}
-        it( "has (x kvar) also when booked"){ pending "Malin har bollen"}
-        it "emphasizes overbooking"
+        it{ within( :id, @tested_id){
+          should have_content( "(#{ @bookings_left})")}}
+
+        context "when overbooked" do
+          before do
+            @cd.update_attribute :morning, 0
+            @cd.update_attribute :afternoon, 0
+            visit court_days_path
+          end
+          it{ within( :id, @tested_id){
+            should have_selector( "div[class='overbooked']",
+                                  :text => "(överbokat!)")}}
+        end
 
         context "when unbooked" do
           before{ within( :id, @tested_id){ click_button @value_unbook}}
@@ -399,6 +411,12 @@ describe "CourtDay index" do
           within( :id, @tested_id){ click_button VALUE_BOOK_MORNING}
           @value_book = VALUE_BOOK_MORNING
           @value_unbook = VALUE_UNBOOK_MORNING
+          @bookings_left = @cd.morning - @cd.morning_bookings.count
+          if @bookings_left == 0
+            @bookings_left = "fullbokat"
+          else
+            @bookings_left = "#{ @bookings_left} kvar"
+          end
         end
 
         it_behaves_like "any booking button click"
@@ -418,6 +436,12 @@ describe "CourtDay index" do
           within( :id, @tested_id){ click_button VALUE_BOOK_AFTERNOON}
           @value_book = VALUE_BOOK_AFTERNOON
           @value_unbook = VALUE_UNBOOK_AFTERNOON
+          @bookings_left = (@cd.afternoon - @cd.afternoon_bookings.count).to_s
+          if @bookings_left == 0
+            @bookings_left = "fullbokat"
+          else
+            @bookings_left = "#{ @bookings_left} kvar"
+          end
         end
 
         it_behaves_like "any booking button click"

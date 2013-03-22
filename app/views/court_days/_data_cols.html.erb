@@ -1,7 +1,6 @@
 <% date = court_day.date
-   admin = current_user.admin?
    too_late = court_day.date < Date.today
-   if admin && !too_late %>
+   if admin? && !too_late %>
         <div class="span1">
           <%= submit_tag( "#{ VALUE_SAVE} #{ day_of_week date}") %>
         </div>
@@ -12,34 +11,34 @@
 <% offset = 0
    [ :morning, :afternoon].each do |session|
      parallel = court_day.send( session)
-     if (!admin || too_late) && parallel == 0
+     bookings = court_day.send( "#{ session}_bookings")
+     taken = bookings.count
+     booked = current_user.booked? court_day, session
+     if (!admin? || too_late) && parallel == 0 && taken == 0
        offset += session_span
      else %>
           <div class="<%= offset_n_span_to_class( offset, session_span)
                        %>" id="<%= "court-day-#{ date}-#{ session}" %>">
-<%     if admin && !too_late %>
+<%     if (parallel - taken > 0) || (!too_late && (admin? || booked)) %>
             <div class="row">
               <div class="span<%= session_span %>">
+<%       if too_late
+           if parallel - taken > 0 %>
+                <%= parallel - taken %> blev aldrig bokad
+<%         end
+         elsif admin? %>
                 <%= label_tag session, "Behov" %>
                 <%= select_tag "#{ session}-#{ date}",
                   options_for_select( (PARALLEL_SESSIONS_MAX + 1).times.
                                         inject( [ ]){ |acc, n| acc << n},
                                       parallel),
                   :class => "parallel-sessions" %>
+<%         if parallel - taken > 0 %>
               </div>
             </div>
-<%     end
-       if parallel > 0
-         booked = current_user.booked? court_day, session
-         bookings = court_day.send( "#{ session}_bookings")
-         taken = bookings.count
-         if (parallel - taken > 0) && (too_late || admin || !booked) %>
             <div class="row">
               <div class="span<%= session_span %>">
-<%         if too_late %>
-                <%= parallel - taken %> blev aldrig bokad
-<%         elsif admin
-             days_to_go = court_day.date - Date.today
+<%           days_to_go = court_day.date - Date.today
              if days_to_go < BOOKING_DAYS_AHEAD_MIN %>
                 <div class="to-book urgent">
 <%           elsif days_to_go < BOOKING_DAYS_AHEAD_MAX %>
@@ -49,51 +48,49 @@
 <%           end %>
                   <%= parallel - taken %> kvar att boka
                 </div>
-<%         else %>
-                <%= submit_tag session == :afternoon ? VALUE_BOOK_AFTERNOON :
-                                                       VALUE_BOOK_MORNING %>
-                (<%= parallel - taken %> kvar)
+<%         elsif parallel - taken < 0 %>
+                <div class="overbooked">överbokat!</div>
 <%         end %>
+<%       else
+           if booked %>
+              <%= submit_tag session == :afternoon ? VALUE_UNBOOK_AFTERNOON :
+                                                     VALUE_UNBOOK_MORNING %>
+<%         elsif parallel - taken > 0 %>
+              <%= submit_tag session == :afternoon ? VALUE_BOOK_AFTERNOON :
+                                                     VALUE_BOOK_MORNING %>
+<%         end %>
+              <%= booking_message( parallel - taken) %>
+<%       end %>
               </div>
             </div>
-<%       end
-         if booked && !too_late %>
+<%     end
+       bookings.each do |booking| %>
             <div class="row">
               <div class="span<%= session_span %>">
-                <%= submit_tag session == :afternoon ?
-                                 VALUE_UNBOOK_AFTERNOON :
-                                 VALUE_UNBOOK_MORNING %>
-              </div>
-            </div>
-<%       end
-         bookings.each do |booking| %>
-            <div class="row">
-              <div class="span<%= session_span %>">
-<%         if booking.user == current_user %>
+<%       if current_user? booking.user %>
                 <b>
-<%         end
-           if current_user.admin? %>
+<%       end
+         if admin? %>
                 <%= link_to booking.user.name, booking_path( booking),
                             :method => :delete,
                             :data => { :confirm => "Avboka #{
                               booking.user.name} #{
                               booking.court_day.date} #{
                               CourtDay.session_sv booking.session}?"} %>
-<%         else %>
+<%       else %>
                 <%= booking.user.name %>
-<%         end
-           if booking.user == current_user %>
+<%       end
+         if current_user? booking.user %>
                 </b>
-<%         end %>
+<%       end %>
               </div>
             </div>
-<%       end
-       end %>
+<%     end %>
           </div>
 <%     offset = 0
      end
    end  # [ :morning, :afternoon].each do |session|
-   if admin && !too_late
+   if admin? && !too_late
      # the following is to prevent browser automatic fill-in
      notes = court_day.notes.blank? ? " " : court_day.notes %>
           <div class="span<%= notes_span %>">

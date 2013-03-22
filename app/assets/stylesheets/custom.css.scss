@@ -210,6 +210,11 @@ div.to-book {
   }
 }
 
+div.overbooked {
+  color: $ajlRed;
+  font-weight: bold;
+}
+
 .weekpicker {
   text-align: center;
   .datepicker {
