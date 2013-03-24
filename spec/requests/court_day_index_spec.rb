@@ -313,17 +313,21 @@ describe "court_days/index" do
   context "when not admin" do
 
     shared_examples_for "unbooked" do
+      # @tested_id, @monday, @cd
       it_behaves_like "on court_days index page"
       it{ should_not have_selector( "select")}
       it{ should_not have_selector( "textarea")}
-      it{ should have_content( "(2 kvar)")}
       it{ within( :id, @tested_id){
         should_not have_selector( 
           "input[value='#{ VALUE_SAVE} #{ day_of_week( @cd.date)}']")}}
-      it{ within( :id, @tested_id){
+      it{ within( :id, "#{ @tested_id}-morning"){
         should have_selector( "input[value='#{ VALUE_BOOK_MORNING}']")}}
-      it{ within( :id, @tested_id){
+      it{ within( :id, "#{ @tested_id}-morning"){ should have_content(
+        "(#{ @cd.morning - @cd.morning_bookings.count} kvar)")}}
+      it{ within( :id, "#{ @tested_id}-afternoon"){
         should have_selector( "input[value='#{ VALUE_BOOK_AFTERNOON}']")}}
+      it{ within( :id, "#{ @tested_id}-afternoon"){ should have_content(
+        "(#{ @cd.afternoon - @cd.afternoon_bookings.count} kvar)")}}
 
       it "has no controls when nothing to book" do
         test_dates( @monday) do |date, show, ignore|
@@ -369,7 +373,7 @@ describe "court_days/index" do
       end
 
       shared_examples_for "any booking button click" do
-        #  @tested_id, @value_book, @value_unbook, @bookings_left
+        #  @tested_id, @value_book, @value_unbook
 
         it_behaves_like "on court_days index page"
         it{ within( :id, @tested_id){ should have_content( @user.name)}}
@@ -378,8 +382,6 @@ describe "court_days/index" do
           should_not have_selector( "input[value='#{ @value_book}']")}}
         it{ within( :id, @tested_id){
           should have_selector( "input[value='#{ @value_unbook}']")}}
-        it{ within( :id, @tested_id){
-          should have_content( "(#{ @bookings_left})")}}
 
         context "when overbooked" do
           before do
@@ -411,12 +413,6 @@ describe "court_days/index" do
           within( :id, @tested_id){ click_button VALUE_BOOK_MORNING}
           @value_book = VALUE_BOOK_MORNING
           @value_unbook = VALUE_UNBOOK_MORNING
-          @bookings_left = @cd.morning - @cd.morning_bookings.count
-          if @bookings_left == 0
-            @bookings_left = "fullbokat"
-          else
-            @bookings_left = "#{ @bookings_left} kvar"
-          end
         end
 
         it_behaves_like "any booking button click"
@@ -436,15 +432,11 @@ describe "court_days/index" do
           within( :id, @tested_id){ click_button VALUE_BOOK_AFTERNOON}
           @value_book = VALUE_BOOK_AFTERNOON
           @value_unbook = VALUE_UNBOOK_AFTERNOON
-          @bookings_left = (@cd.afternoon - @cd.afternoon_bookings.count).to_s
-          if @bookings_left == 0
-            @bookings_left = "fullbokat"
-          else
-            @bookings_left = "#{ @bookings_left} kvar"
-          end
         end
 
         it_behaves_like "any booking button click"
+        it{ within( :id, "#{ @cd_id}-afternoon"){ should have_content(
+          "(#{ @cd.afternoon - @cd.afternoon_bookings.count} kvar)")}}
 
         context "switch user" do
           before{ login_other_user}

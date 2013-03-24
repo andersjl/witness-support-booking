@@ -3,7 +3,7 @@ module CourtDaysHelper
 
   def booking_message( bookings_left)
     if bookings_left == 0
-      "(fullbokat)"
+      ""
     elsif bookings_left > 0
       "(#{ bookings_left} kvar)"
     else
