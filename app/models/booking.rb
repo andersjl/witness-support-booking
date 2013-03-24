@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class Booking < ActiveRecord::Base
 
   attr_accessible :court_day_id, :session

@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class User < ActiveRecord::Base
 
   class UserModelRoleError < StandardError; end

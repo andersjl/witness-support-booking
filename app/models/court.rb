@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 class Court < ActiveRecord::Base
   attr_accessible :name, :link
   validates :name, :presence => { :message => "Namn saknas"},

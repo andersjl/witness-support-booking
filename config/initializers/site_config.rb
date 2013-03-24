@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 USER_ROLES = [ "disabled", "normal", "admin", "master"]
 
 # court_days index submit values

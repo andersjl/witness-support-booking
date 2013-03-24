@@ -1,3 +1,5 @@
+# encoding: UTF-8
+
 require "spec_helper"
 require "app/helpers/application_helper"
 include ApplicationHelper
