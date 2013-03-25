@@ -51,15 +51,22 @@
 <%         elsif parallel - taken < 0 %>
                 <div class="overbooked">överbokat!</div>
 <%         end %>
-<%       else
-           if booked %>
-              <%= submit_tag session == :afternoon ? VALUE_UNBOOK_AFTERNOON :
-                                                     VALUE_UNBOOK_MORNING %>
-<%         elsif parallel - taken > 0 %>
-              <%= submit_tag session == :afternoon ? VALUE_BOOK_AFTERNOON :
-                                                     VALUE_BOOK_MORNING %>
+<%       elsif booked
+           if taken > parallel %>
+                <div class="overbooked">
 <%         end %>
-              <%= booking_message( parallel - taken) %>
+                  <%= submit_tag session == :afternoon ?
+                        VALUE_UNBOOK_AFTERNOON : VALUE_UNBOOK_MORNING %>
+<%         if taken > parallel %>
+                  (överbokat!)
+                </div>
+<%         else %>
+                (<%= parallel - taken %> kvar)
+<%         end
+         elsif parallel - taken > 0 %>
+                <%= submit_tag session == :afternoon ? VALUE_BOOK_AFTERNOON :
+                                                     VALUE_BOOK_MORNING %>
+                (<%= parallel - taken %> kvar)
 <%       end %>
               </div>
             </div>
