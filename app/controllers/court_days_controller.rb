@@ -30,7 +30,7 @@ extend Authorization
   def update_or_destroy
     updated = params_to_court_day  # we never save updated ...
     if updated.something_to_do?
-      @court_day.court = Court.default
+      @court_day.court = updated.court
       @court_day.morning = updated.morning
       @court_day.afternoon = updated.afternoon
       @court_day.notes = updated.notes

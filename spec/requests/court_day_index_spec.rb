@@ -42,6 +42,9 @@ describe "CourtDay index" do
     @monday = CourtDay.monday( Date.today)
     first_date = @monday <= Date.today ? Date.today : @monday
     @n_changeable = 6 - first_date.cwday
+    # Today            | @cd.date possible range
+    # Monday .. Friday | Today .. Friday
+    # Saturday, Sunday | Next Monday .. next Friday
     @cd = create_test_court_day :date => first_date + rand( @n_changeable),
       :morning => 1, :afternoon => 3, :notes => "tested notes"
     @cd_id = "court-day-#{ @cd.date}"
@@ -152,9 +155,12 @@ describe "CourtDay index" do
       within( :id, @changed_id) do
         should have_content( @changed_date)
         [ :morning, :afternoon].each do |session|
-          should have_content( eval( "\"\#{ @#{ session}} kvar att boka\""))
-          should have_content( @first_line)
+          left_to_book = instance_variable_get( "@#{ session}").to_i -
+                           @changed_obj.send( "#{ session}_bookings").count
+          within( :id, "#{ @changed_id}-#{ session}"){
+            should have_content( "#{ left_to_book} kvar att boka")}
         end
+        should have_content( @first_line)
       end
     end
   end
@@ -187,13 +193,14 @@ describe "CourtDay index" do
 
     context "changing and saving" do
 
-      def change( date)
+      def change( date, morning, afternoon, notes)
+        # >> @changed_date, @changed_id, 
         @changed_date = date
         @changed_id = "court-day-#{ date}"
         within( :id, @changed_id) do
-          select( @morning, :from => "morning-#{ date}")
-          select( @afternoon, :from => "afternoon-#{ date}")
-          fill_in( "notes-#{ date}", :with => @notes)
+          select( morning, :from => "morning-#{ date}")
+          select( afternoon, :from => "afternoon-#{ date}")
+          fill_in( "notes-#{ date}", :with => notes)
           click_button( "#{ VALUE_SAVE} #{ day_of_week( date)}")
         end
         @changed_obj =
@@ -205,39 +212,43 @@ describe "CourtDay index" do
         @afternoon = "2"
         @first_line = "<- blanka radbrytning->"
         @notes = "  #{ @first_line}\nnästa rad"
-        if @n_changeable <= 1
-          @first_date = @monday + rand( 5)  # untestable this week
+        if Date.today.cwday == 5
+          @new_date = Date.today  # "new" untestable this week on a Friday
         else
           begin
-            @first_date = @monday + 5 - @n_changeable + rand( @n_changeable)
-          end while @first_date == @cd.date
+            @new_date = @monday + 5 - @n_changeable + rand( @n_changeable)
+          end while @new_date == @cd.date
         end
       end
 
       context "this week, change and save" do
-        if Date.today.cwday == 5
-          specify{ pending "cannot test changing this week on a Friday"}
-        else
-          before{ change @first_date}
+        before{ change @cd.date, @morning, @afternoon, @notes}
+        it_behaves_like "any changed day"
+      end
+
+      if Date.today.cwday != 5
+        context "this week, new and save" do
+          before{ change @new_date, @morning, @afternoon, @notes}
           it_behaves_like "any changed day"
         end
       end
 
-      context "next week, change and save" do
+      context "next week, new and save" do
         before do
           click_button VALUE_NEXT_WEEK
-          change @first_date + 7
+          change @new_date + 7, @morning, @afternoon, @notes
         end
         it_behaves_like "any changed day"
       end
 
-      context "future date, change and save" do
+      context "future date, new and save" do
         before do
           weeks, days = (5 + rand( 100)).divmod 5
           new_start_date = @monday + 7 * weeks + days
           fill_in "start_date", :with => new_start_date
           click_button "OK"
-          change( CourtDay.monday( new_start_date) + rand( 5))
+          change( CourtDay.monday( new_start_date) + rand( 5),
+                  @morning, @afternoon, @notes)
         end
         it_behaves_like "any changed day"
       end
