@@ -152,7 +152,7 @@ describe "User pages" do
     end
 
     before do
-      @user = create_test_user( :court => @court, :count => 3).choice
+      @user = create_test_user( :court => @court, :count => 3).sample
       fake_log_in @user
       visit users_path
     end
@@ -170,7 +170,7 @@ describe "User pages" do
     context "when clicking a user" do
       before do
         @other = User.where( "id != ? and court_id = ?",
-                             @user.id, @user.court.id).choice
+                             @user.id, @user.court.id).sample
         click_link( @other.name)
       end
       it{ should have_selector(
@@ -357,7 +357,7 @@ describe "User pages" do
       (USER_ROLES - [ "master"]).each do |role|
         context "viewing other #{ role}" do
           before do
-            @shown = User.where( "role = ?", role).choice ||
+            @shown = User.where( "role = ?", role).sample ||
               create_test_user( :email => role, :role => role)
             visit user_path( @shown)
           end
@@ -546,7 +546,7 @@ describe "User pages" do
       context "trying to edit user on other court" do
         before do
           @other_user = create_test_user( :court => court_other, :count => 3
-                                        ).choice
+                                        ).sample
           visit edit_user_path @other_user
         end
         it{ should_not have_selector( "h1", :text => @other_user.name)}
@@ -570,7 +570,7 @@ describe "User pages" do
       context "editing user on other court" do
         before do
           @edited = create_test_user( :court => court_other, :count => 3
-                                    ).choice
+                                    ).sample
           @old_pw = @edited.password
         end
         admin_examples

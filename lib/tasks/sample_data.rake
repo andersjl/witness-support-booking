@@ -78,7 +78,7 @@ namespace :db do
       CourtDay.where( [ "court_id = ?", court.id]).each do |court_day|
         [ :morning, :afternoon].each do |session|
           court_day.send( session).times do
-            user = (rand( 2) == 0 ? shortlist : users).choice
+            user = (rand( 2) == 0 ? shortlist : users).sample
             if rand( 3) != 0 && !user.booked?( court_day, session)
               user.book! court_day, session
               bookings += 1

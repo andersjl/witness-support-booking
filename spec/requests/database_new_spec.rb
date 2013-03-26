@@ -45,9 +45,9 @@ describe "Database load form" do
       create_test_user :court => court_this, :email => email_m1,
                        :role => "master", :password => email_m1
       create_test_bookings
-      @deleted_email = User.where( "role = ?", "normal").choice.email
+      @deleted_email = User.where( "role = ?", "normal").sample.email
       @kept_email = User.where( "role = ? and email != ?",
-                                "normal", @deleted_email).choice.email
+                                "normal", @deleted_email).sample.email
       xml_data = Database.new.all_data
       File.open( correct_xml, "w"){ |f| f.write( xml_data)}
       File.open( erronous_xml, "w"){ |f| f.write( xml_data + "<extra>")}

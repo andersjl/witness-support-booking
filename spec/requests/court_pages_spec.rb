@@ -33,7 +33,7 @@ describe "Court pages" do
           courts << with_users << without_users
         end
       end
-      @court = courts.choice
+      @court = courts.sample
       fake_log_in @master
       visit courts_path
     end
@@ -111,7 +111,7 @@ describe "Court pages" do
                                  :role => "master"
       fake_log_in @master
       create_test_court :count => 3
-      @court = Court.all.choice
+      @court = Court.all.sample
       visit edit_court_path( @court)
     end
 
