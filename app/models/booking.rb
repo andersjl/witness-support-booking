@@ -1,15 +1,10 @@
-# encoding: UTF-8
-
 class Booking < ActiveRecord::Base
 
   attr_accessible :court_day_id, :session
 
-  validates :user_id,
-            :presence  => { :message => "Användar-ID saknas"}
-  validates :court_day_id,
-            :presence  => { :message => "Rättegångsdag saknas"}
-  validates :session,
-            :presence  => { :message => "Val för/eftermiddag saknas"},
+  validates :user_id, presence: true
+  validates :court_day_id, presence: true
+  validates :session, presence: true,
             :inclusion => { :in => [ :morning, :afternoon]}
   validate :not_overbooked, :within_one_court
 
@@ -38,16 +33,17 @@ class Booking < ActiveRecord::Base
     return unless court_day && session  # handled by other validations
     booked = court_day.send( "#{ session}_bookings").count
     if booked >= court_day.send( session)
-      errors[ :base] <<
-        "#{ court_day.inspect} är fullbokad #{ CourtDay.session_sv session}"
+      errors[ :base] << t( "booking.full",
+                           court_day: court_day.inspect,
+                           session: "booking.#{ session}.short")
     end
   end
 
   def within_one_court
     return unless user && court_day  # handled by other validations
     if user.court != court_day.court
-      errors[ :base] <<
-        "#{ court_day.inspect} och #{ user.inspect} tillhör olika domstolar"
+      errors[ :base] << t( "booking.court_mismatch",
+                           court_day: court_day.inspect, user: user.inspect)
     end
   end
 end

@@ -19,7 +19,7 @@ describe "Database load form" do
     it{ should have_selector( "h1", :text => "VARNING!")}
     it{ should have_content( "RADERA HELA DATABASEN")}
     it{ should have_selector(
-      "title", :text => "#{ APPLICATION_NAME} | Läs in fil")}
+      "title", :text => "#{ t( 'general.application')} | Läs in fil")}
   end
 
   context "when file is loaded" do
@@ -32,7 +32,7 @@ describe "Database load form" do
       it "shows correct page after login" do
         if @logged_in.enabled?
           should have_selector( "title",
-                       :text => "#{ APPLICATION_NAME} | Rondningar")
+                       :text => "#{ t( 'general.application')} | Rondningar")
         else
           should have_content(
               "Du kommer att få ett mejl till #{ @logged_in.email
@@ -73,7 +73,7 @@ describe "Database load form" do
     end
 
     it{ should have_selector(
-      "title", :text => "#{ APPLICATION_NAME} | Läs in fil")}
+      "title", :text => "#{ t( 'general.application')} | Läs in fil")}
 
     context "with error in data" do
       before do

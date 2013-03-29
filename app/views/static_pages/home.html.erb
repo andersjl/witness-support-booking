@@ -1,25 +1,16 @@
 <div class="center hero-unit">
-  <h1>Vittnesstöd</h1>
-  <h2>
-    Detta är en sida där
-    <a href="http://www.brottsoffermyndigheten.se/om-oss/vittnesstod">
-      vittnesstöd
-    </a> kan boka sina arbetspass.
-  </h2>
+  <h1><%= t( "general.application") %></h1>
+  <%= render partial: "static_pages/greeting" %>
 <% if logged_in?
      if !current_user.enabled? %>
  <div class="center">
-   Du kommer att få ett mejl till <%= current_user.email %> när du kan börja
-   boka!
+   <%= t( "static_pages.home.disabled", email: current_user.email) %>
  </div>
   <% end %>
 <% else %>
-  <%= link_to "Registrera dig", sign_up_path,
+  <%= link_to t( "static_pages.home.sign_up"), sign_up_path,
               :class => "btn btn-large btn-primary" %>
-  <p><small>
-    (Om du redan är registrerad ska du klicka på <%= link_to '"Logga in"',
-     log_in_path %> i menyraden bredvid "VITTNESSTÖD" upptill)
-  </small><p>
+  <%= render partial: "static_pages/log_in_help" %>
 <% end %>
 </div>
 

@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 class UsersController < ApplicationController
 extend Authorization
 
@@ -22,7 +20,7 @@ extend Authorization
 
   def new
     @user = User.new
-    Court.create!( :name => "Default") if Court.count == 0
+    Court.create!( name: t( "court.default")) if Court.count == 0
     @courts = Court.all
   end
 
@@ -32,7 +30,7 @@ extend Authorization
     @user.court_id = court_id
     if @user.save
       log_in @user
-      flash[ :success] = "Välkommen #{ @user.name}!"
+      flash[ :success] = t "user.created", name: @user.name
       redirect_to root_path
     else
       @courts = Court.all
@@ -61,18 +59,18 @@ extend Authorization
   def update
     @user = User.find params[ :id]
     case params[ :commit]
-    when VALUE_BOOK_MORNING     then update_book_do( :morning)
-    when VALUE_BOOK_AFTERNOON   then update_book_do( :afternoon)
-    when VALUE_UNBOOK_MORNING   then update_unbook_do( :morning)
-    when VALUE_UNBOOK_AFTERNOON then update_unbook_do( :afternoon)
+    when t( "booking.morning.book")     then update_book_do( :morning)
+    when t( "booking.afternoon.book")   then update_book_do( :afternoon)
+    when t( "booking.morning.unbook")   then update_unbook_do( :morning)
+    when t( "booking.afternoon.unbook") then update_unbook_do( :afternoon)
     else
       if @user.update_attributes( params[ :user])
-        if @user == current_user
+        if current_user? @user
           log_in @user  # because remember_token has been reset
-          flash.now[ :success] = "Uppgifterna sparade"
+          flash.now[ :success] = t "user.changed.message"
           back_to_court_days
         else
-          flash[ :success] = "Lösenordet ändrat"
+          flash[ :success] = t "user.changed.password", name: @user.name
           redirect_to users_path
         end
       else
@@ -82,21 +80,24 @@ extend Authorization
   end
 
   def disable
-    update_role_do( "disabled"){ [ "deaktiverad", "deaktiveras"]}
+  # update_role_do( "disabled"){ [ "deaktiverad", "deaktiveras"]}
+    update_role_do( "disabled")
   end
   def enable
-    update_role_do( "normal"){ [ "aktiverad", "aktiveras"]}
+  # update_role_do( "normal"){ [ "aktiverad", "aktiveras"]}
+    update_role_do( "normal")
   end
   def promote
-    update_role_do( "admin"){
-      [ "aktiverad som administratör", "aktiveras som administratör"]}
+  # update_role_do( "admin"){
+  #   [ "aktiverad som administratör", "aktiveras som administratör"]}
+    update_role_do( "admin")
   end
 
   def destroy
     destroyed = User.find params[ :id]
     destroyed_inspect = destroyed.inspect
     destroyed.destroy
-    flash[ :success] = "Användare #{ destroyed_inspect}) borttagen"
+    flash[ :success] = t "user.destroyed", user: destroyed_inspect
     redirect_to users_path
   end
 
@@ -118,10 +119,19 @@ extend Authorization
 
   def update_role_do( role)
     @user = User.find params[ :id]
+    old_role = @user.role
     if User.valid_role?( role) && @user.update_attribute( :role, role)
-      flash[ :success] = "Användare #{ @user.inspect} #{ yield[ 0]}"
+    # flash[ :success] = "Användare #{ @user.inspect} #{ yield[ 0]}"
+      flash[ :success] = t "user.role.changed",
+                           name: @user.name,
+                           from: t( "user.role.#{ old_role}"),
+                           to: t( "user.role.#{ role}")
     else
-      flash[ :error] = "Användare #{ @user.inspect} kunde inte #{ yield[ 1]}"
+    # flash[ :error] = "Användare #{ @user.inspect} kunde inte #{ yield[ 1]}"
+      flash[ :error] = t "user.role.change_fail",
+                         name: @user.name,
+                         from: t( "user.role.#{ old_role}"),
+                         to: t( "user.role.#{ role}")
     end
     redirect_to users_path
   end

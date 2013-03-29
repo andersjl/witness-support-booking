@@ -1,14 +1,15 @@
+# standard swedish localization
 
 sv:
   date:
     abbr_day_names:
-    - sön
-    - mån
-    - tis
-    - ons
-    - tor
-    - fre
-    - lör
+    - sö
+    - må
+    - ti
+    - on
+    - to
+    - fr
+    - lö
     abbr_month_names:
     -
     - jan
@@ -191,7 +192,7 @@ sv:
       long: ! '%e %B %Y %H:%M'
       short: ! '%e %b %H:%M'
     pm: ''
-  # remove these aliases after 'activemodel' and 'activerecord' namespaces are removed from Rails repository
+# remove these aliases after 'activemodel' and 'activerecord' namespaces are removed from Rails repository
   activemodel:
     errors:
       <<: *errors

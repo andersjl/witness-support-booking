@@ -39,7 +39,7 @@ describe "Court pages" do
     end
 
     it{ should have_selector(
-      "title", :text => "#{ APPLICATION_NAME} | Domstolar")}
+      "title", :text => t( "general.application") + " | Domstolar")}
     it{ should have_selector( "h1", :text => "Domstolar")}
     it_behaves_like "any listed court"
 
@@ -98,7 +98,7 @@ describe "Court pages" do
         end
 
         it{ should have_selector(
-          "title", :text => "#{ APPLICATION_NAME} | Domstolar")}
+          "title", :text => t( "general.application") + " | Domstolar")}
         it_behaves_like "any listed court"
       end
     end
@@ -116,7 +116,7 @@ describe "Court pages" do
     end
 
     it{ should have_selector(
-      "title", :text => "#{ APPLICATION_NAME} | #{ @court.name}")}
+      "title", :text => t( "general.application") + " | #{ @court.name}")}
     it{ should have_selector( "h1", :text => "Ändra domstol #{ @court.name}")}
     it{ should have_selector "input[value='#{ @court.name}']"}
     it{ should have_selector "input[value='#{ @court.link}']"}
@@ -133,7 +133,7 @@ describe "Court pages" do
       specify{ @court.name.should == "New Name"}
       specify{ @court.link.should == "http://example.com"}
       it{ should have_selector(
-        "title", :text => "#{ APPLICATION_NAME} | Domstolar")}
+        "title", :text => t( "general.application") + " | Domstolar")}
       it{ within( :id, "court-#{ @court.id}"){
             should have_content @court.name}}
       it{ within( :id, "court-#{ @court.id}"){

@@ -1,5 +1,9 @@
 # encoding: UTF-8
 
+def t( key, opts = { })
+  I18n.translate key, opts
+end
+
 def known_problem
   yield
 rescue RSpec::Expectations::ExpectationNotMetError => e

@@ -1,24 +1,23 @@
-<% # encoding: UTF-8 %>
 <header class="navbar navbar-fixed-top navbar-inverse">
   <div class="navbar-inner">
     <div class="container">
-      <%= link_to "Vittnesstöd", root_path, :id => "logo" %>
+      <%= link_to t( "general.application"), root_path, :id => "logo" %>
       <nav>
         <ul class="nav">
 <% if logged_in? %>
           <li>
             <%= link_to current_user.court.name, current_user.court.link %>
           </li>
-          <li><%= link_to "Logga ut", log_out_path, :method => "delete"
-               %></li>
-          <li><%= link_to "Hjälp", help_path %></li>
+          <li><%= link_to t( "general.log_out"), log_out_path,
+                          :method => "delete" %></li>
+          <li><%= link_to t( "general.help.short"), help_path %></li>
   <% if enabled? %>
-          <li><%= link_to "Rondningar", court_days_path %></li>
-          <li><%= link_to "Användare", users_path %></li>
+          <li><%= link_to t( "court_days.index.title"), court_days_path %></li>
+          <li><%= link_to t( "users.index.title"), users_path %></li>
   <% end %>
 <% else %>
-          <li><%= link_to "Logga in", log_in_path %></li>
-          <li><%= link_to "Hjälp", help_path %></li>
+          <li><%= link_to t( "general.log_in"), log_in_path %></li>
+          <li><%= link_to t( "general.help.short"), help_path %></li>
 <% end %>
         </ul>
       </nav>

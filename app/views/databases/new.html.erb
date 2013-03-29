@@ -1,31 +1,12 @@
-<% # encoding: UTF-8 %>
-<% provide( :title, 'Läs in fil') %>
-<h1>VARNING!</h1>
-<p>
-Om du fortsätter kommer du att RADERA HELA DATABASEN och läsa in en fil med
-nya data som ersätter de gamla.  Om inläsningen misslyckas finns varken gamla
-eller nya användare och bokningar kvar, ingen kan logga in, och en expert
-måste tillkallas för att man ska kunna få igång bokningen igen.
-</p><p>
-Data kan inte återställas, utan får skrivas in igen.
-</p><p>
-Men för all del, inläsningen KAN ju lyckas också!  De vittnesstöd och
-bokningar som fanns när filen skapades kommer då att synas, och inga andra.
-Alla vittnesstöd blir deaktiverade, och du måste aktivera dem innan de kan
-logga in.  Deras lösenord är samma som när filen lästes ut.
-
-Det gör faktiskt inget om du själv inte finns i filen, adminstratörer läses
-inte in från filen utan blir kvar med samma namn och lösenord.
-</p>
+<% provide( :title, t( "databases.new.title")) %>
+<%= render partial: "databases/warning" %>
 <div class="row">
   <div class="span6 offset3">
     <%= form_for( @database, :url => database_path) do |f| %>
-      <%= f.label :all_data,
-                  "RADERA HELA DATABASEN och ersätt den med filen" %>
+      <%= f.label :all_data, t( "database.create.label") %>
       <%= f.file_field :all_data %>
-      <%= f.submit "OK", :confirm =>
-            "Är du säker? Om inläsningen misslyckas finns varken användare" +
-            " eller bokningar kvar!" %>
+      <%= f.submit t( "general.ok", :confirm => t( "database.create.confirm")) %>
     <% end %>
   </div>
 </div>
+

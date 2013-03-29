@@ -1,13 +1,11 @@
-<% # encoding: UTF-8 %>
   <li id="court-<%= court.id %>">
     <%= court.name %>
     | <%= link_to court.link, court.link %>
-    | <%= link_to "Ändra namn eller länk", edit_court_path( court) %>
+    | <%= link_to t( "court.change_name_or_link"), edit_court_path( court) %>
 <% if court.users.count == 0 %>
-    | <%= link_to "Ta bort", court,
+    | <%= link_to t( "general.destroy"), court,
                   :method => :delete,
-                  :data => { :confirm =>
-        "Är du säker?  Om du klickar på \"OK\" tar du bort domstolen" +
-        " #{ court.name} och alla dess inskrivna behov och texter"} %>
+                  :data => { :confirm => t( "court.destroy.confirm",
+                                            name: court.name)} %>
 <% end %>
   </li>

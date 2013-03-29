@@ -57,7 +57,7 @@ describe "court_days/index" do
 
   shared_examples_for "on court_days index page" do
     it{ should have_selector(
-      "title", :text => "#{ APPLICATION_NAME} | Rondningar")}
+      "title", :text => "#{ t( 'general.application')} | Rondningar")}
     it{ should have_selector( "h1", :text => "Rondningar")}
   end
 
@@ -101,9 +101,11 @@ describe "court_days/index" do
               ){ should have_content( @booked_user.name)}}
     it{ within( :id, @cd_id){ should have_content( @cd.notes)}}  # no \n!!
     it{ within( :id, @cd_id){
-      should_not have_selector( "input[value='#{ VALUE_UNBOOK_MORNING}']")}}
+      should_not have_selector( "input[value='" +
+                                  t( "booking.morning.unbook") + "']")}}
     it{ within( :id, @cd_id){
-      should_not have_selector( "input[value='#{ VALUE_UNBOOK_AFTERNOON}']")}}
+      should_not have_selector( "input[value='" +
+                                  t( "booking.afternoon.unbook") + "}']")}}
 
     context "going one week back" do
       before do
@@ -181,8 +183,8 @@ describe "court_days/index" do
           within( :id, "court-day-#{ date}") do
             should have_selector( "select")
             should have_selector( "textarea")
-            should have_selector(
-              "input[value='#{ VALUE_SAVE} #{ day_of_week( date)}']")
+            should have_selector( "input[value='" + t( "general.save") +
+                                    " #{ day_of_week( date)}']")
             court_day = CourtDay.find_by_court_id_and_date( court_this, date)
             court_day && court_day.bookings.each do |booking|
               should have_link( booking.user.name,
@@ -203,7 +205,7 @@ describe "court_days/index" do
           select( morning, :from => "morning-#{ date}")
           select( afternoon, :from => "afternoon-#{ date}")
           fill_in( "notes-#{ date}", :with => notes)
-          click_button( "#{ VALUE_SAVE} #{ day_of_week( date)}")
+          click_button( "#{ t( 'general.save')} #{ day_of_week( date)}")
         end
         @changed_obj =
           CourtDay.find_by_court_id_and_date( @admin.court.id, date)
@@ -266,7 +268,7 @@ describe "court_days/index" do
         visit court_days_path
       end
       it{ within( "div.row.heading"){
-            should have_link( "3 ny att aktivera", :href => users_path)}}
+            should have_link( "3 nya att aktivera", :href => users_path)}}
     end
 
     context "unbooking" do
@@ -320,14 +322,16 @@ describe "court_days/index" do
       it{ should_not have_selector( "select")}
       it{ should_not have_selector( "textarea")}
       it{ within( :id, @tested_id){
-        should_not have_selector( 
-          "input[value='#{ VALUE_SAVE} #{ day_of_week( @cd.date)}']")}}
+        should_not have_selector( "input[value='" + t( "general.save") +
+                                    day_of_week( @cd.date) + "']")}}
       it{ within( :id, "#{ @tested_id}-morning"){
-        should have_selector( "input[value='#{ VALUE_BOOK_MORNING}']")}}
+        should have_selector( "input[value='" + t( "booking.morning.book"
+                                                 ) + "']")}}
       it{ within( :id, "#{ @tested_id}-morning"){ should have_content(
         "(#{ @cd.morning - @cd.morning_bookings.count} kvar)")}}
       it{ within( :id, "#{ @tested_id}-afternoon"){
-        should have_selector( "input[value='#{ VALUE_BOOK_AFTERNOON}']")}}
+        should have_selector( "input[value='" + t( "booking.afternoon.book"
+                                                 ) + "']")}}
       it{ within( :id, "#{ @tested_id}-afternoon"){ should have_content(
         "(#{ @cd.afternoon - @cd.afternoon_bookings.count} kvar)")}}
 
@@ -336,8 +340,10 @@ describe "court_days/index" do
           if show
             if date != @cd.date
               within( :id, "court-day-#{ date}") do
-                should_not have_selector( "input[value='#{ VALUE_BOOK_MORNING}']")
-                should_not have_selector( "input[value='#{ VALUE_BOOK_AFTERNOON}']")
+                should_not have_selector( "input[value='" + t( "booking.morning.book"
+                                                             ) + "']")
+                should_not have_selector( "input[value='" + t( "booking.afternoon.book"
+                                                             ) + "']")
               end
             end
           else
@@ -412,9 +418,9 @@ describe "court_days/index" do
 
         before do
           @tested_id = @cd_id
-          within( :id, @tested_id){ click_button VALUE_BOOK_MORNING}
-          @value_book = VALUE_BOOK_MORNING
-          @value_unbook = VALUE_UNBOOK_MORNING
+          within( :id, @tested_id){ click_button t( "booking.morning.book")}
+          @value_book = t( "booking.morning.book")
+          @value_unbook = t( "booking.morning.unbook")
         end
 
         it_behaves_like "any booking button click"
@@ -431,9 +437,9 @@ describe "court_days/index" do
 
         before do
           @tested_id = @cd_id
-          within( :id, @tested_id){ click_button VALUE_BOOK_AFTERNOON}
-          @value_book = VALUE_BOOK_AFTERNOON
-          @value_unbook = VALUE_UNBOOK_AFTERNOON
+          within( :id, @tested_id){ click_button t( "booking.afternoon.book")}
+          @value_book = t( "booking.afternoon.book")
+          @value_unbook = t( "booking.afternoon.unbook")
         end
 
         it_behaves_like "any booking button click"
@@ -452,7 +458,7 @@ describe "court_days/index" do
 
         before do
           @cd.update_attribute :morning, 0
-          within( :id, @cd_id){ click_button VALUE_BOOK_MORNING}
+          within( :id, @cd_id){ click_button t( "booking.morning.book")}
         end
 
         specify{ @cd.morning_bookings.count.should == 0}
@@ -463,23 +469,24 @@ describe "court_days/index" do
 
         before do
           create_and_visit_future_date
-          within( :id, @tested_id){ click_button VALUE_BOOK_MORNING}
+          within( :id, @tested_id){ click_button t( "booking.morning.book")}
         end
 
         it{ shows @tested_date}
         it{ within( :id, @tested_id){ should_not have_selector(
-              "input[value='#{ VALUE_BOOK_MORNING}']")}}
+              "input[value='" + t( "booking.morning.book") + "']")}}
         it{ within( :id, @tested_id){
-          should have_selector( "input[value='#{ VALUE_UNBOOK_MORNING}']")}}
+          should have_selector( "input[value='" + t( "booking.morning.unbook"
+                                                   ) + "']")}}
 
         context "unbooking" do
           before{ within( :id, @tested_id
-                        ){ click_button VALUE_UNBOOK_MORNING}}
+                        ){ click_button t( "booking.morning.unbook")}}
           it{ shows @tested_date}
           it{ within( :id, @tested_id){ should have_selector(
-                "input[value='#{ VALUE_BOOK_MORNING}']")}}
+                "input[value='" + t( "booking.morning.book") + "']")}}
           it{ within( :id, @tested_id){ should_not have_selector(
-                "input[value='#{ VALUE_UNBOOK_MORNING}']")}}
+                "input[value='" + t( "booking.morning.unbook") + "']")}}
         end
       end
     end

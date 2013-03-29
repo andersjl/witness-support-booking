@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 class User < ActiveRecord::Base
 
   class UserModelRoleError < StandardError; end
@@ -10,23 +8,14 @@ class User < ActiveRecord::Base
   before_save { |user| user.email = email.downcase}
   before_save :create_remember_token
 
-  validates :court,
-            :presence   => { :message => "Domstol saknas"}
-  validates :role,
-            :presence   => true, :inclusion  => { :in => USER_ROLES}
-  validates :email, 
-            :presence   => { :message => "Mejladress saknas"},
-            :uniqueness => { :scope => :court_id, :case_sensitive => false,
-                             :message =>
-                             "Mejladressen är redan använd vid denna domstol"}
-  validates :name,
-            :presence   => { :message => "Namn saknas"}
-  validates :password,
-            :presence   => { :message => "Lösenord saknas"},
-            :length     => { :minimum => 6,
-                             :message => "Lösenord minst 6 tecken"}
-  validates :password_confirmation,
-            :presence   => { :message => "Bekräftelse av lösenord saknas"}
+  validates :court, presence: true
+  validates :role, presence: true, inclusion: { :in => USER_ROLES}
+  validates :email, presence: true,
+                    uniqueness: { scope: :court_id, case_sensitive: false,
+                                  message: I18n.t( "user.email.taken")}
+  validates :name, presence: true
+  validates :password, presence: true, length: { :minimum => 6}
+  validates :password_confirmation, presence: true
 
   belongs_to :court
   has_many :bookings, :dependent => :destroy

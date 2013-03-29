@@ -18,7 +18,7 @@ describe "User pages" do
 
     it{ should have_selector( "h1", :text => "Ny användare")}
     it{ should have_selector(
-      "title", :text => "#{ APPLICATION_NAME} | Ny användare")}
+      "title", :text => t( "general.application") + " | Ny användare")}
 
     context "with invalid information" do
       it "should not create a user" do
@@ -31,10 +31,10 @@ describe "User pages" do
         User.destroy_all
         Court.destroy_all
         visit sign_up_path
-        select  "Default",     :from => "user_court_id"
-        fill_in "user_name",     :with => "Example User"
-        fill_in "user_email",    :with => "user@example.com"
-        fill_in "user_password", :with => "foobar"
+        select  t( "court.default"), :from => "user_court_id"
+        fill_in "user_name",         :with => "Example User"
+        fill_in "user_email",        :with => "user@example.com"
+        fill_in "user_password",     :with => "foobar"
         fill_in "user_password_confirmation", :with => "foobar"
         click_button submit
       end
@@ -66,7 +66,7 @@ describe "User pages" do
         end
         it{ @user.should_not be_enabled}
         it{ should_not have_selector(
-          "title", :text => "#{ APPLICATION_NAME} | ")}
+          "title", :text => t( "general.application") + " | ")}
         it{ should have_content(
     "Du kommer att få ett mejl till user@example.com när du kan börja boka!")}
         it{ should have_selector( "div.alert.alert-success",
@@ -158,7 +158,7 @@ describe "User pages" do
     end
 
     it{ should have_selector(
-      "title", :text => "#{ APPLICATION_NAME} | Användare")}
+      "title", :text => t( "general.application") + " | Användare")}
     it{ should have_selector "h1",
             :text => "Alla användare vid #{ @user.court.name}"}
     it{ should_not have_content( "Sätt nytt lösenord")}
@@ -174,7 +174,7 @@ describe "User pages" do
         click_link( @other.name)
       end
       it{ should have_selector(
-            "title", :text => "#{ APPLICATION_NAME} | #{ @other.name}")}
+            "title", :text => t( "general.application") + " | #{ @other.name}")}
     end
 
     it "lists each user with link" do
@@ -280,7 +280,7 @@ describe "User pages" do
     shared_examples_for "viewing any user" do
       it{ should have_selector( "h1",    :text => @shown.name)}
       it{ should have_selector(
-        "title", :text => "#{ APPLICATION_NAME} | #{ @shown.name}")}
+        "title", :text => t( "general.application") + " | #{ @shown.name}")}
     end
 
     context "self" do
@@ -418,13 +418,13 @@ describe "User pages" do
             @old_name     = @edited.name
             @old_pw       = @edited.password
             fill_in "Lösenord", :with => @new_pw
-            fill_in "Bekräfta lösenord", :with => @new_pw
+            fill_in "Lösenord igen", :with => @new_pw
             click_button "Spara ändringar"
             @edited.reload
           end
 
           it{ should have_selector(
-            "title", :text => "#{ APPLICATION_NAME} | Användare")}
+            "title", :text => t( "general.application") + " | Användare")}
           it{ within( "div.alert.alert-success"
                     ){ should have_content( "Lösenordet ändrat")}}
           specify "still logged in as court admin" do
@@ -450,7 +450,7 @@ describe "User pages" do
     shared_examples_for "editing any user" do
       it{ should have_selector( "h1",    :text => "Ändra #{ @edited.name}")}
       it{ should have_selector(
-        "title", :text => "#{ APPLICATION_NAME} | Ändra #{ @edited.name}")}
+        "title", :text => t( "general.application") + " | Ändra #{ @edited.name}")}
     end
 
     shared_examples_for "password change" do
@@ -458,13 +458,13 @@ describe "User pages" do
       it "old password does not work" do
         fake_log_in @edited, @old_pw
         should have_selector( "title",
-                              :text => "#{ APPLICATION_NAME} | Logga in")
+                              :text => t( "general.application") + " | Logga in")
         should have_selector( "div.alert.alert-error")
       end
       it "new password works" do
         fake_log_in @edited, @new_pw
         should have_selector( "title",
-                              :text => "#{ APPLICATION_NAME} | Rondningar")
+                              :text => t( "general.application") + " | Rondningar")
       end
     end
 
@@ -522,7 +522,7 @@ describe "User pages" do
 
         it_behaves_like "password change"
         it{ should have_selector(
-          "title", :text => "#{ APPLICATION_NAME} | Rondningar")}
+          "title", :text => t( "general.application") + " | Rondningar")}
         it{ within( "div.alert.alert-success"
                   ){ should have_content( "Uppgifterna sparade")}}
         it{ should have_link( "Logga ut", :href => log_out_path)}

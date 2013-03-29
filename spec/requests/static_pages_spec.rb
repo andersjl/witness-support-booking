@@ -9,11 +9,11 @@ describe "Static pages" do
   describe "Home page" do
 
     shared_examples_for "any user's start page" do
-      it{ should have_selector "title", :text => APPLICATION_NAME}
-      it{ should have_link APPLICATION_NAME, :href => root_path}
+      it{ should have_selector "title", :text => t( "general.application")}
+      it{ should have_link t( "general.application"), :href => root_path}
       it{ should have_link "Hjälp", :href => help_path}
-      it{ should have_link "Om webbsidan", :href => about_path}
-      it{ should have_selector "h1", :text => APPLICATION_NAME}
+      it{ should have_link "Om webbokningen", :href => about_path}
+      it{ should have_selector "h1", :text => t( "general.application")}
     end
 
     shared_examples_for "any enabled user's start page" do
@@ -44,15 +44,15 @@ describe "Static pages" do
   describe "Help page" do
     before( :each) { visit help_path}
     it { should have_selector( "h1", :text => "Hjälpsida")}
-    it { should have_selector( "title",
-                               :text => "#{ APPLICATION_NAME} | Hjälp")}
+    it { should have_selector(
+           "title", :text => t( "general.application") + " | Hjälp")}
   end
 
   describe "About page" do
     before( :each) { visit about_path}
-    it { should have_selector( "h1", :text => "Om webbsidan")}
+    it { should have_selector( "h1", :text => "Om webbokningen")}
     it { should have_selector( "title",
-                               :text => "#{ APPLICATION_NAME} | Om")}
+                               :text => t( "general.application") + " | Om")}
   end
 
 end

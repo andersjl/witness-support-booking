@@ -1,20 +1,23 @@
-<% # encoding: UTF-8 %>
-<% provide( :title, "Logga in") %>
-<h1>Logga in</h1>
+<% provide( :title, t( "general.log_in")) %>
+<h1><%= t( "general.log_in") %></h1>
 
 <div class="row">
   <div class="span6 offset3">
     <%= form_for( :session, :url => sessions_path) do |f| %>
-      <%= f.label :court_id, "Domstol" %>
+      <%= f.label :court_id, t( "activerecord.attributes.user.court") %>
       <%= f.collection_select :court_id, @courts, :id, :name,
-                              :prompt => "Välj domstol" %>
-      <%= f.label :email, "E-post" %>
+                              :prompt => t( "court.prompt") %>
+      <%= f.label :email, t( "activerecord.attributes.user.email") %>
       <%= f.text_field :email %>
-      <%= f.label :password, "Lösenord" %>
+      <%= f.label :password, t( "activerecord.attributes.user.password") %>
       <%= f.password_field :password %>
-      <%= f.submit "Logga in", :class => "btn btn-large btn-primary" %>
+      <%= f.submit t( "general.log_in"),
+                   :class => "btn btn-large btn-primary" %>
     <% end %>
-    <p>Inget lösenord? <%= link_to "Registrera ett nu!", sign_up_path %></p>
+    <p>
+      <%= t( "sessions.new.no_password_p") %>
+      <%= link_to t( "sessions.new.register"), sign_up_path %>
+    </p>
   </div>
 </div>
 

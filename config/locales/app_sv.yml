@@ -1,0 +1,201 @@
+# application specific swedish localization
+
+sv:
+
+# Active Record models and attributes
+  activerecord:
+    models:
+      booking: bokning
+      court: domstol
+      court_day: rättegångsdag
+      database: databas
+      user: användare
+    attributes:
+      booking:
+        user: Vittnesstöd
+        court_day: Datum
+        session: Tidpunkt
+      court:
+        name: Namn
+        link: Länk till hemsida
+      court_day:
+        court: Domstol
+        date: Datum
+        morning: fm
+        afternoon: em
+        notes: Noteringar
+      database:
+        all_data: Alla data
+      user:
+        court: Domstol
+        name: Namn
+        email: Mejladress
+        password: Lösenord
+        password_confirmation: Lösenord igen
+
+# relevant for any subject matter
+  general:
+    about:
+      long: Om webbokningen
+      short: Om
+    application: Vittnesstöd
+    date: datum
+    destroy: Ta bort
+    edit: Ändra
+    help:
+      long: Hjälpsida
+      short: Hjälp
+    log_in: Logga in
+    log_out: Logga ut
+    ok: OK
+    save: Spara
+
+# subject matter booking, regardless of controller
+  booking:
+    court_mismatch: %{court_day} och %{user} tillhör olika domstolar
+    full: %{court_day} är fullbokad %{session}
+    afternoon:
+      book: Boka em
+      long: eftermiddag
+      short: em
+      unbook: Avboka em
+    morning:
+      book: Boka fm
+      long: förmiddag
+      short: fm
+      unbook: Avboka fm
+    unbook:
+      confirm: Avboka %{name} %{date} %{session}?
+    unbooked: %{user} avbokad %{date} %{session}
+
+# subject matter court, regardless of controller
+  court:
+    change_name_or_link: Ändra namn eller länk
+    changed: Uppgifterna sparade
+    create: Skapa ny domstol
+    created: Domstol %{court} skapad
+    default: Automatgenererad första domstol
+    destroy:
+      confirm: |
+        Är du säker?  Om du klickar på OK tar du bort domstolen %{name} och
+        alla dess inskrivna behov och texter
+    destroyed: Domstol %{court} borttagen
+    prompt: Välj domstol
+
+# courts controller
+  courts:
+    edit:
+      title: Ändra domstol %{name}
+    index:
+      title: Domstolar
+
+# subject matter court day, regardless of controller
+  court_day:
+    date:
+      taken: redan använt vid denna domstol
+      weekend: %{date} är en %{dow}
+    empty: arbetsuppgifter saknas den %{date} vid %{court}
+    req:
+      label: Behov
+      left:
+        long: %{count} kvar att boka
+        short: %{count} kvar
+      not_met:
+        one: %{count} blev aldrig bokad
+        other: %{count} blev aldrig bokade
+      over: överbokat!
+
+# court_days controller
+  court_days:
+    index:
+      title: Rondningar
+      users_to_enable:
+        one: %{count} ny att aktivera
+        other: %{count} nya att aktivera
+    week_picker:
+      prompt: |
+        Växla vecka med pilarna eller skriv in ett datum i den önskade veckan
+        och tryck "OK"
+
+# subject matter database, regardless of controller
+  database:
+    created: Ny databas inläst. Du måste logga in igen.
+    create:
+      confirm: |
+        Är du säker? Om inläsningen misslyckas finns varken användare eller
+        bokningar kvar!
+      label: RADERA HELA DATABASEN och ersätt den med filen
+    error:
+      message: "%{reason}: %{message}. Databasen är orörd."
+      parse: Inläsningen misslyckades
+      exception: Undantag %{exception}
+
+# databases controller
+  databases:
+    new:
+      title: Läs in fil
+    show:
+      file_name: vittnesstöd_databas
+
+# sessions controller
+  sessions:
+    create:
+      error: Ogiltig kombination av domstol, mejladress och lösenord
+    new:
+      no_password_p: Inget lösenord?
+      register: Registrera ett nu!
+
+# static_pages controller
+  static_pages:
+    home:
+      disabled: Du kommer att få ett mejl till %{email} när du kan börja boka!
+      sign_up: Registrera dig
+
+# subject matter user, regardless of controller
+  user:
+    changed:
+      message: Uppgifterna sparade
+      password: Lösenordet ändrat för %{name}
+    created: Välkommen %{name}!
+    destroy:
+      confirm: Ta bort %{name}?
+    destroyed: Användare %{user} borttagen
+    disable:
+      label: Deaktivera
+      confirm: Deaktivera %{name}?
+    email:
+      taken: redan använd vid denna domstol
+    enable:
+      label: Aktivera
+      confirm: Aktivera %{name}?
+    promote:
+      label: Bemyndiga
+      confirm: Bemyndiga %{user} att administrera vittnesstöd vid %{court}?
+    role:
+      admin: domstolsadministratör
+      changed: Roll för användare %{name} ändrad från %{from} till %{to}
+      changed_fail: |
+        Roll för användare %{name} kunde inte ändras från %{from} till %{to}
+      disabled: deaktiverad
+      master: webbmaster
+      normal: vittnesstöd
+
+# users controller
+  users:
+    edit:
+      save: Spara ändringar
+      title: Ändra %{name}
+    index:
+      heading:
+        long: Alla användare vid %{court}
+        short: Alla användare
+      rescue: Sätt nytt lösenord
+      title: Användare
+    new:
+      title: Ny användare
+      password: Välj lösenord
+      password_confirm: Bekräfta lösenord
+      save: Registrera ny användare
+    show:
+      title: %{name}
+

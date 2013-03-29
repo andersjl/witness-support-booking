@@ -1,23 +1,22 @@
-<% # encoding: UTF-8 %>
-<% provide( :title, 'Ny användare') %>
-<h1>Ny användare</h1>
+<% provide( :title, t( "users.new.title")) %>
+<h1><%= t( "users.new.title") %></h1>
 <div class="row">
   <div class="span6 offset3">
     <%= form_for( @user) do |f| %>
       <%= render :partial => "shared/error_messages",
                  :locals => { :model => @user} %>
-      <%= f.label :court_id, "Domstol" %>
+      <%= f.label :court_id %>
       <%= f.collection_select :court_id, @courts, :id, :name,
-                              :prompt => "Välj domstol" %>
-      <%= f.label :name, "Namn" %>
+                              prompt: t( "court.prompt") %>
+      <%= f.label :name %>
       <%= f.text_field :name %>
-      <%= f.label :email, "E-post"%>
+      <%= f.label :email%>
       <%= f.text_field :email %>
-      <%= f.label :password, "Välj lösenord" %>
+      <%= f.label :password, t( "users.new.password") %>
       <%= f.password_field :password %>
-      <%= f.label :password_confirmation, "Bekräfta lösenord" %>
+      <%= f.label :password_confirmation, t( "users.new.password_confirm") %>
       <%= f.password_field :password_confirmation %>
-      <%= f.submit "Registrera ny användare",
+      <%= f.submit t( "users.new.save"),
                    :class => "btn btn-large btn-primary" %>
     <% end %>
   </div>

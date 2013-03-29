@@ -2,7 +2,7 @@
    too_late = court_day.date < Date.today
    if admin? && !too_late %>
         <div class="span1">
-          <%= submit_tag( "#{ VALUE_SAVE} #{ day_of_week date}") %>
+          <%= submit_tag( "#{ t( 'general.save')} #{ day_of_week date}") %>
         </div>
 <% else %>
         <div class="span1 weekday"><%= day_of_week date %></div>
@@ -24,10 +24,11 @@
               <div class="span<%= session_span %>">
 <%       if too_late
            if parallel - taken > 0 %>
-                <%= parallel - taken %> blev aldrig bokad
+                <%= t( "court_day.req.not_met",
+                      count: parallel - taken) %>
 <%         end
          elsif admin? %>
-                <%= label_tag session, "Behov" %>
+                <%= label_tag session, t( "court_day.req.label") %>
                 <%= select_tag "#{ session}-#{ date}",
                   options_for_select( (PARALLEL_SESSIONS_MAX + 1).times.
                                         inject( [ ]){ |acc, n| acc << n},
@@ -46,27 +47,31 @@
 <%           else %>
                 <div>
 <%           end %>
-                  <%= parallel - taken %> kvar att boka
+                  <%= t( "court_day.req.left.long",
+                         count: parallel - taken) %>
                 </div>
 <%         elsif parallel - taken < 0 %>
-                <div class="overbooked">överbokat!</div>
+                <div class="overbooked">
+                  <%= t( "court_day.req.over").capitalize %>
+                </div>
 <%         end %>
 <%       elsif booked
            if taken > parallel %>
                 <div class="overbooked">
 <%         end %>
-                  <%= submit_tag session == :afternoon ?
-                        VALUE_UNBOOK_AFTERNOON : VALUE_UNBOOK_MORNING %>
+                  <%= submit_tag t( "booking.#{ session}.unbook"
+                                  ).capitalize %>
 <%         if taken > parallel %>
-                  (överbokat!)
+                  (<%= t( "court_day.req.over") %>)
                 </div>
 <%         else %>
-                (<%= parallel - taken %> kvar)
+                (<%= t( "court_day.req.left.short",
+                        count: parallel - taken) %>)
 <%         end
          elsif parallel - taken > 0 %>
-                <%= submit_tag session == :afternoon ? VALUE_BOOK_AFTERNOON :
-                                                     VALUE_BOOK_MORNING %>
-                (<%= parallel - taken %> kvar)
+                <%= submit_tag t( "booking.#{ session}.book").capitalize %>
+                (<%= t( "court_day.req.left.short",
+                        count: parallel - taken) %>)
 <%       end %>
               </div>
             </div>
@@ -79,11 +84,13 @@
 <%       end
          if admin? %>
                 <%= link_to booking.user.name, booking_path( booking),
-                            :method => :delete,
-                            :data => { :confirm => "Avboka #{
-                              booking.user.name} #{
-                              booking.court_day.date} #{
-                              CourtDay.session_sv booking.session}?"} %>
+                            method: :delete,
+                            data: { confirm:
+                                    t( "booking.unbook.confirm",
+                                       name: booking.user.name,
+                                       date: booking.court_day.date,
+                                       session: t( "booking.#{ booking.session
+                                                             }.short"))} %>
 <%       else %>
                 <%= booking.user.name %>
 <%       end

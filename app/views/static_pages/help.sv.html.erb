@@ -1,0 +1,112 @@
+<% provide( :title, "Hjälp") %>
+<h1>Hjälpsida</h1>
+<div class="row">
+  <div class="offset2 span8">
+    <p>
+      Här hittar du lite hjälp att boka
+      <%= link_to "vittnesstöd", WS_DEFINITION_URL %>.
+    </p>
+    <h2>Registrering</h2>
+    <p>
+      För att kunna använda det nya systemet måste du ha en inloggning. Gör så
+      här:
+    </p>
+    <ul>
+      <li>Gå in på sidan <%= link_to root_url, root_path %></li>
+      <li>Klicka på "Registrera dig"</li>
+      <li>
+        Du kommer då in på registreringssidan. Välj domstol från listan, fyll
+        i för- och efternamn, mejladress och välj lösenord (minst 6 tecken)
+      </li>
+      <li>Klicka på "Registrera ny användare"</li>
+    </ul>
+    <p>
+      Innan du kan använda systemet måste du godkänas som användare av den som
+      administrerar vittnesstöd vid domstolen. När det är gjort får du ett
+      mejl från denna. Då kan du logga in med det lösenord du angivit vid
+      registreringen.
+    </p>
+    <p>
+      OBS att du då <em>inte</em> ska klicka på "Registrera dig"!  I stället
+      ska du klicka på <%= link_to "\"Logga in\"", log_in_path %> i menyraden
+      bredvid "VITTNESSTÖD" upptill.
+    </p>
+    <p>
+      (Om du i stället ser "Logga ut" i menyraden, klicka då på den först så
+      dyker "Logga in" upp.)
+    </p>
+    <h2>Inloggning</h2>
+    <ul>
+      <li>
+        Gå in på <%= link_to "\"Logga in\"", log_in_path %> i menyraden bredvid
+        "VITTNESSTÖD" upptill.
+      </li>
+      <li>
+        Välj domstol från listan om inte din domstol visas
+      </li>
+      <li>
+        Fyll i mejladress och lösen
+      </li>
+      <li>
+        Tryck Logga In
+      </li>
+    </ul>
+    <p>
+      Du kommer in i systemet och hamnar automatiskt på innevarande vecka.
+    </p><p>
+      Du ser vilka bokningar du har, dom är med fetstil.
+    </p><p>
+      Du ser och så alla andras bokningar, och vad som är obokat. Finns det
+      att boka finns det en knapp "boka fm", "boka em". Du ser också hur många
+      platser det finns kvar t.ex. "(1 kvar)".
+    </p><p>
+      I kolumnen "Noteringar" kan administratören skriva in information för
+      dagen.
+    </p>
+    <h2>Bokning</h2>
+    <p>
+      Tryck på en bokningsknapp. Ditt namn kommer upp, och antalet lediga
+      platser minskar.
+    </p>
+    <h2>Växla vecka</h2>
+    <p>
+      Två sätt:
+    </p>
+    <ul>
+      <li>Pilknapparna längst ner</li>
+      <li>Skriv in ett datum i den veckan du vill till, tryck sedan på OK</li>
+    </ul>
+    <h2>Avbokning</h2>
+    <p>
+      Du kan avboka dig genom att trycka på Avboka. OBS! Är det mindre än två
+      dagar kvar till tjänstgöringsdagen, komplettera med ett mejl eller SMS
+      till administratören!
+    </p>
+    <h2>Glömt lösen?</h2>
+    <p>
+      Mejla administratören som kan ge dig ett nytt lösenord.
+    </p>
+    <h2>Ändra dina uppgifter</h2>
+    <p>
+      Gå in på <%= link_to "\"Användare\"", users_path %> i menyraden bredvid
+      "VITTNESSTÖD" upptill. Då visas en lista på alla användare.  Klicka på
+      ditt eget namn.  Då visas en sida med ditt eget namn och mejladress, och
+      en länk "Ändra".  Klicka på den så kommer du till ett formulär, där du
+      kan:
+    </p>
+    <ul>
+      <li>Ändra ditt för- och efternamn</li>
+      <li>Ändra din mejladress</li>
+      <li>Ändra ditt lösenord genom att skriva in ett nytt två gånger</li>
+    </ul>
+    <p>
+      Även om du inte ändrar lösenordet måste du skriva in det två gånger här,
+      annars tar inte de andra ändringarna heller.
+    </p>
+    <p>
+      Domstol kan inte ändras, om du ska byta domstol får du registrera dig
+      igen som ny användare vid den domstolen.
+    </p>
+  </div>
+</div>
+

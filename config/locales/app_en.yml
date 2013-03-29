@@ -1,0 +1,37 @@
+# application specific English localization.  Should not depend on region?
+
+en:
+  booking:
+    unbooked_msg: %{user} unbooked %{date} %{session}
+    session:
+      afternoon:
+        long: Afternoon
+        short: PM
+      morning:
+        long: Morning
+        short: AM
+  court:
+    change_msg: Changes saved
+    create_msg: Court %{court} created
+    default_name: Automatically generated first court
+    destroy_msg: Court %{court} removed
+  database:
+    create_msg: New databese loaded. You must log in again.
+    error_msg: '%{reason}: %{message}. The database is intact.'
+    parse_error: Loading failed
+    exception_error: Exception %{exception}
+  session:
+    error_msg: Ogiltig kombination av domstol, e-post och lösenord
+  user:
+    change_msg: Changes saved
+    change_pw_msg: Password changed for %{name}
+    create_msg: You are welcome, %{name}!
+    destroy_msg: User %{user} removed
+    role:
+      admin: court administrator
+      cange_msg: User %{name} changed role from %{from} to %{to}
+      cange_fail: Failed to make user %{name} change role from %{from} to %{to}
+      disabled: disabled
+      master: web master
+      normal: witness support
+

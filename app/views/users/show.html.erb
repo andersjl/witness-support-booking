@@ -1,5 +1,4 @@
-<% # encoding: UTF-8 %>
-<% provide( :title, @user.name) %>
+<% provide( :title, t( "users.show.title", name: @user.name)) %>
 <div class="row">
   <aside class="span12">
     <section>

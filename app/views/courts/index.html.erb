@@ -1,6 +1,5 @@
-<% # encoding: UTF-8 %>
-<% provide( :title, "Domstolar") %>
-<h1>Domstolar</h1>
+<% provide( :title, t( "courts.index.title")) %>
+<h1><%= t( "courts.index.title") %></h1>
 
 <%= render :partial => "shared/error_messages",
            :locals => { :model => @new_court} %>
@@ -8,11 +7,11 @@
   <%= render @courts %>
   <li id="court-new">
     <%= form_for @new_court, :html => { :class => "form-inline"} do |f| %> 
-      <%= f.label :name, "Skapa ny domstol" %>
+      <%= f.label :name, t( "court.create") %>
       <%= f.text_field :name %>
-      <%= f.label :link, "Länk till hemsida" %>
+      <%= f.label :link %>
       <%= f.text_field :link %>
-      <%= f.submit "Spara" %>
+      <%= f.submit t( "general.save") %>
     <% end %>
   </li>
 </ul>

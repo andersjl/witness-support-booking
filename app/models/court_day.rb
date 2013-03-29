@@ -1,14 +1,10 @@
-# encoding: UTF-8
-
 class CourtDay < ActiveRecord::Base
 
   attr_accessible :afternoon, :court, :date, :morning, :notes
-  validates :court, :presence => { :message => "Domstol saknas"}
-  validates :date,
-            :presence => { :message => "Datum saknas"},
-            :uniqueness =>
-            { :scope => :court_id,
-              :message => "Datumet är redan använt för denna domstol"}
+  validates :court, :presence => true
+  validates :date, :presence => true,
+            :uniqueness => { scope: :court_id,
+                             message: I18n.t( "court_day.date.taken")}
   validates :morning, :inclusion => { :in => 0 .. PARALLEL_SESSIONS_MAX}
   validates :afternoon, :inclusion => { :in => 0 .. PARALLEL_SESSIONS_MAX}
   validate :never_on_weekends
@@ -65,16 +61,16 @@ class CourtDay < ActiveRecord::Base
 
   def never_on_weekends
     return unless date  # handled by presence
-    case date.cwday
-    when 6 then error = "lördag"
-    when 7 then error = "söndag"
+    if date.cwday > 5
+      errors[ :base] << t( "court_day.date.weekend",
+                           date: date, dow: day_of_week( date))
     end
-    errors[ :base] << "#{ date} är en #{ error}" if error
   end
 
   def there_must_be_something_to_do
-    errors[ :base] <<
-      "Arbetsuppgifter saknas den #{ date}" unless something_to_do?
+    unless something_to_do?
+      errors[ :base] << t( "court_day.empty", date: date, court: court)
+    end
   end
 
   def something_to_do?

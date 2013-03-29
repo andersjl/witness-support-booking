@@ -9,9 +9,10 @@ extend Authorization
     destroyed = Booking.find( params[ :id])
     user = destroyed.user.name
     date = destroyed.court_day.date
-    session = CourtDay.session_sv destroyed.session
+    session = t "booking.#{ destroyed.session}.long"
     destroyed.destroy
-    flash[ :success] = "#{ user} avbokad #{ date} #{ session}"
+    flash[ :success] = t "booking.unbooked",
+                         user: user, date: date, session: session
     redirect_to court_days_path
   end
 end

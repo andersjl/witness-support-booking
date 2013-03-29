@@ -1,5 +1,5 @@
-<%  provide( :title, 'Rondningar') %>
-    <h1>Rondningar</h1>
+<%  provide( :title, t( "court_days.index.title")) %>
+    <h1><%= t( "court_days.index.title") %></h1>
 <% if @court_day %>
 <%= render :partial => "shared/error_messages",
            :locals => { :model => @court_day} %>
@@ -8,14 +8,19 @@
    notes_span = 4 %>
     <div id="court-days">
       <div class="row heading">
-        <div class="offset1 span1">Datum</div>
-        <div class="span<%= session_span %>">Förmiddag</div>
-        <div class="span<%= session_span %>">Eftermiddag</div>
+        <div class="offset1 span1"><%= t( "general.date").capitalize %></div>
+        <div class="span<%= session_span %>">
+          <%= t( "booking.morning.long").capitalize %>
+        </div>
+        <div class="span<%= session_span %>">
+          <%= t( "booking.afternoon.long").capitalize %>
+        </div>
         <div class="span<%= notes_span %>">
 <% disabled = User.where "role = ?", "disabled"
    if  disabled.count > 0 && current_user.admin? %>
-          <%= link_to "#{ disabled.count} ny att aktivera", users_path,
-                  :class => "disabled-user" %>
+          <%= link_to t( "court_days.index.users_to_enable",
+                         count: disabled.count),
+                      users_path, :class => "disabled-user" %>
 <% else %>
           Noteringar
 <% end %>

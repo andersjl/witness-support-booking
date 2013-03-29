@@ -1,6 +1,5 @@
-<% # encoding: UTF-8 %>
-<% provide( :title, 'Användare') %>
-<h1>Alla användare<%= @court && " vid #{ @court.name}" %></h1>
-
+<% provide( :title, t( "users.index.title")) %>
+<h1><%= @court ? t( "users.index.heading.long", court: @court.name) :
+                 t( "users.index.heading.short") %></h1>
 <ul class="index"><%= render @users %></ul>
 

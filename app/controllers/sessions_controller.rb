@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 class SessionsController < ApplicationController
 
   class Session
@@ -21,7 +19,7 @@ class SessionsController < ApplicationController
       log_in user
       redirect_to court_days_path
     else
-      flash[ :error] = "Ogiltig kombination av domstol, e-post och lösenord"
+      flash[ :error] = t "sessions.create.error"
       redirect_to log_in_path
     end
   end

@@ -1,4 +1,3 @@
-<% # encoding: UTF-8 %>
 <li id="user-<%= user.id %>">
 <% if master? %>
   <%= link_to user.court.name, user.court.link %> |
@@ -6,26 +5,29 @@
   <%= link_to user.name, user %>
 <% if admin? && current_user > user %>
   <% unless user.enabled? %>
-    | <%= link_to "Aktivera", enable_user_path( user),
+    | <%= link_to t( "user.enable.label"), enable_user_path( user),
                   :method => :put,
-                  :data => { :confirm => "Aktivera #{ user.name}?"},
+                  :data => { :confirm => t( "user.enable.confirm",
+                                            name: user.name)},
                   :class => "disabled-user" %>
   <% end %>
-    | <%= link_to "Sätt nytt lösenord", edit_user_path( user) %>
-    | <%= link_to "Ta bort", user,
+    | <%= link_to t( "users.index.rescue"), edit_user_path( user) %>
+    | <%= link_to t( "general.destroy"), user,
                   :method => :delete,
-                  :data => { :confirm => "Ta bort #{ user.name}?"} %>
+                  :data => { :confirm => t( "user.destroy.confirm",
+                                            name: user.name)} %>
   <% if user.enabled? %>
-    | <%= link_to "Deaktivera", disable_user_path( user),
+    | <%= link_to t( "user.disable.label"), disable_user_path( user),
                   :method => :put,
-                  :data => { :confirm => "Deaktivera #{ user.name}?"} %>
+                  :data => { :confirm => t( "user.disable.confirm",
+                                            name: user.name)} %>
   <% end %>
   <% if master? && !user.admin? %>
-    | <%= link_to "Bemyndiga", promote_user_path( user),
+    | <%= link_to t( "user.promote.label"), promote_user_path( user),
                   :method => :put,
-                  :data => { :confirm => "Bemyndiga #{ user.name} att" +
-                                         " administrera vittnesstöd vid #{
-                                         user.court.name}?"} %>
+                  :data => { :confirm => t( "user.promote.confirm",
+                                            user: user.name,
+                                            court: user.court.name)} %>
   <% end %>
 <% end %>
 </li>
