@@ -94,20 +94,21 @@ describe "User model" do
       it{ should_not be_valid}
     end
 
-    context "when name is not present" do
-      before{ @user.name = " "}
-      it{ should_not be_valid}
-    end
-
     context "when email is not present" do
       before{ @user.email = " "}
       it{ should_not be_valid}
     end
 
     context "when email address is taken" do
-      before{ @user_with_same_email =
-                create_test_user :email => @user.email.upcase}
+      before do
+        @user_with_same_email = create_test_user :email => @user.email.upcase
+        @user.valid?
+      end
       it{ should_not be_valid}
+      context "errors" do
+        subject{ @user.errors}
+        its( [ :email]){ should include( t( "user.email.taken"))}
+      end
       context "on another court" do
         before{ @user_with_same_email.
                   update_attribute :court, Court.find_by_name( "Other Court")}
@@ -115,9 +116,19 @@ describe "User model" do
       end
     end
 
+    context "when name is not present" do
+      before{ @user.name = " "}
+      it{ should_not be_valid}
+    end
+
     context "when password is not present" do
       before{ @user.password = @user.password_confirmation = " "}
       it{ should_not be_valid}
+    end
+
+    describe "with a password that's too short" do
+      before{ @user.password = @user.password_confirmation = "a" * 5}
+      it{ should be_invalid}
     end
 
     context "when password confirmation is nil" do
@@ -128,11 +139,6 @@ describe "User model" do
     describe "when password doesn't match confirmation" do
       before{ @user.password_confirmation = "mismatch"}
       it{ should_not be_valid}
-    end
-
-    describe "with a password that's too short" do
-      before{ @user.password = @user.password_confirmation = "a" * 5}
-      it{ should be_invalid}
     end
 
     describe "when role is missing" do

@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 require "spec_helper"
 
 describe "User pages" do
@@ -14,11 +12,11 @@ describe "User pages" do
   describe "sign_up process" do
 
     before{ visit sign_up_path}
-    let( :submit){ "Registrera ny användare"}
+    let( :submit){ t( "users.new.save")}
 
-    it{ should have_selector( "h1", :text => "Ny användare")}
-    it{ should have_selector(
-      "title", :text => t( "general.application") + " | Ny användare")}
+    it{ should have_selector( "h1", :text => t( "users.new.title"))}
+    it{ should have_selector( "title",
+      :text => "#{ t( 'general.application')} | #{ t( 'users.new.title')}")}
 
     context "with invalid information" do
       it "should not create a user" do
@@ -66,16 +64,16 @@ describe "User pages" do
         end
         it{ @user.should_not be_enabled}
         it{ should_not have_selector(
-          "title", :text => t( "general.application") + " | ")}
+              "title", :text => "#{ t( 'general.application')} | ")}
         it{ should have_content(
-    "Du kommer att få ett mejl till user@example.com när du kan börja boka!")}
+              t( "static_pages.home.disabled", email: "user@example.com"))}
         it{ should have_selector( "div.alert.alert-success",
-                                  :text => "Välkommen #{ @user.name}")}
+              :text => t( "user.created", name: @user.name))}
         it{ should have_link( @user.court.name, :href => @user.court.link)}
-        it{ should_not have_link( "Rondningar")}
-        it{ should_not have_link( "Användare")}
-        it{ should have_link( "Logga ut", :href => log_out_path)}
-        it{ should_not have_link( "Logga in")}
+        it{ should_not have_link( t( "court_days.index.title"))}
+        it{ should_not have_link( t( "users.index.title"))}
+        it{ should have_link( t( "general.log_out"), :href => log_out_path)}
+        it{ should_not have_link( t( "general.log_in"))}
         it "should send an email to admin"
 
         context "when enabled by admin" do
@@ -85,7 +83,7 @@ describe "User pages" do
                                       :role => "admin", :name => "Admin"
             fake_log_in @admin
             visit users_path
-            within( "li#user-#{ @user.id}"){ click_link( "Aktivera")}
+            within( "li#user-#{ @user.id}"){ click_link( t( "user.enable.label"))}
           end
 
           it{ @user.reload.should be_enabled}
@@ -107,46 +105,48 @@ describe "User pages" do
     shared_examples_for "any admin" do  # @disabl, @normal, @admin
 
       it{ within( "li#user-#{ @disabl.id}"
-                ){ should have_link( "Sätt nytt lösenord",
+                ){ should have_link( t( "users.index.rescue"),
                                      :href => edit_user_path( @disabl))}}
       it{ within( "li#user-#{ @normal.id}"
-                ){ should have_link( "Sätt nytt lösenord",
+                ){ should have_link( t( "users.index.rescue"),
                                      :href => edit_user_path( @normal))}}
       it{ within( "li#user-#{ @admin.id}"
-                ){ should_not have_content( "lösenord")}}
+                ){ should_not have_content( t( "users.index.rescue"))}}
 
-      it{ within( "li#user-#{ @disabl.id}"){
-            should have_link( "Ta bort", :href => user_path( @disabl))}}
-      it{ within( "li#user-#{ @normal.id}"){
-            should have_link( "Ta bort", :href => user_path( @normal))}}
-      it{ within( "li#user-#{ @admin.id}"
-                ){ should_not have_content( "Ta bort")}}
+      it{ within( "li#user-#{ @disabl.id}"){ should have_link(
+              t( "general.destroy"), :href => user_path( @disabl))}}
+      it{ within( "li#user-#{ @normal.id}"){ should have_link(
+              t( "general.destroy"), :href => user_path( @normal))}}
+      it{ within( "li#user-#{ @admin.id}"){ should_not have_content(
+              t( "general.destroy"))}}
       it "delete another user" do
-        within( "li#user-#{ @disabl.id}"){ expect{ click_link( "Ta bort")
-                                         }.to change( User, :count).by( -1)}
-        within( "li#user-#{ @normal.id}"){ expect{ click_link( "Ta bort")
-                                         }.to change( User, :count).by( -1)}
+        within( "li#user-#{ @disabl.id}"){ expect{ click_link(
+          t( "general.destroy"))}.to change( User, :count).by( -1)}
+        within( "li#user-#{ @normal.id}"){ expect{ click_link(
+          t( "general.destroy"))}.to change( User, :count).by( -1)}
       end
 
       it{ within( "li#user-#{ @disabl.id}"
-                ){ should_not have_content( "Deaktivera")}}
+                ){ should_not have_content( t( "user.disable.label"))}}
       it{ within( "li#user-#{ @normal.id}"){ should have_link(
-            "Deaktivera", :href => disable_user_path( @normal))}}
+            t( "user.disable.label"), :href => disable_user_path( @normal))}}
       it{ within( "li#user-#{ @admin.id}"
-                ){ should_not have_content( "Deaktivera")}}
+                ){ should_not have_content( t( "user.disable.label"))}}
       it "disable a normal user" do
-        within( "li#user-#{ @normal.id}"){ click_link( "Deaktivera")}
+        within( "li#user-#{ @normal.id}"
+              ){ click_link( t( "user.disable.label"))}
         @normal.reload.role.should == "disabled"
       end
 
       it{ within( "li#user-#{ @disabl.id}"){ should have_link(
-            "Aktivera", :href => enable_user_path( @disabl))}}
+            t( "user.enable.label"), :href => enable_user_path( @disabl))}}
       it{ within( "li#user-#{ @normal.id}"
-                ){ should_not have_content( "Aktivera")}}
+                ){ should_not have_content( t( "user.enable.label"))}}
       it{ within( "li#user-#{ @admin.id}"
-                ){ should_not have_content( "Aktivera")}}
+                ){ should_not have_content( t( "user.enable.label"))}}
       it "enable a disabled user" do
-        within( "li#user-#{ @disabl.id}"){ click_link( "Aktivera")}
+        within( "li#user-#{ @disabl.id}"
+              ){ click_link( t( "user.enable.label"))}
         @disabl.reload.role.should == "normal"
       end
     end
@@ -157,15 +157,15 @@ describe "User pages" do
       visit users_path
     end
 
-    it{ should have_selector(
-      "title", :text => t( "general.application") + " | Användare")}
-    it{ should have_selector "h1",
-            :text => "Alla användare vid #{ @user.court.name}"}
-    it{ should_not have_content( "Sätt nytt lösenord")}
-    it{ should_not have_content( "Ta bort")}
-    it{ should_not have_content( "Dektivera")}
-    it{ should_not have_content( "Aktivera")}
-    it{ should_not have_content( "Bemyndiga")}
+    it{ should have_selector( "title",
+         text: "#{ t( 'general.application')} | #{ t( 'users.index.title')}")}
+    it{ should have_selector( "h1",
+          text: t( "users.index.heading.long", court: @user.court.name))}
+    it{ should_not have_content( t( "users.index.rescue"))}
+    it{ should_not have_content( t( "general.destroy"))}
+    it{ should_not have_content( t( "user.disable.label"))}
+    it{ should_not have_content( t( "user.enable.label"))}
+    it{ should_not have_content( t( "user.promote.label"))}
 
     context "when clicking a user" do
       before do
@@ -199,7 +199,7 @@ describe "User pages" do
 
       it_behaves_like "any admin"
 
-      it{ should_not have_content( "Bemyndiga")}
+      it{ should_not have_content( t( "user.promote.label"))}
     end
 
     context "as master" do
@@ -216,7 +216,7 @@ describe "User pages" do
         visit users_path
       end
 
-      it{ should have_selector "h1", :text => "Alla användare"}
+      it{ should have_selector "h1", text: t( "users.index.heading.short")}
 
       it_behaves_like "any admin"
 
@@ -230,40 +230,41 @@ describe "User pages" do
       end
 
       it{ within( "li#user-#{ @courta.id}"
-                ){ should have_link( "Sätt nytt lösenord",
+                ){ should have_link( t( "users.index.rescue"),
                                      :href => edit_user_path( @courta))}}
 
-      it{ within( "li#user-#{ @courta.id}"){
-            should have_link( "Ta bort", :href => user_path( @courta))}}
+      it{ within( "li#user-#{ @courta.id}"){ should have_link(
+              t( "general.destroy"), :href => user_path( @courta))}}
       it "delete a court admin" do
-        within( "li#user-#{ @courta.id}"){ expect{ click_link( "Ta bort")
+        within( "li#user-#{ @courta.id}"){ expect{ click_link( t( "general.destroy"))
                                          }.to change( User, :count).by( -1)}
       end
 
       it{ within( "li#user-#{ @courta.id}"){ should have_link(
-            "Deaktivera", :href => disable_user_path( @courta))}}
+            t( "user.disable.label"), :href => disable_user_path( @courta))}}
       it "disable a court admin" do
-        within( "li#user-#{ @courta.id}"){ click_link( "Deaktivera")}
+        within( "li#user-#{ @courta.id}"){ click_link( t( "user.disable.label"))}
         @courta.reload.role.should == "disabled"
       end
 
       it{ within( "li#user-#{ @courta.id}"
-                ){ should_not have_content( "Aktivera")}}
+                ){ should_not have_content( t( "user.enable.label"))}}
 
-      it{ within( "li#user-#{ @disabl.id}"){ should have_link( "Bemyndiga",
-            :href => promote_user_path( @disabl))}}
-      it{ within( "li#user-#{ @normal.id}"){ should have_link( "Bemyndiga",
-            :href => promote_user_path( @normal))}}
-      it{ within( "li#user-#{ @courta.id}"
-                ){ should_not have_content( "Bemyndiga")}}
-      it{ within( "li#user-#{ @admin.id}"
-                ){ should_not have_content( "Bemyndiga")}}
+      it{ within( "li#user-#{ @disabl.id}"){ should have_link(
+             t( "user.promote.label"), :href => promote_user_path( @disabl))}}
+      it{ within( "li#user-#{ @normal.id}"){ should have_link(
+             t( "user.promote.label"), :href => promote_user_path( @normal))}}
+      it{ within( "li#user-#{ @courta.id}"){ should_not have_content(
+              t( "user.promote.label"))}}
+      it{ within( "li#user-#{ @admin.id}"){ should_not have_content(
+              t( "user.promote.label"))}}
       it "promote a disabled user" do
-        within( "li#user-#{ @disabl.id}"){ click_link( "Bemyndiga")}
+        within( "li#user-#{ @disabl.id}"
+              ){ click_link( t( "user.promote.label"))}
         @disabl.reload.role.should == "admin"
       end
       it "promote a normal user" do
-        within( "li#user-#{ @normal.id}"){ click_link( "Bemyndiga")}
+        within( "li#user-#{ @normal.id}"){ click_link( t( "user.promote.label"))}
         @normal.reload.role.should == "admin"
       end
     end
@@ -278,17 +279,22 @@ describe "User pages" do
     end
 
     shared_examples_for "viewing any user" do
-      it{ should have_selector( "h1",    :text => @shown.name)}
+      it{ should have_selector( "h1", text: @shown.name)}
       it{ should have_selector(
-        "title", :text => t( "general.application") + " | #{ @shown.name}")}
+        "title", :text => "#{ t( 'general.application')} | #{ @shown.name}")}
+    end
+
+    shared_examples_for "all execept master viewing self" do
+      it{ should_not have_content( t( "shared.dump.prompt"))}
+      it{ should_not have_content( t( "shared.load.prompt"))}
     end
 
     context "self" do
       before{ @shown = @user}
       it_behaves_like "viewing any user"
       it{ should have_content( @user.email)}
-      it{ should have_link( "Ändra", :href => edit_user_path( @user))}
-      it{ should_not have_content( "en fil")}
+      it{ should have_link( t( "general.edit"), :href => edit_user_path( @user))}
+      it_behaves_like "all execept master viewing self"
     end
 
     context "other user" do
@@ -300,7 +306,7 @@ describe "User pages" do
       end
       it_behaves_like "viewing any user"
       it{ should_not have_content( @other.email)}
-      it{ should_not have_content( "en fil")}
+      it_behaves_like "all execept master viewing self"
     end
 
     context "admin" do
@@ -316,7 +322,7 @@ describe "User pages" do
         before{ @shown = @admin}
         it_behaves_like "viewing any user"
         it{ should have_content( @admin.email)}
-        it{ should_not have_content( "en fil")}
+        it_behaves_like "all execept master viewing self"
       end
 
       context "viewing other" do
@@ -325,7 +331,7 @@ describe "User pages" do
           @shown = @user
         end
         it_behaves_like "viewing any user"
-        it{ should_not have_content( "en fil")}
+        it_behaves_like "all execept master viewing self"
       # below is not a requirement?
       # it{ should have_content( @shown.email)}
       # it{ should_not have_content( @shown.email)}
@@ -347,11 +353,10 @@ describe "User pages" do
         before{ @shown = @master}
         it_behaves_like "viewing any user"
         it{ should have_content @master.email}
-        it{ should have_link "Domstolar", :href => courts_path}
-        it{ should have_link "Läs ut hela databasen till en fil", 
-                             :href => database_path}
-        it{ should have_link "RADERA HELA DATABASEN och läs in en fil",
-                             :href => new_database_path}
+        it{ should have_link t( "courts.index.title"), :href => courts_path}
+        it{ should have_link t( "shared.dump.prompt"), :href => database_path}
+        it{ should have_link t( "shared.load.prompt"),
+                                :href => new_database_path}
       end
 
       (USER_ROLES - [ "master"]).each do |role|
@@ -363,14 +368,14 @@ describe "User pages" do
           end
           it_behaves_like "viewing any user"
           it{ should have_content( @shown.email)}
-          it{ should_not have_content( "en fil")}
-          it{ should_not have_content "Domstolar"}
+          it_behaves_like "all execept master viewing self"
+          it{ should_not have_content t( "courts.index.title")}
         end
       end
 
       context "saving database" do
         # file content is tested with the new_database_path request
-        before{ click_link "Läs ut hela databasen till en fil"}
+        before{ click_link t( "shared.dump.prompt")}
         context "page.response_headers[ 'Content-Type']" do
           it{ page.response_headers[ "Content-Type"].should == "text/xml"}
         end
@@ -401,7 +406,7 @@ describe "User pages" do
             fill_in "user_name",                  :with => @new_name
             fill_in "user_password",              :with => @new_pw
             fill_in "user_password_confirmation", :with => @new_pw
-            click_button "Spara ändringar"
+            click_button t( "users.edit.save")
             @edited.reload
           end
 
@@ -417,16 +422,17 @@ describe "User pages" do
             @old_email    = @edited.email
             @old_name     = @edited.name
             @old_pw       = @edited.password
-            fill_in "Lösenord", :with => @new_pw
-            fill_in "Lösenord igen", :with => @new_pw
-            click_button "Spara ändringar"
+            fill_in t( "activerecord.attributes.user.password"), with: @new_pw
+            fill_in t( "activerecord.attributes.user.password_confirmation"),
+                    with: @new_pw
+            click_button t( "users.edit.save")
             @edited.reload
           end
 
-          it{ should have_selector(
-            "title", :text => t( "general.application") + " | Användare")}
-          it{ within( "div.alert.alert-success"
-                    ){ should have_content( "Lösenordet ändrat")}}
+          it{ should have_selector( "title", text: "#{
+                  t( 'general.application')} | #{ t( 'users.index.title')}")}
+          it{ within( "div.alert.alert-success"){ should have_content(
+                  t( "user.changed.password", name: @edited.name))}}
           specify "still logged in as court admin" do
             click_link( @editor.name)
             should have_content( @editor.email)
@@ -444,13 +450,14 @@ describe "User pages" do
       @old_pw = @user.password
       @new_name = "Nytt Namn"
       @new_email = "ny@mejl"
-      @new_pw = "nytt-lösen"
+      @new_pw = "new_pw"
     end
 
     shared_examples_for "editing any user" do
-      it{ should have_selector( "h1",    :text => "Ändra #{ @edited.name}")}
-      it{ should have_selector(
-        "title", :text => t( "general.application") + " | Ändra #{ @edited.name}")}
+      it{ should have_selector( "h1", text: t( "users.edit.title",
+                                               name: @edited.name))}
+      it{ should have_selector( "title", text: "#{ t( "general.application")
+                         } | #{ t( "users.edit.title", name: @edited.name)}")}
     end
 
     shared_examples_for "password change" do
@@ -458,13 +465,13 @@ describe "User pages" do
       it "old password does not work" do
         fake_log_in @edited, @old_pw
         should have_selector( "title",
-                              :text => t( "general.application") + " | Logga in")
+          text: "#{ t( 'general.application')} | #{ t( 'general.log_in')}")
         should have_selector( "div.alert.alert-error")
       end
       it "new password works" do
         fake_log_in @edited, @new_pw
-        should have_selector( "title",
-                              :text => t( "general.application") + " | Rondningar")
+        should have_selector( "title", text: "#{ t( 'general.application')
+                                } | #{ t( 'court_days.index.title')}")
       end
     end
 
@@ -479,7 +486,7 @@ describe "User pages" do
       it_behaves_like "editing any user"
 
       describe "with invalid password" do
-        before{ click_button "Spara ändringar"}
+        before{ click_button t( "users.edit.save")}
         it{ should have_selector( "div.alert.alert-error")}
       end
 
@@ -490,7 +497,7 @@ describe "User pages" do
           fill_in "user_name",                  :with => @new_name
           fill_in "user_password",              :with => @new_pw
           fill_in "user_password_confirmation", :with => @new_pw
-          click_button "Spara ändringar"
+          click_button t( "users.edit.save")
         end
         it{ should have_selector( "div.alert.alert-error")}
       end
@@ -503,7 +510,7 @@ describe "User pages" do
           fill_in "user_name",                  :with => @new_name
           fill_in "user_password",              :with => @new_pw
           fill_in "user_password_confirmation", :with => @new_pw
-          click_button "Spara ändringar"
+          click_button t( "users.edit.save")
         end
         it{ should_not have_selector( "div.alert.alert-error")}
       end
@@ -515,17 +522,17 @@ describe "User pages" do
           fill_in "user_name",                  :with => @new_name
           fill_in "user_password",              :with => @new_pw
           fill_in "user_password_confirmation", :with => @new_pw
-          click_button "Spara ändringar"
+          click_button t( "users.edit.save")
           @user.reload
           @edited = @user
         end
 
         it_behaves_like "password change"
-        it{ should have_selector(
-          "title", :text => t( "general.application") + " | Rondningar")}
+        it{ should have_selector( "title", text: "#{ t( 'general.application')
+                                    } | #{ t('court_days.index.title')}")}
         it{ within( "div.alert.alert-success"
-                  ){ should have_content( "Uppgifterna sparade")}}
-        it{ should have_link( "Logga ut", :href => log_out_path)}
+                  ){ should have_content( t( "user.changed.message"))}}
+        it{ should have_link( t( "general.log_out"), :href => log_out_path)}
         specify{ @user.name.should  == @new_name}
         specify{ @user.email.should == @new_email}
       end

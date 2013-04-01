@@ -30,7 +30,7 @@ extend Authorization
     @user.court_id = court_id
     if @user.save
       log_in @user
-      flash[ :success] = t "user.created", name: @user.name
+      flash[ :success] = t( "user.created", name: @user.name)
       redirect_to root_path
     else
       @courts = Court.all
@@ -67,10 +67,10 @@ extend Authorization
       if @user.update_attributes( params[ :user])
         if current_user? @user
           log_in @user  # because remember_token has been reset
-          flash.now[ :success] = t "user.changed.message"
+          flash.now[ :success] = t( "user.changed.message")
           back_to_court_days
         else
-          flash[ :success] = t "user.changed.password", name: @user.name
+          flash[ :success] = t( "user.changed.password", name: @user.name)
           redirect_to users_path
         end
       else
@@ -80,16 +80,12 @@ extend Authorization
   end
 
   def disable
-  # update_role_do( "disabled"){ [ "deaktiverad", "deaktiveras"]}
     update_role_do( "disabled")
   end
   def enable
-  # update_role_do( "normal"){ [ "aktiverad", "aktiveras"]}
     update_role_do( "normal")
   end
   def promote
-  # update_role_do( "admin"){
-  #   [ "aktiverad som administratör", "aktiveras som administratör"]}
     update_role_do( "admin")
   end
 
@@ -97,7 +93,7 @@ extend Authorization
     destroyed = User.find params[ :id]
     destroyed_inspect = destroyed.inspect
     destroyed.destroy
-    flash[ :success] = t "user.destroyed", user: destroyed_inspect
+    flash[ :success] = t( "user.destroyed", user: destroyed_inspect)
     redirect_to users_path
   end
 
@@ -121,17 +117,15 @@ extend Authorization
     @user = User.find params[ :id]
     old_role = @user.role
     if User.valid_role?( role) && @user.update_attribute( :role, role)
-    # flash[ :success] = "Användare #{ @user.inspect} #{ yield[ 0]}"
-      flash[ :success] = t "user.role.changed",
-                           name: @user.name,
-                           from: t( "user.role.#{ old_role}"),
-                           to: t( "user.role.#{ role}")
+      flash[ :success] = t( "user.role.changed",
+                            name: @user.name,
+                            from: t( "user.role.#{ old_role}"),
+                            to: t( "user.role.#{ role}"))
     else
-    # flash[ :error] = "Användare #{ @user.inspect} kunde inte #{ yield[ 1]}"
-      flash[ :error] = t "user.role.change_fail",
-                         name: @user.name,
-                         from: t( "user.role.#{ old_role}"),
-                         to: t( "user.role.#{ role}")
+      flash[ :error] = t( "user.role.change_fail",
+                          name: @user.name,
+                          from: t( "user.role.#{ old_role}"),
+                          to: t( "user.role.#{ role}"))
     end
     redirect_to users_path
   end

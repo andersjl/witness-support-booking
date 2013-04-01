@@ -33,17 +33,17 @@ class Booking < ActiveRecord::Base
     return unless court_day && session  # handled by other validations
     booked = court_day.send( "#{ session}_bookings").count
     if booked >= court_day.send( session)
-      errors[ :base] << t( "booking.full",
-                           court_day: court_day.inspect,
-                           session: "booking.#{ session}.short")
+      errors[ :base] << I18n.t( "booking.full",
+                                court_day: court_day.inspect,
+                                session: I18n.t( "booking.#{ session}.short"))
     end
   end
 
   def within_one_court
     return unless user && court_day  # handled by other validations
     if user.court != court_day.court
-      errors[ :base] << t( "booking.court_mismatch",
-                           court_day: court_day.inspect, user: user.inspect)
+      errors[ :base] << I18n.t( "booking.court_mismatch",
+                             court_day: court_day.inspect, user: user.inspect)
     end
   end
 end

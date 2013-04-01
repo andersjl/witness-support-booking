@@ -5,7 +5,7 @@
     <%= form_for( @database, :url => database_path) do |f| %>
       <%= f.label :all_data, t( "database.create.label") %>
       <%= f.file_field :all_data %>
-      <%= f.submit t( "general.ok", :confirm => t( "database.create.confirm")) %>
+      <%= f.submit t( "general.ok"), :confirm => t( "database.create.confirm") %>
     <% end %>
   </div>
 </div>

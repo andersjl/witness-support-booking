@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 def t( key, opts = { })
   I18n.translate key, opts
 end
@@ -21,7 +19,7 @@ def court_default( name)
   other_court_user = create_test_user :court    => other_court,
                                       :email    => "other@example.com",
                                       :name     => "Other User",
-                                      :password => "dåligt"
+                                      :password => "bad_pw"
   other_court_day = create_test_court_day :court => other_court, :morning => 1
   other_court_user.book! other_court_day, :morning
   Court.find_by_name( name)
@@ -62,7 +60,7 @@ def create_test_user( opts = { })
   opts[ :court] ||= court_this
   opts[ :email] ||= "ex@empel.se"
   opts[ :name] ||= "Ex Empel"
-  opts[ :password] ||= "dåligt"
+  opts[ :password] ||= "bad_pw"
   opts[ :password_confirmation] ||= opts[ :password]
   opts[ :role] ||= "normal"
   if count == 1
@@ -93,7 +91,7 @@ def fake_log_in( user, password = nil)
   select user.court.name, :from => "session_court_id"
   fill_in "session_email", :with => user.email
   fill_in "session_password", :with => password || user.password
-  click_button "Logga in"
+  click_button t( "general.log_in")
   cookies[ :remember_token] = user.remember_token  # if not Capybara
 end
 

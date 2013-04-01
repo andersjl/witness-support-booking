@@ -40,6 +40,15 @@ sv:
       short: Om
     application: Vittnesstöd
     date: datum
+    cwday:
+    - 
+    - må
+    - ti
+    - "on"
+    - to
+    - fr
+    - lö
+    - sö
     destroy: Ta bort
     edit: Ändra
     help:
@@ -49,6 +58,8 @@ sv:
     log_out: Logga ut
     ok: OK
     save: Spara
+    warning: 
+      caps: VARNING!
 
 # subject matter booking, regardless of controller
   booking:
@@ -70,7 +81,7 @@ sv:
 
 # subject matter court, regardless of controller
   court:
-    change_name_or_link: Ändra namn eller länk
+    edit_name_or_link: Ändra namn eller länk
     changed: Uppgifterna sparade
     create: Skapa ny domstol
     created: Domstol %{court} skapad
@@ -81,13 +92,6 @@ sv:
         alla dess inskrivna behov och texter
     destroyed: Domstol %{court} borttagen
     prompt: Välj domstol
-
-# courts controller
-  courts:
-    edit:
-      title: Ändra domstol %{name}
-    index:
-      title: Domstolar
 
 # subject matter court day, regardless of controller
   court_day:
@@ -105,18 +109,6 @@ sv:
         other: %{count} blev aldrig bokade
       over: överbokat!
 
-# court_days controller
-  court_days:
-    index:
-      title: Rondningar
-      users_to_enable:
-        one: %{count} ny att aktivera
-        other: %{count} nya att aktivera
-    week_picker:
-      prompt: |
-        Växla vecka med pilarna eller skriv in ett datum i den önskade veckan
-        och tryck "OK"
-
 # subject matter database, regardless of controller
   database:
     created: Ny databas inläst. Du måste logga in igen.
@@ -129,27 +121,6 @@ sv:
       message: "%{reason}: %{message}. Databasen är orörd."
       parse: Inläsningen misslyckades
       exception: Undantag %{exception}
-
-# databases controller
-  databases:
-    new:
-      title: Läs in fil
-    show:
-      file_name: vittnesstöd_databas
-
-# sessions controller
-  sessions:
-    create:
-      error: Ogiltig kombination av domstol, mejladress och lösenord
-    new:
-      no_password_p: Inget lösenord?
-      register: Registrera ett nu!
-
-# static_pages controller
-  static_pages:
-    home:
-      disabled: Du kommer att få ett mejl till %{email} när du kan börja boka!
-      sign_up: Registrera dig
 
 # subject matter user, regardless of controller
   user:
@@ -180,7 +151,46 @@ sv:
       master: webbmaster
       normal: vittnesstöd
 
-# users controller
+# view specific
+  courts:
+    edit:
+      title: Ändra domstol %{name}
+    index:
+      title: Domstolar
+  court_days:
+    index:
+      title: Rondningar
+      users_to_enable:
+        one: %{count} ny att aktivera
+        other: %{count} nya att aktivera
+      users_to_enable_common: att aktivera
+    week_picker:
+      prompt: |
+        Växla vecka med pilarna eller skriv in ett datum i den önskade veckan
+        och tryck "OK"
+  databases:
+    new:
+      title: Läs in fil
+      erase:
+        caps: RADERA HELA DATABASEN
+    show:
+      file_name: vittnesstöd_databas
+  sessions:
+    create:
+      error: ogiltig kombination av domstol, mejladress och lösenord
+    new:
+      no_password_p: Inget lösenord?
+      register: Registrera ett nu!
+  shared:
+    error: Formuläret innehåller %{count} fel
+    dump:
+      prompt: Läs ut hela databasen till en fil
+    load:
+      prompt: RADERA HELA DATABASEN och läs in en fil
+  static_pages:
+    home:
+      disabled: Du kommer att få ett mejl till %{email} när du kan börja boka!
+      sign_up: Registrera dig
   users:
     edit:
       save: Spara ändringar

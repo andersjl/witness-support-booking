@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
       log_in user
       redirect_to court_days_path
     else
-      flash[ :error] = t "sessions.create.error"
+      flash[ :error] = t( "sessions.create.error")
       redirect_to log_in_path
     end
   end

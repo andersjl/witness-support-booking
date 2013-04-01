@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 require "spec_helper"
 require "app/helpers/application_helper"
 include ApplicationHelper
@@ -25,7 +23,7 @@ describe "court_days/index" do
   def visit_future_date
     within :id, "weekpicker-bottom" do
       fill_in "datepicker-bottom", :with => @tested_date
-      click_on "OK"
+      click_on t( "general.ok")
     end
   end
 
@@ -56,9 +54,9 @@ describe "court_days/index" do
   end
 
   shared_examples_for "on court_days index page" do
-    it{ should have_selector(
-      "title", :text => "#{ t( 'general.application')} | Rondningar")}
-    it{ should have_selector( "h1", :text => "Rondningar")}
+    it{ should have_selector( "title",
+    text: "#{ t( 'general.application')} | #{ t( 'court_days.index.title')}")}
+    it{ should have_selector( "h1", text: t( "court_days.index.title"))}
   end
 
   shared_examples_for "any week" do
@@ -100,12 +98,10 @@ describe "court_days/index" do
     it{ within( :id, "#{ @cd_id}-afternoon"
               ){ should have_content( @booked_user.name)}}
     it{ within( :id, @cd_id){ should have_content( @cd.notes)}}  # no \n!!
-    it{ within( :id, @cd_id){
-      should_not have_selector( "input[value='" +
-                                  t( "booking.morning.unbook") + "']")}}
-    it{ within( :id, @cd_id){
-      should_not have_selector( "input[value='" +
-                                  t( "booking.afternoon.unbook") + "}']")}}
+    it{ within( :id, @cd_id){ should_not have_selector(
+      "input[value='#{ t( 'booking.morning.unbook')}']")}}
+    it{ within( :id, @cd_id){ should_not have_selector(
+      "input[value='#{ t( 'booking.afternoon.unbook')}']")}}
 
     context "going one week back" do
       before do
@@ -127,7 +123,7 @@ describe "court_days/index" do
       before do
         @new_start_date = @monday + 4711 + rand( 7)
         fill_in "start_date", :with => @new_start_date
-        click_button "OK"
+        click_button t( "general.ok")
         @tested_date = CourtDay.monday @new_start_date
       end
 
@@ -136,7 +132,7 @@ describe "court_days/index" do
       context "switching user resets the date" do
         before do
           @other = create_test_user( :name => "En Annan",
-                                     :email => "en.annan@exempel.se")
+                                     :email => "en.annan@example.com")
           fake_log_in @other
           @tested_date = @monday
         end
@@ -161,8 +157,8 @@ describe "court_days/index" do
         [ :morning, :afternoon].each do |session|
           left_to_book = instance_variable_get( "@#{ session}").to_i -
                            @changed_obj.send( "#{ session}_bookings").count
-          within( :id, "#{ @changed_id}-#{ session}"){
-            should have_content( "#{ left_to_book} kvar att boka")}
+          within( :id, "#{ @changed_id}-#{ session}"){ should have_content(
+            t( "court_day.req.left.long", count: left_to_book))}
         end
         should have_content( @first_line)
       end
@@ -183,8 +179,9 @@ describe "court_days/index" do
           within( :id, "court-day-#{ date}") do
             should have_selector( "select")
             should have_selector( "textarea")
-            should have_selector( "input[value='" + t( "general.save") +
-                                    " #{ day_of_week( date)}']")
+            should have_selector(
+              "input[value='#{ t( 'general.save')
+                             } #{ t( 'general.cwday')[ date.cwday]}']")
             court_day = CourtDay.find_by_court_id_and_date( court_this, date)
             court_day && court_day.bookings.each do |booking|
               should have_link( booking.user.name,
@@ -205,7 +202,7 @@ describe "court_days/index" do
           select( morning, :from => "morning-#{ date}")
           select( afternoon, :from => "afternoon-#{ date}")
           fill_in( "notes-#{ date}", :with => notes)
-          click_button( "#{ t( 'general.save')} #{ day_of_week( date)}")
+          click_button( "#{ t( 'general.save')} #{ t( 'general.cwday')[ date.cwday]}")
         end
         @changed_obj =
           CourtDay.find_by_court_id_and_date( @admin.court.id, date)
@@ -214,8 +211,8 @@ describe "court_days/index" do
       before do
         @morning = "1"
         @afternoon = "2"
-        @first_line = "<- blanka radbrytning->"
-        @notes = "  #{ @first_line}\nnästa rad"
+        @first_line = "<- blanks new line->"
+        @notes = "  #{ @first_line}\nnext line"
         if Date.today.cwday == 5
           @new_date = Date.today  # "new" untestable this week on a Friday
         else
@@ -250,7 +247,7 @@ describe "court_days/index" do
           weeks, days = (5 + rand( 100)).divmod 5
           new_start_date = @monday + 7 * weeks + days
           fill_in "start_date", :with => new_start_date
-          click_button "OK"
+          click_button t( "general.ok")
           change( CourtDay.monday( new_start_date) + rand( 5),
                   @morning, @afternoon, @notes)
         end
@@ -268,7 +265,8 @@ describe "court_days/index" do
         visit court_days_path
       end
       it{ within( "div.row.heading"){
-            should have_link( "3 nya att aktivera", :href => users_path)}}
+            should have_link( t( "court_days.index.users_to_enable",
+                                 count: 3), :href => users_path)}}
     end
 
     context "unbooking" do
@@ -321,29 +319,29 @@ describe "court_days/index" do
       it_behaves_like "on court_days index page"
       it{ should_not have_selector( "select")}
       it{ should_not have_selector( "textarea")}
-      it{ within( :id, @tested_id){
-        should_not have_selector( "input[value='" + t( "general.save") +
-                                    day_of_week( @cd.date) + "']")}}
-      it{ within( :id, "#{ @tested_id}-morning"){
-        should have_selector( "input[value='" + t( "booking.morning.book"
-                                                 ) + "']")}}
+      it{ within( :id, @tested_id){ should_not have_selector(
+         "input[value='#{ t( "general.save")
+                        } #{ t( 'general.cwday')[ @cd.date.cwday]}']")}}
+      it{ within( :id, "#{ @tested_id}-morning"){ should have_selector(
+              "input[value='#{ t( "booking.morning.book")}']")}}
       it{ within( :id, "#{ @tested_id}-morning"){ should have_content(
-        "(#{ @cd.morning - @cd.morning_bookings.count} kvar)")}}
-      it{ within( :id, "#{ @tested_id}-afternoon"){
-        should have_selector( "input[value='" + t( "booking.afternoon.book"
-                                                 ) + "']")}}
+              "(#{ t( 'court_day.req.left.short',
+                      count: @cd.morning - @cd.morning_bookings.count)})")}}
+      it{ within( :id, "#{ @tested_id}-afternoon"){ should have_selector(
+              "input[value='#{ t( 'booking.afternoon.book')}']")}}
       it{ within( :id, "#{ @tested_id}-afternoon"){ should have_content(
-        "(#{ @cd.afternoon - @cd.afternoon_bookings.count} kvar)")}}
+              "(#{ t( 'court_day.req.left.short',
+                      count: @cd.afternoon - @cd.afternoon_bookings.count)})")}}
 
       it "has no controls when nothing to book" do
         test_dates( @monday) do |date, show, ignore|
           if show
             if date != @cd.date
               within( :id, "court-day-#{ date}") do
-                should_not have_selector( "input[value='" + t( "booking.morning.book"
-                                                             ) + "']")
-                should_not have_selector( "input[value='" + t( "booking.afternoon.book"
-                                                             ) + "']")
+                should_not have_selector(
+                  "input[value='#{ t( 'booking.morning.book')}']")
+                should_not have_selector(
+                  "input[value='#{ t( 'booking.afternoon.book')}']")
               end
             end
           else
@@ -355,13 +353,13 @@ describe "court_days/index" do
 
     before do
       @user = create_test_user( :name => "Normal",
-                                :email => "normal@exempel.se")
+                                :email => "normal@example.com")
       fake_log_in @user
       @tested_id = @cd_id
     end
 
     it_behaves_like "any user"
-    it{ within( :id, @cd_id){ should have_content( day_of_week( @cd.date))}}
+    it{ within( :id, @cd_id){ should have_content( t( 'general.cwday')[ @cd.date.cwday])}}
     it_behaves_like "unbooked"
 
     context "when there are disabled users" do
@@ -369,14 +367,15 @@ describe "court_days/index" do
         dis1, dis2, dis3 = create_test_user :count => 3, :role => "disabled"
         visit court_days_path
       end
-      it{ within( "div.row.heading"){ should_not have_content( "aktivera")}}
+      it{ within( "div.row.heading"){
+            should_not have_content( t( "users_to_enable_common"))}}
     end
 
     context "booking" do
 
       def login_other_user
         @other = create_test_user( :name => "En Annan",
-                                   :email => "en.annan@exempel.se")
+                                   :email => "en.annan@example.com")
         fake_log_in @other
       end
 
@@ -399,7 +398,7 @@ describe "court_days/index" do
           end
           it{ within( :id, @tested_id){
             should have_selector( "div[class='overbooked']",
-                                  :text => "(överbokat!)")}}
+                                  :text => "(#{ t( 'court_day.req.over')})")}}
         end
 
         context "when unbooked" do
@@ -424,6 +423,8 @@ describe "court_days/index" do
         end
 
         it_behaves_like "any booking button click"
+        it{ within( :id, "#{ @tested_id}-morning"){ should_not have_content(
+                t( "court_day.req.left.short", count: 0))}}
 
         context "switch user" do
           before{ login_other_user}
@@ -444,7 +445,8 @@ describe "court_days/index" do
 
         it_behaves_like "any booking button click"
         it{ within( :id, "#{ @cd_id}-afternoon"){ should have_content(
-          "(#{ @cd.afternoon - @cd.afternoon_bookings.count} kvar)")}}
+          "(#{ t( 'court_day.req.left.short',
+                  count: @cd.afternoon - @cd.afternoon_bookings.count)})")}}
 
         context "switch user" do
           before{ login_other_user}
@@ -474,19 +476,18 @@ describe "court_days/index" do
 
         it{ shows @tested_date}
         it{ within( :id, @tested_id){ should_not have_selector(
-              "input[value='" + t( "booking.morning.book") + "']")}}
-        it{ within( :id, @tested_id){
-          should have_selector( "input[value='" + t( "booking.morning.unbook"
-                                                   ) + "']")}}
+                "input[value='#{ t( 'booking.morning.book')}']")}}
+        it{ within( :id, @tested_id){ should have_selector(
+                "input[value='#{ t( 'booking.morning.unbook')}']")}}
 
         context "unbooking" do
           before{ within( :id, @tested_id
                         ){ click_button t( "booking.morning.unbook")}}
           it{ shows @tested_date}
           it{ within( :id, @tested_id){ should have_selector(
-                "input[value='" + t( "booking.morning.book") + "']")}}
+                  "input[value='#{ t( 'booking.morning.book')}']")}}
           it{ within( :id, @tested_id){ should_not have_selector(
-                "input[value='" + t( "booking.morning.unbook") + "']")}}
+                  "input[value='#{ t( 'booking.morning.unbook')}']")}}
         end
       end
     end
@@ -499,7 +500,7 @@ describe "court_days/index" do
         create_test_court_day :court => court_other, :date => @cd.date,
                               :notes => "Other notes"
       end
-      fake_log_in other, "dåligt"
+      fake_log_in other, "bad_pw"
     end
     it{ within( :id, @cd_id){ should_not have_content( @cd.notes)}}
   end
@@ -508,7 +509,7 @@ describe "court_days/index" do
 
     before do
       @admin = create_test_user( :name => "Admin",
-                                 :email => "admin@exempel.se",
+                                 :email => "admin@example.com",
                                  :role => "admin")
       fake_log_in @admin
     end
@@ -520,7 +521,7 @@ describe "court_days/index" do
 
     before do
       @admin = create_test_user( :name => "Master",
-                                 :email => "master@exempel.se",
+                                 :email => "master@example.com",
                                  :role => "master")
       fake_log_in @admin
     end

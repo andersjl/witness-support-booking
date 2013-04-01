@@ -1,7 +1,7 @@
 <% if model.errors.any? %>
   <div id="error_explanation">
     <div class="alert alert-error">
-      Formuläret innehåller <%= model.errors.count %> fel
+      <%= t( "shared.error", count: model.errors.count) %>
     </div>
     <ul>
       <% model.errors.full_messages.each do |msg| %>

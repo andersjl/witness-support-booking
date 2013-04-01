@@ -10,25 +10,25 @@ extend Authorization
   def create
     begin
       Database.new( params[ :database]).replace!
-      flash[ :success] = t "database.created"
+      flash[ :success] = t( "database.created")
       redirect_to log_in_path
     rescue AllDataDoc::XmlParseError => e
-      flash[ :error] = t "database.error.message",
-                         reason: t( "database.error.parse"),
-                         message: e.message
+      flash[ :error] = t( "database.error.message",
+                          reason: t( "database.error.parse"),
+                          message: e.message)
       redirect_to new_database_path
     rescue Exception => e
-      flash[ :error] = t "database.error.message",
-                         reason: t( "database.error.exception",
-                                    exception: e.class.name),
-                         message: e.message
+      flash[ :error] = t( "database.error.message",
+                          reason: t( "database.error.exception",
+                                     exception: e.class.name),
+                          message: e.message)
       redirect_to new_database_path
     end
   end
 
   def show
     send_data Database.new.all_data, :type => "text/xml",
-              filename: t( "databases.show.file_name") + "-#{ Time.now}.xml"
+              filename: "#{ t( 'databases.show.file_name')}-#{ Time.now}.xml"
   end
 end
 

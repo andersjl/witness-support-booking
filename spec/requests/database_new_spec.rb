@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 require "spec_helper"
 
 describe "Database load form" do
@@ -16,10 +14,10 @@ describe "Database load form" do
       visit new_database_path
     end
 
-    it{ should have_selector( "h1", :text => "VARNING!")}
-    it{ should have_content( "RADERA HELA DATABASEN")}
-    it{ should have_selector(
-      "title", :text => "#{ t( 'general.application')} | Läs in fil")}
+    it{ should have_selector( "h1", :text => t( "general.warning.caps"))}
+    it{ should have_content( t( "databases.new.erase.caps"))}
+    it{ should have_selector( "title",
+      text: "#{ t( 'general.application')} | #{ t( 'databases.new.title')}")}
   end
 
   context "when file is loaded" do
@@ -32,11 +30,11 @@ describe "Database load form" do
       it "shows correct page after login" do
         if @logged_in.enabled?
           should have_selector( "title",
-                       :text => "#{ t( 'general.application')} | Rondningar")
+                                text: "#{ t( 'general.application')
+                                        } | #{ t( 'court_days.index.title')}")
         else
-          should have_content(
-              "Du kommer att få ett mejl till #{ @logged_in.email
-                                               } när du kan börja boka!")
+          should have_content( t( "static_pages.home.disabled",
+                                  email: @logged_in.email))
         end
       end
     end
@@ -72,16 +70,16 @@ describe "Database load form" do
       visit new_database_path
     end
 
-    it{ should have_selector(
-      "title", :text => "#{ t( 'general.application')} | Läs in fil")}
+    it{ should have_selector( "title",
+      text: "#{ t( 'general.application')} | #{ t( 'databases.new.title')}")}
 
     context "with error in data" do
       before do
         attach_file "database_all_data", erronous_xml
-        click_on "OK"
+        click_on t( "general.ok")
       end
 
-      it{ should have_content( "Inläsningen misslyckades")}
+      it{ should have_content( t( "database.error.parse"))}
 
       context "master before trying" do
 
@@ -98,7 +96,7 @@ describe "Database load form" do
 
         before do
           @logged_in = User.find_by_email( @kept_email)
-          fake_log_in @logged_in, "dåligt"
+          fake_log_in @logged_in, "bad_pw"
         end
 
         it{ @logged_in.should be_enabled}
@@ -125,10 +123,10 @@ describe "Database load form" do
 
       before do
         attach_file "database_all_data", correct_xml
-        click_on "OK"
+        click_on t( "general.ok")
       end
 
-      it{ should have_content( "Ny databas inläst")}
+      it{ should have_content( t( "database.created"))}
 
       context "master when restoring" do
 
@@ -145,7 +143,7 @@ describe "Database load form" do
 
         before do
           @logged_in = User.find_by_email( @kept_email)
-          fake_log_in @logged_in, "dåligt"
+          fake_log_in @logged_in, "bad_pw"
         end
 
         it{ @logged_in.should be_enabled}
@@ -159,7 +157,7 @@ describe "Database load form" do
 
           before do
             @logged_in = User.find_by_email( @deleted_email)
-            fake_log_in @logged_in, "dåligt"
+            fake_log_in @logged_in, "bad_pw"
           end
 
           it{ @logged_in.should_not be_enabled}

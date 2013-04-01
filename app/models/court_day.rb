@@ -62,14 +62,15 @@ class CourtDay < ActiveRecord::Base
   def never_on_weekends
     return unless date  # handled by presence
     if date.cwday > 5
-      errors[ :base] << t( "court_day.date.weekend",
-                           date: date, dow: day_of_week( date))
+      errors[ :date] << I18n.t( "court_day.date.weekend", date: date,
+                                dow: t( "date.day_names")[ date.cwday % 7])
     end
   end
 
   def there_must_be_something_to_do
     unless something_to_do?
-      errors[ :base] << t( "court_day.empty", date: date, court: court)
+      errors[ :base] << I18n.t( "court_day.empty",
+                                date: date, court: court.name)
     end
   end
 

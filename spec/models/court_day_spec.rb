@@ -15,63 +15,83 @@ describe "CourtDay model" do
   it{ should respond_to( :afternoon_bookings)}
   it{ should be_valid}
 
-  context "when court is missing" do
-    before{ @court_day.court = nil}
-    it{ should_not be_valid}
-  end
+  context "validation" do
 
-  context "when date is missing" do
-    before{ @court_day.date = nil}
-    it{ should_not be_valid}
-  end
-
-  context "when date is taken" do
-    before{ @other_court_day =
-              create_test_court_day :date => @court_day.date, :morning => 1}
-    it{ should_not be_valid}
-    context "on another court" do
-      before{ @other_court_day.
-                update_attribute :court, Court.create!( :name => "Other")}
-      it{ should be_valid}
+    context "when court is missing" do
+      before{ @court_day.court = nil}
+      it{ should_not be_valid}
     end
-  end
 
-  context "when morning is missing" do
-    before{ @court_day.morning = nil}
-    it{ should_not be_valid}
-  end
-
-  context "when morning is < 0" do
-    before{ @court_day.morning = -1}
-    it{ should_not be_valid}
-  end
-
-  context "when morning is > #{ PARALLEL_SESSIONS_MAX}" do
-    before{ @court_day.morning = PARALLEL_SESSIONS_MAX + 1}
-    it{ should_not be_valid}
-  end
-
-  context "when afternoon is missing" do
-    before{ @court_day.afternoon = nil}
-    it{ should_not be_valid}
-  end
-
-  context "when afternoon is < 0" do
-    before{ @court_day.afternoon = -1}
-    it{ should_not be_valid}
-  end
-
-  context "when afternoon is > #{ PARALLEL_SESSIONS_MAX}" do
-    before{ @court_day.afternoon = PARALLEL_SESSIONS_MAX + 1}
-    it{ should_not be_valid}
-  end
-
-  context "when nothing to do" do
-    before do
-      @court_day.morning = @court_day.afternoon = 0
-      @court_day.notes = "\t  \n  "
+    context "when date is missing" do
+      before{ @court_day.date = nil}
+      it{ should_not be_valid}
     end
-    it{ should_not be_valid}
+
+    context "when date is taken" do
+      before do
+        @other_court_day = create_test_court_day :date => @court_day.date,
+                                                 :morning => 1
+        @court_day.valid?
+      end
+      it{ should_not be_valid}
+      context "errors" do
+        subject{ @court_day.errors}
+        its( [ :date]){ should include( t( "court_day.date.taken"))}
+      end
+      context "on another court" do
+        before{ @other_court_day.
+                  update_attribute :court, Court.create!( :name => "Other")}
+        it{ should be_valid}
+      end
+    end
+
+    [ :morning, :afternoon].each do |session|
+      context "when #{ session} is missing" do
+        before{ @court_day.send( "#{ session}=", nil)}
+        it{ should_not be_valid}
+      end
+
+      context "when #{ session} is < 0" do
+        before{ @court_day.send( "#{ session}=", -1)}
+        it{ should_not be_valid}
+      end
+
+      context "when #{ session} is > #{ PARALLEL_SESSIONS_MAX}" do
+        before{ @court_day.send( "#{ session}=", PARALLEL_SESSIONS_MAX + 1)}
+        it{ should_not be_valid}
+      end
+    end
+
+    [ "Saturday", "Sunday"].each do |weekend_day|
+      context "when on a #{ weekend_day}" do
+        before do
+          @date = @court_day.date - (@court_day.date.cwday +
+                                      (weekend_day == "Saturday" ? 1 : 0)) + 7
+          @court_day.update_attribute( :date, @date)
+          @court_day.valid?
+        end
+        it{ should_not be_valid}
+        context "errors" do
+          subject{ @court_day.errors}
+          its( [ :date]){ should include( t( "court_day.date.weekend",
+                   date: @date, dow: t( "date.day_names")[ @date.cwday % 7]))}
+        end
+      end
+    end
+
+    context "when nothing to do" do
+      before do
+        @court_day.morning = @court_day.afternoon = 0
+        @court_day.notes = "\t  \n  "
+        @court_day.valid?
+      end
+      it{ should_not be_valid}
+      context "errors" do
+        subject{ @court_day.errors}
+        its( [ :base]){ should include( t( "court_day.empty",
+                     date: @court_day.date, court: @court_day.court.name))}
+      end
+    end
   end
 
   context "earliest first" do

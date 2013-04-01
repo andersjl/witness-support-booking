@@ -9,13 +9,13 @@ class User < ActiveRecord::Base
   before_save :create_remember_token
 
   validates :court, presence: true
-  validates :role, presence: true, inclusion: { :in => USER_ROLES}
   validates :email, presence: true,
                     uniqueness: { scope: :court_id, case_sensitive: false,
                                   message: I18n.t( "user.email.taken")}
   validates :name, presence: true
   validates :password, presence: true, length: { :minimum => 6}
   validates :password_confirmation, presence: true
+  validates :role, presence: true, inclusion: { :in => USER_ROLES}
 
   belongs_to :court
   has_many :bookings, :dependent => :destroy

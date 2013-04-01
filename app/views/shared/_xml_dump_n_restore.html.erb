@@ -1,10 +1,8 @@
-<% # encoding: UTF-8 %>
 <div class="row xml-dump-n-restore" id="xml-dump-n-restore">
   <div class="span6 left">
-    <%= link_to "Läs ut hela databasen till en fil", database_path %>
+    <%= link_to t( "shared.dump.prompt"), database_path %>
   </div>
   <div class="span6 right">
-    <%= link_to "RADERA HELA DATABASEN och läs in en fil",
-                new_database_path %>
+    <%= link_to t( "shared.load.prompt"), new_database_path %>
   </div>
 </div>

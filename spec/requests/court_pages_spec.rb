@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 require "spec_helper"
 
 describe "Court pages" do
@@ -13,9 +11,8 @@ describe "Court pages" do
             should have_content @court.name}}
       it{ within( :id, "court-#{ @court.id}"){
             should have_link @court.link, :href => @court.link}}
-      it{ within( :id, "court-#{ @court.id}"){
-            should have_link "Ändra namn eller länk",
-                             :href => edit_court_path( @court)}}
+      it{ within( :id, "court-#{ @court.id}"){ should have_link( t(
+              "court.edit_name_or_link"), :href => edit_court_path( @court))}}
     end
 
     before do
@@ -38,9 +35,9 @@ describe "Court pages" do
       visit courts_path
     end
 
-    it{ should have_selector(
-      "title", :text => t( "general.application") + " | Domstolar")}
-    it{ should have_selector( "h1", :text => "Domstolar")}
+    it{ should have_selector( "title",
+     :text => "#{ t( 'general.application')} | #{ t( 'courts.index.title')}")}
+    it{ should have_selector( "h1", text: t( "courts.index.title"))}
     it_behaves_like "any listed court"
 
     it "offers delete only for courts without users" do
@@ -50,12 +47,12 @@ describe "Court pages" do
         if court.users.count == 0
           covered_has_no_users = true
           within :id, "court-#{ court.id}" do
-            should have_link "Ta bort", :href => court_path( court)
+            should have_link t( "general.destroy"), :href => court_path( court)
           end
         else
           covered_has_users = true
           within :id, "court-#{ court.id}" do
-            should_not have_link "Ta bort", :href => court_path( court)
+            should_not have_link t( "general.destroy"), :href => court_path( court)
           end
         end
       end
@@ -69,7 +66,8 @@ describe "Court pages" do
         visit courts_path
       end
       specify{ within( :id, "court-#{ @court.id}"){
-        expect{ click_on( "Ta bort")}.to change( Court, :count).by( -1)}}
+        expect{ click_on( t( "general.destroy"))
+              }.to change( Court, :count).by( -1)}}
     end
 
     context "should have input for new court" do
@@ -97,8 +95,8 @@ describe "Court pages" do
           @court = Court.find_by_name "New Court"
         end
 
-        it{ should have_selector(
-          "title", :text => t( "general.application") + " | Domstolar")}
+        it{ should have_selector( "title",
+         text: "#{ t( 'general.application')} | #{ t('courts.index.title')}")}
         it_behaves_like "any listed court"
       end
     end
@@ -116,8 +114,9 @@ describe "Court pages" do
     end
 
     it{ should have_selector(
-      "title", :text => t( "general.application") + " | #{ @court.name}")}
-    it{ should have_selector( "h1", :text => "Ändra domstol #{ @court.name}")}
+      "title", :text => "#{ t( 'general.application')} | #{ @court.name}")}
+    it{ should have_selector(
+          "h1", text: t( "courts.edit.title", name: @court.name))}
     it{ should have_selector "input[value='#{ @court.name}']"}
     it{ should have_selector "input[value='#{ @court.link}']"}
 
@@ -127,13 +126,13 @@ describe "Court pages" do
         @old_link = @court.link
         fill_in "court_name", :with => "New Name"
         fill_in "court_link", :with => "http://example.com"
-        click_button "Ändra"
+        click_button t( "general.edit")
         @court.reload
       end
       specify{ @court.name.should == "New Name"}
       specify{ @court.link.should == "http://example.com"}
-      it{ should have_selector(
-        "title", :text => t( "general.application") + " | Domstolar")}
+      it{ should have_selector( "title",
+        text: "#{ t( 'general.application')} | #{ t( 'courts.index.title')}")}
       it{ within( :id, "court-#{ @court.id}"){
             should have_content @court.name}}
       it{ within( :id, "court-#{ @court.id}"){

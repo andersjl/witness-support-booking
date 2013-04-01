@@ -45,6 +45,20 @@ describe "Booking model" do
       it{ should_not be_valid}
     end
 
+    context "when overbooking the session" do
+      before do
+        @court_day.update_attribute( :afternoon, 0)
+        @booking.valid?
+      end
+      it{ should_not be_valid}
+      context "errors" do
+        subject{ @booking.errors}
+        its( [ :base]){ should include(
+              t( "booking.full", court_day: @booking.court_day.inspect,
+                 session: t( "booking.afternoon.short")))}
+      end
+    end
+
     context "when user and court_day have different courts" do
       before do
         @court_day = create_test_court_day :court => create_test_court(
@@ -52,8 +66,16 @@ describe "Booking model" do
                                            :morning => 1, :afternoon => 2
         @booking = @user.bookings.build :court_day_id => @court_day.id,
                                         :session => :morning
+        @booking.valid?
       end
       it{ should_not be_valid}
+      context "errors" do
+        subject{ @booking.errors}
+        its( [ :base]){ should include(
+              t( "booking.court_mismatch",
+                 court_day: @booking.court_day.inspect,
+                 user: @booking.user.inspect))}
+      end
     end
   end
 

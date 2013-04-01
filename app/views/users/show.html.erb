@@ -10,12 +10,12 @@
     </section>
 <%   if current_user?( @user) %>
     <section>
-      <%= link_to "Ändra", edit_user_path( current_user) %>
+      <%= link_to t( "general.edit"), edit_user_path( current_user) %>
     </section>
 <%   end %>
 <% end %>
 <% if master? && current_user?( @user)%>
-    <section><%= link_to "Domstolar", courts_path %></section>
+    <section><%= link_to t( "courts.index.title"), courts_path %></section>
 <% end %>
   </aside>
 </div>

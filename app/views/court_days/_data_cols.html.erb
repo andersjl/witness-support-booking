@@ -2,10 +2,13 @@
    too_late = court_day.date < Date.today
    if admin? && !too_late %>
         <div class="span1">
-          <%= submit_tag( "#{ t( 'general.save')} #{ day_of_week date}") %>
+          <%= submit_tag( "#{ t( 'general.save'
+                               )} #{ t( 'general.cwday')[ date.cwday]}") %>
         </div>
 <% else %>
-        <div class="span1 weekday"><%= day_of_week date %></div>
+        <div class="span1 weekday">
+          <%= t( "general.cwday")[ date.cwday] %>
+        </div>
 <% end %>
         <div class="span1"><%= date %></div>
 <% offset = 0
@@ -25,7 +28,7 @@
 <%       if too_late
            if parallel - taken > 0 %>
                 <%= t( "court_day.req.not_met",
-                      count: parallel - taken) %>
+                       count: parallel - taken) %>
 <%         end
          elsif admin? %>
                 <%= label_tag session, t( "court_day.req.label") %>
@@ -64,12 +67,12 @@
 <%         if taken > parallel %>
                   (<%= t( "court_day.req.over") %>)
                 </div>
-<%         else %>
+<%         elsif parallel > taken %>
                 (<%= t( "court_day.req.left.short",
                         count: parallel - taken) %>)
 <%         end
-         elsif parallel - taken > 0 %>
-                <%= submit_tag t( "booking.#{ session}.book").capitalize %>
+         elsif parallel > taken %>
+                <%= submit_tag t( "booking.#{ session}.book") %>
                 (<%= t( "court_day.req.left.short",
                         count: parallel - taken) %>)
 <%       end %>

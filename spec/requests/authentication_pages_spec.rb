@@ -1,5 +1,3 @@
-# encoding: UTF-8
-
 require "spec_helper"
 
 describe "Authentication pages" do
@@ -9,9 +7,9 @@ describe "Authentication pages" do
   describe "log_in page" do
     before{ visit log_in_path}
 
-    it{ should have_selector( "h1", :text => "Logga in")}
-    it{ should have_selector(
-      "title", :text => "#{ t( "general.application")} | Logga in")}
+    it{ should have_selector( "h1", :text => t( "general.log_in"))}
+    it{ should have_selector( "title",
+          text: "#{ t( 'general.application')} | #{ t( 'general.log_in')}")}
   end
 
   describe "log_in" do
@@ -30,7 +28,7 @@ describe "Authentication pages" do
           select "Domstol 1", :from => "session_court_id"
           fill_in "session_email", :with => "#{ role}@example.com"
           fill_in "session_password", :with => "vittne"
-          click_button "Logga in"
+          click_button t( "general.log_in")
         end
 
         if role != "disabled"
@@ -52,11 +50,12 @@ describe "Authentication pages" do
 
     context "with invalid information" do
       before{ click_button "Logga in"}
+      it{ should have_selector( "title",
+            text: "#{ t( 'general.application')} | #{ t( 'general.log_in')}")}
       it{ should have_selector(
-        "title", :text => "#{ t( "general.application")} | Logga in")}
-      it{ should have_selector( "div.alert.alert-error", :text => "Ogiltig")}
+           "div.alert.alert-error", :text => t( "sessions.create.error"))}
       describe "after visiting another page" do
-        before{ click_link "Vittnesstöd"}
+        before{ click_link t( "general.application")}
         it{ should_not have_selector( "div.alert.alert-error")}
       end
     end
