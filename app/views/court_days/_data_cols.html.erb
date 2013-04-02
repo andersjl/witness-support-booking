@@ -22,38 +22,36 @@
      else %>
           <div class="<%= offset_n_span_to_class( offset, session_span)
                        %>" id="<%= "court-day-#{ date}-#{ session}" %>">
-<%     if (parallel - taken > 0) || (!too_late && (admin? || booked)) %>
+<%     if (taken < parallel) || (!too_late && (admin? || booked)) %>
             <div class="row">
               <div class="span<%= session_span %>">
 <%       if too_late
-           if parallel - taken > 0 %>
+           if taken < parallel %>
                 <%= t( "court_day.req.not_met",
                        count: parallel - taken) %>
 <%         end
          elsif admin? %>
-                <%= label_tag session, t( "court_day.req.label") %>
-                <%= select_tag "#{ session}-#{ date}",
-                  options_for_select( (PARALLEL_SESSIONS_MAX + 1).times.
-                                        inject( [ ]){ |acc, n| acc << n},
-                                      parallel),
-                  :class => "parallel-sessions" %>
-<%         if parallel - taken > 0 %>
-              </div>
-            </div>
-            <div class="row">
-              <div class="span<%= session_span %>">
-<%           days_to_go = court_day.date - Date.today
+                <div style="float:left">
+                  <%= label_tag session, t( "court_day.req.label") %>
+                  <%= select_tag "#{ session}-#{ date}",
+                    options_for_select( (PARALLEL_SESSIONS_MAX + 1).times.
+                                          inject( [ ]){ |acc, n| acc << n},
+                                        parallel),
+                    :class => "parallel-sessions" %>
+                </div>
+<%         if taken < parallel
+             days_to_go = court_day.date - Date.today
              if days_to_go < BOOKING_DAYS_AHEAD_MIN %>
-                <div class="to-book urgent">
+                <div class="to-book immediate">
 <%           elsif days_to_go < BOOKING_DAYS_AHEAD_MAX %>
-                <div class="to-book">
+                <div class="to-book urgent">
 <%           else %>
-                <div>
+                <div class="to-book">
 <%           end %>
                   <%= t( "court_day.req.left.long",
                          count: parallel - taken) %>
                 </div>
-<%         elsif parallel - taken < 0 %>
+<%         elsif  taken > parallel %>
                 <div class="overbooked">
                   <%= t( "court_day.req.over").capitalize %>
                 </div>
@@ -66,11 +64,11 @@
 <%         if taken > parallel %>
                   (<%= t( "court_day.req.over") %>)
                 </div>
-<%         elsif parallel > taken %>
+<%         elsif taken < parallel %>
                 (<%= t( "court_day.req.left.short",
                         count: parallel - taken) %>)
 <%         end
-         elsif parallel > taken %>
+         elsif taken < parallel %>
                 <%= submit_tag t( "booking.#{ session}.book") %>
                 (<%= t( "court_day.req.left.short",
                         count: parallel - taken) %>)
