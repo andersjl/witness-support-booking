@@ -5,9 +5,9 @@ en:
 # relevant for any subject matter
   general:
     about:
-      long: About Web Booking
+      long: Unwritten English About Page
       short: About
-    application: Witness Support's booking
+    application: Witness Support
     date: Date
     cwday:
     - 
@@ -21,7 +21,7 @@ en:
     destroy: Remove
     edit: Edit
     help:
-      long: Help page
+      long: Unwritten English Help Page
       short: Help
     log_in: Log in
     log_out: Log out
@@ -80,7 +80,7 @@ en:
 
 # subject matter database, regardless of controller
   database:
-    created: New database loaded.  You have to log in again.
+    created: New database loaded. You have to log in again.
     create:
       confirm: |
         Are You sure?  If loading fails you will be left without users and

@@ -62,8 +62,7 @@
            if taken > parallel %>
                 <div class="overbooked">
 <%         end %>
-                  <%= submit_tag t( "booking.#{ session}.unbook"
-                                  ).capitalize %>
+                  <%= submit_tag t( "booking.#{ session}.unbook") %>
 <%         if taken > parallel %>
                   (<%= t( "court_day.req.over") %>)
                 </div>

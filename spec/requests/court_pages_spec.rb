@@ -85,13 +85,13 @@ describe "Court pages" do
       end
 
       specify{ within( :id, "court-new"){
-                 expect{ click_button "Spara"
+                 expect{ click_button t( "general.save")
                        }.to change( Court, :count).by( 1)}}
 
       context "then" do
 
         before do
-          within( :id, "court-new"){ click_button "Spara"}
+          within( :id, "court-new"){ click_button t( "general.save")}
           @court = Court.find_by_name "New Court"
         end
 

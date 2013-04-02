@@ -188,11 +188,11 @@ describe "User pages" do
     context "as admin" do
 
       before do
-        @disabl = create_test_user :court => @court,    :email => "dis@abl",
-                                   :name => "Disabled", :role  => "disabled"
+        @disabl = create_test_user :court => @court,   :email => "dis@abl",
+                                   :name => "Disabl",  :role  => "disabled"
         @normal = @user
-        @admin  = create_test_user :court => @court,    :email => "ad@min",
-                                   :name => "Admin",    :role  => "admin"
+        @admin  = create_test_user :court => @court,   :email => "ad@min",
+                                   :name => "Admin",   :role  => "admin"
         fake_log_in @admin
         visit users_path
       end
@@ -204,13 +204,13 @@ describe "User pages" do
 
     context "as master" do
       before do
-        @disabl = create_test_user :court => @court,    :email => "dis@abl",
-                                   :name => "Disabled", :role  => "disabled"
+        @disabl = create_test_user :court => @court,   :email => "dis@abl",
+                                   :name => "Disabl",  :role  => "disabled"
         @normal = @user
-        @courta = create_test_user :court => @court,    :email => "ad@min",
-                                   :name => "Court A",  :role  => "admin"
+        @courta = create_test_user :court => @court,   :email => "ad@min",
+                                   :name => "Court A", :role  => "admin"
         @admin  = create_test_user :court => @other_court, :email => "m@st",
-                                   :name => "Master",   :role  => "master"
+                                   :name => "Master",  :role  => "master"
 
         fake_log_in @admin  # has role "master"!
         visit users_path
@@ -422,9 +422,8 @@ describe "User pages" do
             @old_email    = @edited.email
             @old_name     = @edited.name
             @old_pw       = @edited.password
-            fill_in t( "activerecord.attributes.user.password"), with: @new_pw
-            fill_in t( "activerecord.attributes.user.password_confirmation"),
-                    with: @new_pw
+            fill_in "user_password",              :with => @new_pw
+            fill_in "user_password_confirmation", :with => @new_pw
             click_button t( "users.edit.save")
             @edited.reload
           end

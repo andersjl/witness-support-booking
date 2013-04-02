@@ -32,16 +32,17 @@ describe "Authentication pages" do
         end
 
         if role != "disabled"
-          it{ should have_selector(
-            "title", :text => "#{ t( "general.application")} | Rondningar")}
+          it{ should have_selector( "title",
+                text: "#{ t( 'general.application')
+                        } | #{ t( 'court_days.index.title')}")}
         end
         it{ should have_link( @user.court.name, :href => @user.court.link)}
-        it{ should have_link( "Logga ut", :href => log_out_path)}
-        it{ should_not have_link( "Logga in", :href => log_in_path)}
+        it{ should have_link( t( "general.log_out"), :href => log_out_path)}
+        it{ should_not have_link( t( "general.log_in"), :href => log_in_path)}
 
         context "followed by log out" do
-          before{ click_link "Logga ut"}
-          it{ should have_link( "Logga in")}
+          before{ click_link t( "general.log_out")}
+          it{ should have_link( t( "general.log_in"))}
         end
       end
     end
@@ -49,7 +50,7 @@ describe "Authentication pages" do
     before{ visit log_in_path}
 
     context "with invalid information" do
-      before{ click_button "Logga in"}
+      before{ click_button t( "general.log_in")}
       it{ should have_selector( "title",
             text: "#{ t( 'general.application')} | #{ t( 'general.log_in')}")}
       it{ should have_selector(
