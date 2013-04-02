@@ -367,8 +367,8 @@ describe "court_days/index" do
         dis1, dis2, dis3 = create_test_user :count => 3, :role => "disabled"
         visit court_days_path
       end
-      it{ within( "div.row.heading"){
-            should_not have_content( t( "users_to_enable_common"))}}
+      it{ within( "div.row.heading"){ should_not have_content(
+              t( "court_days.index.users_to_enable_common"))}}
     end
 
     context "booking" do
