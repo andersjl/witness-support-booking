@@ -1,37 +1,179 @@
 # application specific English localization.  Should not depend on region?
 
 en:
+
+# relevant for any subject matter
+  general:
+    about:
+      long: About Web Booking
+      short: About
+    application: Witness Support's booking
+    date: Date
+    cwday:
+    - 
+    - Mo
+    - Tu
+    - We
+    - Th
+    - Fr
+    - Sa
+    - Su
+    destroy: Remove
+    edit: Edit
+    help:
+      long: Help page
+      short: Help
+    log_in: Log in
+    log_out: Log out
+    ok: OK
+    save: Save
+    warning: 
+      caps: WARNING!
+
+# subject matter booking, regardless of controller
   booking:
-    unbooked_msg: %{user} unbooked %{date} %{session}
-    session:
-      afternoon:
-        long: Afternoon
-        short: PM
-      morning:
-        long: Morning
-        short: AM
+    court_mismatch: %{court_day} and %{user} belong to different courts
+    full: %{court_day} is fully booked %{session}
+    afternoon:
+      book: Book PM
+      long: Afternoon
+      short: PM
+      unbook: Unbook PM
+    morning:
+      book: Book AM
+      long: Morning
+      short: AM
+      unbook: Unbook AM
+    unbook:
+      confirm: Unbook %{name} %{date} %{session}?
+    unbooked: %{user} unbooked %{date} %{session}
+
+# subject matter court, regardless of controller
   court:
-    change_msg: Changes saved
-    create_msg: Court %{court} created
-    default_name: Automatically generated first court
-    destroy_msg: Court %{court} removed
+    edit_name_or_link: Edit name or link
+    changed: Saved changes
+    create: Create a new court
+    created: Court %{court} created
+    default: Automatically generated first court
+    destroy:
+      confirm: |
+        Are You sure?  Clicking OK removes the court %{name} and all its
+        recorded needs and notes.
+    destroyed: Court %{court} removed
+    prompt: Choose court
+
+# subject matter court day, regardless of controller
+  court_day:
+    date:
+      taken: already taken at this court
+      weekend: %{date} is a %{dow}
+    empty: Nothing to do at %{court} %{date}
+    req:
+      label: Need
+      left:
+        long: %{count} left to book
+        short: %{count} left
+      not_met:
+        one: %{count} was never booked
+        other: %{count} were never booked
+      over: overbooked!
+
+# subject matter database, regardless of controller
   database:
-    create_msg: New databese loaded. You must log in again.
-    error_msg: '%{reason}: %{message}. The database is intact.'
-    parse_error: Loading failed
-    exception_error: Exception %{exception}
-  session:
-    error_msg: Ogiltig kombination av domstol, e-post och lösenord
+    created: New database loaded.  You have to log in again.
+    create:
+      confirm: |
+        Are You sure?  If loading fails you will be left without users and
+        bookings!
+      label: ERASE THE ENTIRE DATABASE and load data from the file.
+    error:
+      message: "%{reason}: %{message}. The database is not affected."
+      parse: Loading failed
+      exception: Exception %{exception}
+
+# subject matter user, regardless of controller
   user:
-    change_msg: Changes saved
-    change_pw_msg: Password changed for %{name}
-    create_msg: You are welcome, %{name}!
-    destroy_msg: User %{user} removed
+    changed:
+      message: Saved changes
+      password: Password changed for %{name}
+    created: Welcome %{name}!
+    destroy:
+      confirm: Remove %{name}?
+    destroyed: User %{user} removed
+    disable:
+      label: Disable
+      confirm: Disable %{name}?
+    email:
+      taken: already taken at this court
+    enable:
+      label: Enable
+      confirm: Enable %{name}?
+    promote:
+      label: Promote
+      confirm: |
+        Promote %{user} to administrate Witness Support Service at %{court}?
     role:
       admin: court administrator
-      cange_msg: User %{name} changed role from %{from} to %{to}
-      cange_fail: Failed to make user %{name} change role from %{from} to %{to}
+      changed: Role for user %{name} changed from %{from} to %{to}
+      changed_fail: |
+        Role for user %{name} could not be changed from %{from} to %{to}
       disabled: disabled
       master: web master
-      normal: witness support
+      normal: witness service
+
+# view specific
+  courts:
+    edit:
+      title: Change court %{name}
+    index:
+      title: Courts
+  court_days:
+    index:
+      title: Sessions
+      users_to_enable: %{count} new to enable
+      users_to_enable_common: new to enable
+    week_picker:
+      prompt: |
+        Change week by clicking the arrows or enter a date in the desired week
+        and press "OK"
+  databases:
+    new:
+      title: Load file
+      erase:
+        caps: ERASE THE ENTIRE DATABASE
+    show:
+      file_name: witness_support_database
+  sessions:
+    create:
+      error: invalid combination of court, e-mail, and password
+    new:
+      no_password_p: No password?
+      register: Register one now!
+  shared:
+    error: The form contains %{count} errors
+    dump:
+      prompt: Dump the entire database to a file
+    load:
+      prompt: ERASE THE ENTIRE DATABASE and load a file
+  static_pages:
+    home:
+      disabled: You will receive a mail to %{email} when you can start booking!
+      sign_up: Sign up
+  users:
+    edit:
+      save: Save changes
+      title: Edit %{name}
+    index:
+      heading:
+        long: All users at %{court}
+        short: All users
+      rescue: Set new password
+      title: Users
+    new:
+      title: New user
+      password: Choose password
+      password_confirm: Confirm password
+      save: Register new user
+    show:
+      title: %{name}
 

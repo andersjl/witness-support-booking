@@ -5,11 +5,11 @@ sv:
 # Active Record models and attributes
   activerecord:
     models:
-      booking: bokning
-      court: domstol
-      court_day: rättegångsdag
-      database: databas
-      user: användare
+      booking: Bokning
+      court: Domstol
+      court_day: Rättegångsdag
+      database: Databas
+      user: Användare
     attributes:
       booking:
         user: Vittnesstöd
