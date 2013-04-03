@@ -16,10 +16,12 @@
           <%= t( "booking.afternoon.long").capitalize %>
         </div>
         <div class="span<%= notes_span %>">
-<% disabled = User.where "role = ?", "disabled"
-   if  disabled.count > 0 && current_user.admin? %>
+<% disabled_count = current_user.admin? ?
+     User.where( "court_id = ? and role = ?",
+                 current_user.court.id, "disabled").count : 0
+   if  disabled_count > 0 %>
           <%= link_to t( "court_days.index.users_to_enable",
-                         count: disabled.count),
+                         count: disabled_count),
                       users_path, :class => "disabled-user" %>
 <% else %>
           <%= t( "activerecord.attributes.court_day.notes") %>

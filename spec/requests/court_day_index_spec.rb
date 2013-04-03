@@ -260,13 +260,27 @@ describe "court_days/index" do
     end
 
     context "when there are deactivated users" do
-      before do
-        dis1, dis2, dis3 = create_test_user :count => 3, :role => "disabled"
-        visit court_days_path
+
+      context "on this court" do
+        before do
+          dis1, dis2, dis3 = create_test_user :count => 3, :role => "disabled"
+          visit court_days_path
+        end
+        it{ within( "div.row.heading"){
+              should have_link( t( "court_days.index.users_to_enable",
+                                   count: 3), :href => users_path)}}
       end
-      it{ within( "div.row.heading"){
-            should have_link( t( "court_days.index.users_to_enable",
-                                 count: 3), :href => users_path)}}
+
+      context "on other court" do
+        before do
+          dis1, dis2, dis3 =
+            create_test_user :court => Court.find_by_name( "Other Court"),
+                             :count => 3, :role => "disabled"
+          visit court_days_path
+        end
+        it{ within( "div.row.heading"){ should_not have_content(
+                t( "court_days.index.users_to_enable_common"))}}
+      end
     end
 
     context "unbooking" do
