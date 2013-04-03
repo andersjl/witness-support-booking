@@ -1,4 +1,5 @@
+
 $(function() {
-  $( ".datepicker" ).datepicker({ firstDay: 1, dateFormat: "yy-mm-dd" });
+  $( ".datepicker" ).datepicker( $.datepicker.regional[ "sv" ] );
 });
 
