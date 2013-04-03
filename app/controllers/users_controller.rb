@@ -25,7 +25,7 @@ extend Authorization
   end
 
   def create
-    court_id = params[ :user].delete( :court_id)
+    court_id = params[ :user].delete( :court).to_i
     @user = User.new( params[ :user])
     @user.court_id = court_id
     if @user.save

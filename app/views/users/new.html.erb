@@ -5,16 +5,16 @@
     <%= form_for( @user) do |f| %>
       <%= render :partial => "shared/error_messages",
                  :locals => { :model => @user} %>
-      <%= f.label :court_id %>
-      <%= f.collection_select :court_id, @courts, :id, :name,
+      <%= f.label :court %>
+      <%= f.collection_select :court, @courts, :id, :name,
                               prompt: t( "court.prompt") %>
       <%= f.label :name %>
       <%= f.text_field :name %>
       <%= f.label :email%>
       <%= f.text_field :email %>
-      <%= f.label :password, t( "users.new.password") %>
+      <%= f.label :password %>
       <%= f.password_field :password %>
-      <%= f.label :password_confirmation, t( "users.new.password_confirm") %>
+      <%= f.label :password_confirmation %>
       <%= f.password_field :password_confirmation %>
       <%= f.submit t( "users.new.save"),
                    :class => "btn btn-large btn-primary" %>

@@ -12,15 +12,27 @@ describe "User pages" do
   describe "sign_up process" do
 
     before{ visit sign_up_path}
-    let( :submit){ t( "users.new.save")}
 
     it{ should have_selector( "h1", :text => t( "users.new.title"))}
     it{ should have_selector( "title",
       :text => "#{ t( 'general.application')} | #{ t( 'users.new.title')}")}
+    unless I18n.locale == :en
+      it{ should have_selector( "label",
+            :text => t( "activerecord.attributes.user.court"))}
+      it{ should have_selector( "label",
+            :text => t( "activerecord.attributes.user.name"))}
+      it{ should have_selector( "label",
+            :text => t( "activerecord.attributes.user.email"))}
+      it{ should have_selector( "label",
+            :text => t( "activerecord.attributes.user.password"))}
+      it{ should have_selector( "label",
+           :text => t( "activerecord.attributes.user.password_confirmation"))}
+    end
 
     context "with invalid information" do
       it "should not create a user" do
-        expect{ click_button submit}.not_to change( User, :count)
+        expect{ click_button t( "users.new.save")
+              }.not_to change( User, :count)
       end
     end
 
@@ -29,12 +41,12 @@ describe "User pages" do
         User.destroy_all
         Court.destroy_all
         visit sign_up_path
-        select  t( "court.default"), :from => "user_court_id"
+        select  t( "court.default"), :from => "user_court"
         fill_in "user_name",         :with => "Example User"
         fill_in "user_email",        :with => "user@example.com"
         fill_in "user_password",     :with => "foobar"
         fill_in "user_password_confirmation", :with => "foobar"
-        click_button submit
+        click_button t( "users.new.save")
       end
       it "creates a user and a default court" do
         User.count.should == 1
@@ -46,7 +58,7 @@ describe "User pages" do
     context "with valid information" do
 
       before do
-        select  @court.name,     :from => "user_court_id"
+        select  @court.name,     :from => "user_court"
         fill_in "user_name",     :with => "Example User"
         fill_in "user_email",    :with => "user@example.com"
         fill_in "user_password", :with => "foobar"
@@ -54,12 +66,13 @@ describe "User pages" do
       end
 
       it "should create a user" do
-        expect{ click_button submit}.to change( User, :count).by( 1)
+        expect{ click_button t( "users.new.save")
+              }.to change( User, :count).by( 1)
       end
 
       context "after saving the user" do
         before do
-          click_button submit
+          click_button t( "users.new.save")
           @user = User.find_by_court_id_and_email( @court, "user@example.com")
         end
         it{ @user.should_not be_enabled}
@@ -83,7 +96,8 @@ describe "User pages" do
                                       :role => "admin", :name => "Admin"
             fake_log_in @admin
             visit users_path
-            within( "li#user-#{ @user.id}"){ click_link( t( "user.enable.label"))}
+            within( "li#user-#{ @user.id}"){
+              click_link( t( "user.enable.label"))}
           end
 
           it{ @user.reload.should be_enabled}
@@ -173,8 +187,8 @@ describe "User pages" do
                              @user.id, @user.court.id).sample
         click_link( @other.name)
       end
-      it{ should have_selector(
-            "title", :text => t( "general.application") + " | #{ @other.name}")}
+      it{ should have_selector( "title",
+            :text => t( "general.application") + " | #{ @other.name}")}
     end
 
     it "lists each user with link" do
@@ -236,14 +250,16 @@ describe "User pages" do
       it{ within( "li#user-#{ @courta.id}"){ should have_link(
               t( "general.destroy"), :href => user_path( @courta))}}
       it "delete a court admin" do
-        within( "li#user-#{ @courta.id}"){ expect{ click_link( t( "general.destroy"))
-                                         }.to change( User, :count).by( -1)}
+        within( "li#user-#{ @courta.id}"){
+          expect{ click_link( t( "general.destroy"))
+                }.to change( User, :count).by( -1)}
       end
 
       it{ within( "li#user-#{ @courta.id}"){ should have_link(
             t( "user.disable.label"), :href => disable_user_path( @courta))}}
       it "disable a court admin" do
-        within( "li#user-#{ @courta.id}"){ click_link( t( "user.disable.label"))}
+        within( "li#user-#{ @courta.id}"
+              ){ click_link( t( "user.disable.label"))}
         @courta.reload.role.should == "disabled"
       end
 
@@ -264,7 +280,8 @@ describe "User pages" do
         @disabl.reload.role.should == "admin"
       end
       it "promote a normal user" do
-        within( "li#user-#{ @normal.id}"){ click_link( t( "user.promote.label"))}
+        within( "li#user-#{ @normal.id}"
+              ){ click_link( t( "user.promote.label"))}
         @normal.reload.role.should == "admin"
       end
     end
@@ -293,7 +310,8 @@ describe "User pages" do
       before{ @shown = @user}
       it_behaves_like "viewing any user"
       it{ should have_content( @user.email)}
-      it{ should have_link( t( "general.edit"), :href => edit_user_path( @user))}
+      it{ should have_link( t( "general.edit"),
+                            :href => edit_user_path( @user))}
       it_behaves_like "all execept master viewing self"
     end
 
