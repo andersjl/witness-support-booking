@@ -394,6 +394,10 @@ describe "User pages" do
       context "saving database" do
         # file content is tested with the new_database_path request
         before{ click_link t( "shared.dump.prompt")}
+        context "page.response_headers[ 'Content-Disposition']" do
+          specify{ page.response_headers[ 'Content-Disposition'].should =~
+              /filename=\"#{ t( 'databases.show.file_name')}-\d{12}.xml\"/}
+        end
         context "page.response_headers[ 'Content-Type']" do
           it{ page.response_headers[ "Content-Type"].should == "text/xml"}
         end

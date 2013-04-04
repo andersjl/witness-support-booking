@@ -28,7 +28,8 @@ extend Authorization
 
   def show
     send_data Database.new.all_data, :type => "text/xml",
-              filename: "#{ t( 'databases.show.file_name')}-#{ Time.now}.xml"
+              filename: "#{ t( 'databases.show.file_name')
+                          }-#{ Time.now.strftime( "%y%m%d%H%M%S")}.xml"
   end
 end
 
