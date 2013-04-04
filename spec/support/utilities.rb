@@ -87,6 +87,9 @@ end
 private :create_test_user_do
 
 def fake_log_in( user, password = nil)
+  if page.first( "a", text: t( "general.log_out"))
+    click_link( t( "general.log_out"))
+  end
   visit log_in_path
   select user.court.name, :from => "session_court_id"
   fill_in "session_email", :with => user.email
