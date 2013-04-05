@@ -47,16 +47,18 @@ class CourtDay < ActiveRecord::Base
     date - (date.cwday - 1)
   end
 
+  def self.add_weekdays( date, days)
+    start = ensure_weekday( date)
+    offs = start.cwday - 1
+    start - offs + lambda{ |w, d| 7 * w + d}.call( *((offs + days).divmod 5))
+  end
+
   def self.ensure_weekday( date)
     case date.cwday
     when 6 then date += 2
     when 7 then date += 1
     else        date
     end
-  end
-
-  def self.session_sv( session)
-    session == :morning ? "fm" : "em"
   end
 
   def never_on_weekends

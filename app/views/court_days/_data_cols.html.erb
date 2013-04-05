@@ -82,7 +82,7 @@
 <%       if current_user? booking.user %>
                 <b>
 <%       end
-         if admin? %>
+         if admin? && !too_late %>
                 <%= link_to booking.user.name, booking_path( booking),
                             method: :delete,
                             data: { confirm:

@@ -14,22 +14,22 @@ describe "court_days/index" do
     end
   end
 
-  def create_future_date
-    @tested_date = @cd.date + 21
+  def create_tested_date
+    # @tested_date -> @tested_id, @tested_cd
     @tested_id = "court-day-#{ @tested_date}-morning"
-    @future_cd = create_test_court_day :date => @tested_date
+    @tested_cd = create_test_court_day :date => @tested_date
   end
 
-  def visit_future_date
+  def visit_tested_date
     within :id, "weekpicker-bottom" do
       fill_in "datepicker-bottom", :with => @tested_date
       click_on t( "general.ok")
     end
   end
 
-  def create_and_visit_future_date
-    create_future_date
-    visit_future_date
+  def create_and_visit_tested_date
+    create_tested_date
+    visit_tested_date
   end
 
   def shows( date)
@@ -310,18 +310,31 @@ describe "court_days/index" do
       context "future" do
 
         before do
-          create_future_date
-          @booked_user.book!( @future_cd, :morning)
-          visit_future_date
+          @tested_date = CourtDay.add_weekdays( @cd.date, 1 + rand( 10))
+          create_tested_date
+          @booked_user.book!( @tested_cd, :morning)
+          visit_tested_date
           within( :id, @tested_id){ click_link( @booked_user.name)}
         end
 
         it{ shows @tested_date}
-        specify{ @booked_user.should_not be_booked( @future_cd, :morning)}
+        specify{ @booked_user.should_not be_booked( @tested_cd, :morning)}
       end
 
       context "past" do
-        it "is not possible"
+
+        before do
+          @tested_date = CourtDay.add_weekdays( @cd.date, -1 - rand( 10))
+          create_tested_date
+          @booked_user.book!( @tested_cd, :morning)
+          visit_tested_date
+        end
+
+        it{ shows @tested_date}
+        specify{ @booked_user.should be_booked( @tested_cd, :morning)}
+        it{ within( :id, @tested_id){ should have_content( @booked_user.name)}}
+        it{ within( :id, @tested_id){
+              should_not have_link( @booked_user.name)}}
       end
     end
   end
@@ -484,7 +497,8 @@ describe "court_days/index" do
       context "future" do
 
         before do
-          create_and_visit_future_date
+          @tested_date = @cd.date + (1 + rand( 5)) * 7
+          create_and_visit_tested_date
           within( :id, @tested_id){ click_button t( "booking.morning.book")}
         end
 
