@@ -281,6 +281,8 @@ describe "court_days/index" do
         it{ within( "div.row.heading"){ should_not have_content(
                 t( "court_days.index.users_to_enable_common"))}}
       end
+
+      it "on any court shown to master"
     end
 
     context "unbooking" do

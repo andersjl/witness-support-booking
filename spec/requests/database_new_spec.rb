@@ -92,6 +92,7 @@ describe "Database load form" do
         it_behaves_like "logged in"
       end
 
+      it "exists before trying and is also in file keeps role"
       context "normal before trying" do
 
         before do
