@@ -236,8 +236,8 @@ include AllDataDefs
         user.update_attribute :role, role
       else
         user = User.new :email => email, :name => unam,
-                         :password => "dummy_password",
-                         :password_confirmation => "dummy_password"
+                        :password => "dummy_password",
+                        :password_confirmation => "dummy_password"
         user.court = court
         user.role = role
         user.save!

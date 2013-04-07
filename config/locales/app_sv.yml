@@ -175,7 +175,7 @@ sv:
         caps: RADERA HELA DATABASEN
     show:
       file_name: vittnesstöd_databas
-  sessions:
+  user_sessions:
     create:
       error: ogiltig kombination av domstol, mejladress och lösenord
     new:

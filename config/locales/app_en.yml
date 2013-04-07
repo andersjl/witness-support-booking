@@ -143,7 +143,7 @@ en:
         caps: ERASE THE ENTIRE DATABASE
     show:
       file_name: witness_support_database
-  sessions:
+  user_sessions:
     create:
       error: invalid combination of court, e-mail, and password
     new:

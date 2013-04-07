@@ -1,5 +1,5 @@
 
-module SessionsHelper
+module UserSessionsHelper
 
   def current_user
     unless @current_user

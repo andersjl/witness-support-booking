@@ -1,6 +1,6 @@
-class SessionsController < ApplicationController
+class UserSessionsController < ApplicationController
 
-  class Session
+  class UserSession
     attr_reader :court_id, :email
     def initialize( court_id)
       @court_id = court_id
@@ -9,20 +9,21 @@ class SessionsController < ApplicationController
 
   def new
     @courts = Court.all
-    @session = Session.new cookies[ :_witness_support_booking_court_id]
+    @user_session =
+      UserSession.new cookies[ :_witness_support_booking_court_id]
   end
 
   def create
-    user = User.find_by_court_id_and_email(
-      params[ :session][ :court_id], params[ :session][ :email].downcase)
+    user = User.find_by_court_id_and_email params[ :user_session][ :court_id],
+                  params[ :user_session][ :email].downcase
     if user && master?
       spoof user
       redirect_to court_days_path
-    elsif user && user.authenticate( params[ :session][ :password])
+    elsif user && user.authenticate( params[ :user_session][ :password])
       log_in user
       redirect_to court_days_path
     else
-      flash[ :error] = t( "sessions.create.error")
+      flash[ :error] = t( "user_sessions.create.error")
       redirect_to log_in_path
     end
   end

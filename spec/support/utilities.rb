@@ -91,9 +91,9 @@ def fake_log_in( user, password = nil)
     click_link( t( "general.log_out"))
   end
   visit log_in_path
-  select user.court.name, :from => "session_court_id"
-  fill_in "session_email", :with => user.email
-  fill_in "session_password", :with => password || user.password
+  select user.court.name, :from => "user_session_court_id"
+  fill_in "user_session_email", :with => user.email
+  fill_in "user_session_password", :with => password || user.password
   click_button t( "general.log_in")
   cookies[ :remember_token] = user.remember_token  # if not Capybara
 end

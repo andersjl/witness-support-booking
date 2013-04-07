@@ -1,7 +1,7 @@
 require "spec_helper"
 require "app/helpers/application_helper"
 include ApplicationHelper
-include SessionsHelper
+include UserSessionsHelper
 
 describe "court_days/index" do
 

@@ -3,7 +3,7 @@
 
 <div class="row">
   <div class="span6 offset3">
-    <%= form_for( :session, :url => sessions_path) do |f| %>
+    <%= form_for( :user_session, :url => user_sessions_path) do |f| %>
       <%= f.label :court_id, t( "activerecord.attributes.user.court") %>
       <%= f.collection_select :court_id, @courts, :id, :name,
                               :prompt => t( "court.prompt") %>
@@ -15,8 +15,8 @@
                    :class => "btn btn-large btn-primary" %>
     <% end %>
     <p>
-      <%= t( "sessions.new.no_password_p") %>
-      <%= link_to t( "sessions.new.register"), sign_up_path %>
+      <%= t( "user_sessions.new.no_password_p") %>
+      <%= link_to t( "user_sessions.new.register"), sign_up_path %>
     </p>
   </div>
 </div>

@@ -25,9 +25,9 @@ describe "Authentication pages" do
                                    :role => role,
                                    :password => "vittne"
           visit log_in_path
-          select "Domstol 1", :from => "session_court_id"
-          fill_in "session_email", :with => "#{ role}@example.com"
-          fill_in "session_password", :with => "vittne"
+          select "Domstol 1", :from => "user_session_court_id"
+          fill_in "user_session_email", :with => "#{ role}@example.com"
+          fill_in "user_session_password", :with => "vittne"
           click_button t( "general.log_in")
         end
 
@@ -54,7 +54,7 @@ describe "Authentication pages" do
       it{ should have_selector( "title",
             text: "#{ t( 'general.application')} | #{ t( 'general.log_in')}")}
       it{ should have_selector(
-           "div.alert.alert-error", :text => t( "sessions.create.error"))}
+           "div.alert.alert-error", :text => t( "user_sessions.create.error"))}
       describe "after visiting another page" do
         before{ click_link t( "general.application")}
         it{ should_not have_selector( "div.alert.alert-error")}
@@ -88,9 +88,9 @@ describe "Authentication pages" do
                        role:     spoofer_role,
                        password: "spoofer")
           visit log_in_path
-          select @spoofer_court.name, from: "session_court_id"
-          fill_in "session_email",    with: @spoofer.email
-          fill_in "session_password", with: @spoofer.password
+          select @spoofer_court.name, from: "user_session_court_id"
+          fill_in "user_session_email",    with: @spoofer.email
+          fill_in "user_session_password", with: @spoofer.password
           click_button t( "general.log_in")
         end
 
@@ -116,8 +116,8 @@ describe "Authentication pages" do
                            role:     spoofed_role,
                            password: "spoofed")
               visit log_in_path
-              select @spoofed_court.name, from: "session_court_id"
-              fill_in "session_email",    with: @spoofed.email
+              select @spoofed_court.name, from: "user_session_court_id"
+              fill_in "user_session_email",    with: @spoofed.email
               # do NOT fill in password!
               click_button t( "general.log_in")
             end
