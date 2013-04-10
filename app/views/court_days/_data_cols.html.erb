@@ -1,16 +1,15 @@
+        <div class="span2 weekday">
+          <span>
 <% date = court_day.date
    too_late = court_day.date < Date.today
    if admin? && !too_late %>
-        <div class="span1">
-          <%= submit_tag( "#{ t( 'general.save'
-                               )} #{ t( 'general.cwday')[ date.cwday]}") %>
-        </div>
+            <%= submit_tag( "#{ t( 'general.cwday')[ date.cwday]}") %>
 <% else %>
-        <div class="span1 weekday">
-          <%= t( "general.cwday")[ date.cwday] %>
-        </div>
+            <%= t( "general.cwday")[ date.cwday] %>
 <% end %>
-        <div class="span1"><small><%= date %></small></div>
+          </span>
+          <span class="court-day-date"><%= date %></span>
+        </div>
 <% offset = 0
    [ :morning, :afternoon].each do |session|
      parallel = court_day.send( session)
