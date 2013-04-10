@@ -10,7 +10,7 @@
           <%= t( "general.cwday")[ date.cwday] %>
         </div>
 <% end %>
-        <div class="span1"><%= date %></div>
+        <div class="span1"><small><%= date %></small></div>
 <% offset = 0
    [ :morning, :afternoon].each do |session|
      parallel = court_day.send( session)
