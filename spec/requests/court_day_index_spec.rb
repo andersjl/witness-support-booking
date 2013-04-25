@@ -180,8 +180,7 @@ describe "court_days/index" do
             should have_selector( "select")
             should have_selector( "textarea")
             should have_selector(
-              "input[value='#{ t( 'general.save')
-                             } #{ t( 'general.cwday')[ date.cwday]}']")
+              "input[value='#{ t( 'general.cwday')[ date.cwday]}']")
             court_day = CourtDay.find_by_court_id_and_date( court_this, date)
             court_day && court_day.bookings.each do |booking|
               should have_link( booking.user.name,
@@ -202,7 +201,7 @@ describe "court_days/index" do
           select( morning, :from => "morning-#{ date}")
           select( afternoon, :from => "afternoon-#{ date}")
           fill_in( "notes-#{ date}", :with => notes)
-          click_button( "#{ t( 'general.save')} #{ t( 'general.cwday')[ date.cwday]}")
+          click_button( "#{ t( 'general.cwday')[ date.cwday]}")
         end
         @changed_obj =
           CourtDay.find_by_court_id_and_date( @admin.court.id, date)
@@ -349,8 +348,7 @@ describe "court_days/index" do
       it{ should_not have_selector( "select")}
       it{ should_not have_selector( "textarea")}
       it{ within( :id, @tested_id){ should_not have_selector(
-         "input[value='#{ t( "general.save")
-                        } #{ t( 'general.cwday')[ @cd.date.cwday]}']")}}
+         "input[value='#{ t( 'general.cwday')[ @cd.date.cwday]}']")}}
       it{ within( :id, "#{ @tested_id}-morning"){ should have_selector(
               "input[value='#{ t( "booking.morning.book")}']")}}
       it{ within( :id, "#{ @tested_id}-morning"){ should have_content(
