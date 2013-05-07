@@ -11,32 +11,40 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130226092236) do
+ActiveRecord::Schema.define(:version => 20130407080044) do
 
   create_table "bookings", :force => true do |t|
-    t.integer  "user_id",      :null => false
-    t.integer  "court_day_id", :null => false
-    t.integer  "session",      :null => false
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
+    t.integer  "user_id",          :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+    t.integer  "court_session_id", :null => false
   end
 
-  add_index "bookings", ["court_day_id", "user_id", "session"], :name => "index_bookings_on_court_day_id_and_user_id_and_session", :unique => true
-  add_index "bookings", ["court_day_id"], :name => "index_bookings_on_court_day_id"
+  add_index "bookings", ["court_session_id", "user_id"], :name => "index_bookings_on_court_session_id_and_user_id", :unique => true
   add_index "bookings", ["user_id"], :name => "index_bookings_on_user_id"
 
-  create_table "court_days", :force => true do |t|
+  create_table "court_day_notes", :force => true do |t|
+    t.integer  "court_id",   :null => false
     t.date     "date",       :null => false
-    t.integer  "morning",    :null => false
-    t.integer  "afternoon",  :null => false
-    t.text     "notes"
+    t.text     "text",       :null => false
     t.datetime "created_at", :null => false
     t.datetime "updated_at", :null => false
-    t.integer  "court_id",   :null => false
   end
 
-  add_index "court_days", ["court_id", "date"], :name => "index_court_days_on_court_id_and_date", :unique => true
-  add_index "court_days", ["date"], :name => "index_court_days_on_date"
+  add_index "court_day_notes", ["court_id"], :name => "index_court_day_notes_on_court_id"
+  add_index "court_day_notes", ["date", "court_id"], :name => "index_court_day_notes_on_date_and_court_id", :unique => true
+
+  create_table "court_sessions", :force => true do |t|
+    t.integer  "court_id",   :null => false
+    t.date     "date",       :null => false
+    t.integer  "start",      :null => false
+    t.integer  "need",       :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "court_sessions", ["court_id"], :name => "index_court_sessions_on_court_id"
+  add_index "court_sessions", ["date", "court_id", "start"], :name => "index_court_sessions_on_date_and_court_id_and_start", :unique => true
 
   create_table "courts", :force => true do |t|
     t.string   "name",                        :null => false
