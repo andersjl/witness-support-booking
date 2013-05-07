@@ -1,49 +1,34 @@
 class User < ActiveRecord::Base
+include Massign
 
-  class UserModelRoleError < StandardError; end
-
-  attr_accessible :email, :name, :password, :password_confirmation
   has_secure_password
 
-  before_save { |user| user.email = email.downcase}
+  before_save{ |user| user.email = email.downcase}
   before_save :create_remember_token
 
   validates :court, presence: true
   validates :email, presence: true,
                     uniqueness: { scope: :court_id, case_sensitive: false,
-                                  message: I18n.t( "user.email.taken")}
+                                  message: I18n.t( "user.error.email_taken")}
   validates :name, presence: true
-  validates :password, presence: true, length: { :minimum => 6}
+  validates :password, presence: true, length: { minimum: 6}
   validates :password_confirmation, presence: true
-  validates :role, presence: true, inclusion: { :in => USER_ROLES}
+  validates :role, presence: true, inclusion: { in: USER_ROLES}
 
   belongs_to :court
-  has_many :bookings, :dependent => :destroy
-  has_many :court_days, :through => :bookings
+  has_many :bookings, dependent: :destroy
 
-  def inspect
-    "##{ court && court.name}##{ name}##{ email}##{ role}#"
-  end
+  def inspect; "|#{ court && court.name}|#{ name}|#{ email}|#{ role}|" end
 
   def admin?( court = nil)
     role == "master" || (role == "admin" && (!court || self.court == court))
   end
 
-  def master?
-    role == "master"
-  end
+  def master?; role == "master" end
+  def enabled?; role != "disabled" end
 
-  def enabled?
-    role != "disabled"
-  end
-
-  def book!( court_day, session)
-    bookings.create! :court_day_id => court_day.id, :session => session
-  end
-
-  def booked?( court_day, session)
-    bookings.find_by_court_day_id_and_session(
-      court_day.id, Booking.session_to_attribute( session))
+  def booked?( court_session)
+    bookings.find_by_court_session_id court_session.id
   end
 
   def self.order_by_role_and_name( court)
@@ -51,30 +36,23 @@ class User < ActiveRecord::Base
       if u1.role == u2.role
         u1.name <=> u2.name
       else
-        role_to_order( u1.role) <=> role_to_order( u2.role)
+        u1.role_to_order <=> u2.role_to_order
       end
     end
   end
 
-  def self.valid_role?( role)
-    USER_ROLES.include? role
-  end
+  def role_to_order; USER_ROLES.index role end
+  def self.valid_role?( role); USER_ROLES.include? role end
 
-  def self.role_to_order( role)
-    unless valid_role? role
-      raise UserModelRoleError.new( "unknown role \"#{ role}\"")
+  def self.disabled_count( court = nil)
+    if court
+      where( "court_id = ? and role = ?", court, "disabled").count
+    else
+      where( "role = ?", "disabled").count
     end
-    USER_ROLES.index role
   end
 
-  def >( other_user)
-    self.class.role_to_order( role) >
-      self.class.role_to_order( other_user.role)
-  end
-
-  def create_remember_token
-    self.remember_token = SecureRandom.hex
-  end
+  def create_remember_token; self.remember_token = SecureRandom.hex end
   private :create_remember_token
 end
 

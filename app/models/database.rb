@@ -167,15 +167,12 @@ include AllDataDefs
 end
 
 class Database < ActiveRecord::Base
-
 include AllDataDefs
 
   def self.columns
     @columns ||= [ ActiveRecord::ConnectionAdapters::Column.new(
                      :all_data, :string, nil, false)]
   end
-
-  attr_accessible :all_data
 
   def all_data=( uploaded)
     return unless uploaded

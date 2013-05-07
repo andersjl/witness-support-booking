@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe "User model" do
 
-  before{ @user = create_test_user :do_not_save => true}
+  before{ @user = create_test_user do_not_save: true}
 
   subject{ @user}
 
@@ -20,26 +20,12 @@ describe "User model" do
   it{ should respond_to( :authenticate)}
   it{ should respond_to( :bookings)}
   it{ should respond_to( :booked?)}
-  it{ should respond_to( :book!)}
 
   it{ should be_valid}
   it{ should_not be_admin}
   it{ should_not be_admin( court_this)}
   it{ should_not be_admin( court_other)}
   it{ should_not be_master}
-
-  describe "accessible attributes" do
-
-    it "should not allow access to court" do
-      lambda{ User.new( :court => create_test_court)}.should raise_error(
-        ActiveModel::MassAssignmentSecurity::Error)
-    end    
-
-    it "should not allow access to role" do
-      lambda{ User.new( :role => "disabled")}.should raise_error(
-        ActiveModel::MassAssignmentSecurity::Error)
-    end    
-  end
 
   context "with role attribute set to 'master'" do
     before do
@@ -60,31 +46,43 @@ describe "User model" do
     it{ should be_admin}
     it{ should be_admin( @user.court)}
     it{ should_not be_admin( Court.find_by_name( "Other Court"))}
+    it{ should_not be_master}
   end
 
-  context ".order_by_role_and_name" do
+  describe( "#role_to_order"
+          ){ specify{ pending "implicit in .order_by_role_and_name"}}
+
+  describe ".order_by_role_and_name" do
     before{
-      [ lambda{ create_test_user :name => "a", :role => "disabled",
-                                 :email => "11"},
-        lambda{ create_test_user :name => "z", :role => "disabled",
-                                 :email => "12"},
-        lambda{ create_test_user :name => "a", :role => "normal",
-                                 :email => "21"},
-        lambda{ create_test_user :name => "z", :role => "normal",
-                                 :email => "22"},
-        lambda{ create_test_user :name => "a", :role => "admin",
-                                 :email => "31"},
-        lambda{ create_test_user :name => "z", :role => "admin",
-                                 :email => "32"},
-        lambda{ create_test_user :name => "a", :role => "master",
-                                 :email => "41"},
-        lambda{ create_test_user :name => "z", :role => "master",
-                                 :email => "42"}
+      [ lambda{ create_test_user name: "a", role: "disabled", email: "11"},
+        lambda{ create_test_user name: "z", role: "disabled", email: "12"},
+        lambda{ create_test_user name: "a", role: "normal",   email: "21"},
+        lambda{ create_test_user name: "z", role: "normal",   email: "22"},
+        lambda{ create_test_user name: "a", role: "admin",    email: "31"},
+        lambda{ create_test_user name: "z", role: "admin",    email: "32"},
+        lambda{ create_test_user name: "a", role: "master",   email: "41"},
+        lambda{ create_test_user name: "z", role: "master",   email: "42"}
       ].shuffle.each{ |creation| creation.call}}
     specify{ User.order_by_role_and_name( court_this).should ==
-               User.find( :all,
-                          :conditions => [ "court_id = ?", court_this.id],
-                          :order => "email")}
+               User.find( :all, conditions: [ "court_id = ?", court_this.id],
+                          order: "email")}
+  end
+
+  describe ".valid_role?" do
+    USER_ROLES.each{ |role| specify{ User.valid_role?( role).should be_true}}
+    specify{ User.valid_role?( "unknown role").should_not be_true}
+  end
+
+  describe ".disabled_count" do
+
+    before( :all){ @created_users =
+         create_test_user( count: 2, role: "disabled") +
+         create_test_user( count: 3, court: court_other, role: "disabled")}
+    after( :all){ clear_models}
+
+    context( "no arg"){ specify{ User.disabled_count.should == 5}}
+    context( "( nil)"){ specify{ User.disabled_count( nil).should == 5}}
+    context( "( court)"){ specify{ User.disabled_count( court_this).should == 2}}
   end
 
   context "validation" do
@@ -101,13 +99,13 @@ describe "User model" do
 
     context "when email address is taken" do
       before do
-        @user_with_same_email = create_test_user :email => @user.email.upcase
+        @user_with_same_email = create_test_user email: @user.email.upcase
         @user.valid?
       end
       it{ should_not be_valid}
       context "errors" do
         subject{ @user.errors}
-        its( [ :email]){ should include( t( "user.email.taken"))}
+        its( [ :email]){ should include( t( "user.error.email_taken"))}
       end
       context "on another court" do
         before{ @user_with_same_email.
@@ -203,38 +201,34 @@ describe "User model" do
     its( :remember_token){ should_not be_blank}
   end
 
-  describe "#book!" do
+  describe "#booked?" do
 
     before do
       @user.save!
-      @court_day = create_test_court_day :morning => 2, :afternoon => 2
+      @session = create_test_court_session need: 2
     end
 
-    [ :morning, :afternoon].each do |session|
-      context session do
+    it{ should_not be_booked( @session)}
 
-        it{ should_not be_booked( @court_day, session)}
+    context "booked" do
 
-        context "booked" do
+      before{ Booking.create! user: @user, court_session: @session}
 
-          before{ @user.book! @court_day, session}
+      it{ should be_booked( @session)}
 
-          it{ should be_booked( @court_day, session)}
+      it "is actually booked" do
+        @user.bookings.first.court_session.should == @session
+      end
 
-          it "is actually booked" do
-            @user.bookings.first.court_day.should == @court_day
-            @user.bookings.first.session.should == session
-          end
+      specify "second booking fails" do
+        lambda do
+          b = Booking.new user: @user, court_session: @session
+          b.save!
+        end.should raise_error( ActiveRecord::RecordNotUnique)
+      end
 
-          specify "second booking fails" do
-            lambda{ @user.book! @court_day, session
-                  }.should raise_error( ActiveRecord::RecordNotUnique)
-          end
-
-          specify "destroyed along with self" do
-            expect{ @user.destroy}.to change( Booking, :count).by( -1)
-          end
-        end
+      specify "destroyed along with self" do
+        expect{ @user.destroy}.to change( Booking, :count).by( -1)
       end
     end
   end

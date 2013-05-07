@@ -7,23 +7,26 @@ sv:
     models:
       booking: Bokning
       court: Domstol
-      court_day: Rättegångsdag
+      court_day_note: Notering
+      court_session: Pass
       database: Databas
       user: Användare
     attributes:
       booking:
         user: Vittnesstöd
-        court_day: Datum
-        session: Tidpunkt
+        court_session: Pass
       court:
         name: Namn
         link: Länk till hemsida
-      court_day:
+      court_day_note:
         court: Domstol
         date: Datum
-        morning: fm
-        afternoon: em
-        notes: Noteringar
+        text: Notering
+      court_session:
+        court: Domstol
+        date: Datum
+        start: Starttid
+        need: Behov
       database:
         all_data: Alla data
       user:
@@ -63,19 +66,13 @@ sv:
 
 # subject matter booking, regardless of controller
   booking:
-    court_mismatch: %{court_day} och %{user} tillhör olika domstolar
-    full: %{court_day} är fullbokad %{session}
-    afternoon:
-      book: Boka em
-      long: eftermiddag
-      short: em
-      unbook: Avboka em
-    morning:
-      book: Boka fm
-      long: förmiddag
-      short: fm
-      unbook: Avboka fm
+    error:
+      court_mismatch: %{court_session} och %{user} tillhör olika domstolar
+      full: %{court_session} är fullbokad
+    book:
+      label: Boka %{session}
     unbook:
+      label: Avboka %{session}
       confirm: Avboka %{name} %{date} %{session}?
     unbooked: %{user} avbokad %{date} %{session}
 
@@ -95,12 +92,29 @@ sv:
 
 # subject matter court day, regardless of controller
   court_day:
-    date:
-      taken: redan använt vid denna domstol
-      weekend: %{date} är en %{dow}
-    empty: arbetsuppgifter saknas den %{date} vid %{court}
-    req:
+    error:
+      weekend: är en %{dow}
+    need:
       label: Behov
+
+# subject matter court day note, regardless of controller
+  court_day_note:
+    error:
+      date_taken: redan använt vid denna domstol
+
+# subject matter court session, regardless of controller
+  court_session:
+    error:
+      no_reason_to_exist: %{session} saknar både behov och bokningar
+      start_taken: redan definierad detta datum vid denna domstol
+    name:
+      29700:
+        long: förmiddag
+        short: fm
+      44100:
+        long: eftermiddag
+        short: em
+    need:
       left:
         long: %{count} kvar att boka
         short: %{count} kvar
@@ -134,11 +148,11 @@ sv:
     disable:
       label: Deaktivera
       confirm: Deaktivera %{name}?
-    email:
-      taken: redan använd vid denna domstol
     enable:
       label: Aktivera
       confirm: Aktivera %{name}?
+    error:
+      email_taken: redan använd vid denna domstol
     promote:
       label: Bemyndiga
       confirm: Bemyndiga %{user} att administrera vittnesstöd vid %{court}?
@@ -164,6 +178,7 @@ sv:
         one: %{count} ny att aktivera
         other: %{count} nya att aktivera
       users_to_enable_common: att aktivera
+      note: Notering
     week_picker:
       prompt: |
         Växla vecka med pilarna eller skriv in ett datum i den önskade veckan

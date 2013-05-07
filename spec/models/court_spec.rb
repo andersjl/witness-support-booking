@@ -7,8 +7,9 @@ describe "Court model" do
 
   it{ should respond_to( :name)}
   it{ should respond_to( :link)}
-  it{ should respond_to( :court_days)}
   it{ should respond_to( :users)}
+  it{ should respond_to( :court_sessions)}
+  it{ should respond_to( :court_day_notes)}
   it{ should be_valid}
 
   describe "validation" do
@@ -46,14 +47,17 @@ describe "Court model" do
     end
   end
 
-  context "when court day defined" do
-    before do
-      @court.save!
-      create_test_court_day :court => @court
-    end
-    its( "court_days.count"){ should == 1}
-    specify "destroyed along with self" do
-      expect{ @court.destroy}.to change( CourtDay, :count).by( -1)
+  [ :court_session, :court_day_note].each do |type|
+    context "when #{ type.to_s.camelize} instance defined" do
+      before do
+        @court.save!
+        send "create_test_#{ type}", court: @court
+      end
+      its( "#{ type}s.count"){ should == 1}
+      specify "destroyed along with self" do
+        expect{ @court.destroy}.to change( type.to_s.camelize.constantize,
+                                           :count).by( -1)
+      end
     end
   end
 end
