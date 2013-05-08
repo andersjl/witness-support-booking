@@ -2,9 +2,13 @@ require 'spec_helper'
 
 describe BookingsController do
   context "authorization," do
-    it_requires_admin :destroy do
-      create_test_user.book!( create_test_court_day( :morning => 1), :morning
-                            ).id
+    it_is_private :create do |correct_user|
+      Booking.new user: correct_user,
+        court_session: create_test_court_session( court: correct_user.court)
+    end
+    it_is_protected :destroy do |correct_user|
+      Booking.create! user: correct_user,
+        court_session: create_test_court_session( court: correct_user.court)
     end
   end
 end

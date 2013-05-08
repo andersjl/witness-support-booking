@@ -1,22 +1,21 @@
 WitnessSupportBooking::Application.routes.draw do
 
-  resources :courts, :only => [ :create, :index, :edit, :update, :destroy]
+  resources :courts, only: [ :create, :index, :edit, :update, :destroy]
   resources( :users){ member{ put :disable; put :enable; put :promote}}
-  resources :user_sessions, :only => [:new, :create, :destroy]
-  # CourtDay business logic needs update-or-create( date), in which case PUT
-  # is correct (idempotent!) and hence #update handles creation as well.
-  resources :court_days, :only => [ :index, :update]
-  # Conceptually a booking is normally part of the user resource.  But when
-  # the Administrator unbooks a user it is more straigthtforward to view it as
-  # a resource in its own right.
-  resources :bookings, :only => [ :destroy]
-  resource :database, :only => [ :new, :create, :show]
-  root :to => "static_pages#home"
-  match "/sign_up", :to => "users#new"
-  match "/log_in",  :to => "user_sessions#new"
-  match "/log_out", :to => "user_sessions#destroy"
-  match "/about",   :to => "static_pages#about"
-  match "/help",    :to => "static_pages#help"
+  resources :user_sessions, only: [:new, :create, :destroy]
+  # the logic for destroying CourtSession and CourtDayNote is in the models
+  resources :court_sessions, only: [ :create, :update]
+  resources :court_day_notes, only: [ :create, :update]
+  resources :bookings, only: [ :create, :destroy]
+  # CourtDay is GET only, it collects Booking, CourtDayNote, and CourtSession
+  resources :court_days, only: :index
+  resource :database, only: [ :new, :create, :show]
+  root to: "static_pages#home"
+  match "/sign_up", to: "users#new"
+  match "/log_in",  to: "user_sessions#new"
+  match "/log_out", to: "user_sessions#destroy"
+  match "/about",   to: "static_pages#about"
+  match "/help",    to: "static_pages#help"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

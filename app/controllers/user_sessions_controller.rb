@@ -14,9 +14,10 @@ class UserSessionsController < ApplicationController
   end
 
   def create
-    user = User.find_by_court_id_and_email params[ :user_session][ :court_id],
-                  params[ :user_session][ :email].downcase
-    if user && master?
+    user = User.find_by_email_and_court_id(
+                  params[ :user_session][ :email].downcase,
+                  params[ :user_session][ :court_id])
+    if user && master? && !user.master?
       spoof user
       redirect_to court_days_path
     elsif user && user.authenticate( params[ :user_session][ :password])

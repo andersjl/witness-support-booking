@@ -8,10 +8,9 @@ module Authorization
     before_filter filter_sym, :only => actions
     define_method filter_sym do
       role = logged_in? ? current_user.role : "unknown"
-      redirect_to( root_path) if ( not roles.include?( role)) or
-                                 ( condition and
-                                   (not condition.call( params[ :id],
-                                                        current_user)))
+      redirect_to( root_path) if !roles.include?( role) ||
+                                   condition &&
+                                     !condition.call( params, current_user)
     end
   end
 end
