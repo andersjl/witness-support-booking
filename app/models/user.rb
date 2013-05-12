@@ -1,5 +1,4 @@
 class User < ActiveRecord::Base
-include Massign
 
   has_secure_password
 

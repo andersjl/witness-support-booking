@@ -12,7 +12,8 @@ extend Authorization
 
   def create
     booking = Booking.new
-    booking.massign params[ :booking], :user_id, :court_session_id
+    booking.user_id          = params[ :booking][ :user_id]
+    booking.court_session_id = params[ :booking][ :court_session_id]
     @model_with_errors = booking unless booking.save
     back_to_court_days
   end
@@ -24,7 +25,8 @@ extend Authorization
       unless current_user? user
         user_name = user.name
         date = destroyed.court_session.date
-        session = destroyed.court_session.template
+        session = t( "court_session.name#{ destroyed.court_session.start
+                                         }.short")
       end
       destroyed.destroy
       unless current_user? user

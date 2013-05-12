@@ -13,18 +13,19 @@ module AllDataDefs
     [ "user", lambda{ |booking| booking.user.email},
       lambda{ |booking, email| booking.user =
                 User.find_by_court_id_and_email( @booking_court, email)}]
-  BOOKING_DATE_DEF =
-    [ "date", lambda{ |booking| booking.court_day.date},
-      lambda{ |booking, date| booking.court_day =
-                CourtDay.find_by_court_id_and_date( @booking_court, date)}]
-  SESSION_DEF = [ "session", nil, lambda{ |booking, session|
-                                          booking.session = session.intern}]
+  BOOKING_SESSION_DEF =
+    [ "session", lambda{ |booking| booking.court_session.start_time.iso8601},
+      lambda{ |booking, time| booking.court_session =
+                CourtSession.find_by_date_and_court_id_and_start(
+                  time.to_date, @booking_court,
+                  time.to_time - time.to_date.to_time_in_current_zone)}]
   MODEL_DEFS =  # order matters, hence no Hash
-    [ [ "court",     "name", "link"],
-      [ "user",      COURT_DEF, "name", "email", "password_digest"],
-      [ "court_day", COURT_DEF, "date", "morning", "afternoon", "notes"],
-      [ "booking",   BOOKING_COURT_DEF, BOOKING_USER_DEF, BOOKING_DATE_DEF,
-                     SESSION_DEF]]
+    [ [ "court",          "name", "link"],
+      [ "user",           COURT_DEF, "name", "email", "password_digest"],
+      [ "court_session",  COURT_DEF, "date", "start", "need"],
+      [ "court_day_note", COURT_DEF, "date", "text"],
+      [ "booking",        BOOKING_COURT_DEF, BOOKING_USER_DEF,
+                                             BOOKING_SESSION_DEF]]
 
   def self.define_standard_get( model_tag, attr_tag)
     define_method "get_#{ model_tag}_#{ attr_tag}".intern do |model_obj|
@@ -64,16 +65,16 @@ module AllDataDefs
     end
   end
 
-  def model_tags
-    @model_tags ||= MODEL_DEFS.collect{ |md| md.first}
+  def self.model_tags
+    @@model_tags ||= MODEL_DEFS.collect{ |md| md.first}
   end
 
-  def model_class( model_tag)
-    (@model_classes ||= { })[ model_tag] ||= model_tag.camelize.constantize
+  def self.model_class( model_tag)
+    (@@model_classes ||= { })[ model_tag] ||= model_tag.camelize.constantize
   end
 
-  def attr_tags( model_tag)
-    (@attr_tags ||= { })[ model_tag] ||=
+  def self.attr_tags( model_tag)
+    (@@attr_tags ||= { })[ model_tag] ||=
       MODEL_DEFS.assoc( model_tag)[ 1 .. -1].
         collect{ |a| a.is_a?( Array) ? a.first : a}
   end
@@ -83,7 +84,6 @@ module AllDataDefs
   end
 
   def attr_set( model_tag, attr_tag, model_obj, value)
-  # puts [ "attr_set", model_tag, attr_tag, model_obj, value].inspect
     send( "set_#{ model_tag}_#{ attr_tag}", model_obj, value)
   end
 end
@@ -114,13 +114,13 @@ include AllDataDefs
   end
 
   def start_model( tag_name)
-    expect( tag_name, model_tags)
+    expect( tag_name, AllDataDefs.model_tags)
     @state = :start_attr
     @new_db.push( { :model => tag_name})
   end
 
   def start_attr( tag_name)
-    expect( tag_name, attr_tags( @new_db.last[ :model]))
+    expect( tag_name, AllDataDefs.attr_tags( @new_db.last[ :model]))
     @state = :read_attr
     @value = ""
   end
@@ -185,11 +185,12 @@ include AllDataDefs
     Nokogiri::XML::Builder.new( :encoding => "UTF-8") do |xml|
       xml.db_dump( :time => Time.now.strftime( "%Y-%m-%dT%H:%M:%S")
                  ) do
-        model_tags.each do |model_tag|
-          model_class( model_tag).all.each do |model_obj|
+        AllDataDefs.model_tags.each do |model_tag|
+          AllDataDefs.model_class( model_tag).all.each do |model_obj|
             xml.send( model_tag) do
-              attr_tags( model_tag).each do |attr_tag|
-                xml.send( attr_tag, attr_get( model_tag, attr_tag, model_obj))
+              AllDataDefs.attr_tags( model_tag).each do |attr_tag|
+                fixed = attr_tag == "text" ? "text_" : attr_tag
+                xml.send( fixed, attr_get( model_tag, attr_tag, model_obj))
               end
             end
           end
@@ -200,19 +201,18 @@ include AllDataDefs
 
   def replace!
     return unless @replace_descr
-  # @replace_descr.each{ |object| puts object.inspect}
+  # f = File.open( "tmp/test/debug.txt", "w") if Rails.env.development?
     digests = User.all.inject( [ ]) do |acc, user|
       acc << [ user.court.name, user.name, user.email, user.role,
                user.read_attribute( :password_digest)]
     end
-    Booking.destroy_all
-    CourtDay.destroy_all
-    User.destroy_all
-    Court.destroy_all
+  # f.puts digests.inspect if Rails.env.development?
+    AllDataDefs.model_tags.each{ |t| AllDataDefs.model_class( t).delete_all}
     @replace_descr.each do |obj_descr|
+  #   f.puts obj_descr.inspect if Rails.env.development?
       model_tag = obj_descr[ :model]
-      model_obj = model_class( model_tag).new
-      attr_tags( model_tag).each do |attr_tag|
+      model_obj = AllDataDefs.model_class( model_tag).new
+      AllDataDefs.attr_tags( model_tag).each do |attr_tag|
         attr_set( model_tag, attr_tag, model_obj, obj_descr[ attr_tag])
       end
       if model_tag == "user"
@@ -223,6 +223,7 @@ include AllDataDefs
         model_obj.update_attribute :password_digest,
                                    obj_descr[ "password_digest"]
       end
+  #   f.puts model_obj.inspect if Rails.env.development?
     end
     digests.each do |cnam_unam_email_role_digest|
       cnam, unam, email, role, digest = cnam_unam_email_role_digest
@@ -231,6 +232,7 @@ include AllDataDefs
       if user
         user.update_attribute :name, unam
         user.update_attribute :role, role
+  #     f.puts "updated #{ user.inspect}" if Rails.env.development?
       else
         user = User.new :email => email, :name => unam,
                         :password => "dummy_password",
@@ -238,9 +240,11 @@ include AllDataDefs
         user.court = court
         user.role = role
         user.save!
+  #     f.puts "created #{ user.inspect}" if Rails.env.development?
       end
       user.update_attribute :password_digest, digest
     end
+  # f.close if Rails.env.development?
   end
 end
 

@@ -1,5 +1,4 @@
 class CourtSession < ActiveRecord::Base
-include Massign
 
   validates :court, presence: true
   validates :date,  presence: true
@@ -27,15 +26,15 @@ include Massign
   has_many :bookings, dependent: :destroy
 
   def inspect
-    "|#{ court && court.name}|#{ date_start_to_time.iso8601}|#{ need}|"
+    "|#{ court && court.name}|#{ start_time.iso8601}|#{ need}|"
   end
 
-  def date_start_to_time
+  def start_time
     date && start && (date.to_time_in_current_zone + start)
   end
 
   def reason_to_exist?; need > 0 || !bookings.empty? end
-  def expired?; date_start_to_time < Time.current end
+  def expired?; start_time < Time.current end
 
   def error_unless_reason_to_exist
     return unless need

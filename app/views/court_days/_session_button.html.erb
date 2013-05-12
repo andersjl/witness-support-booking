@@ -1,0 +1,46 @@
+<%  taken = session.bookings.count
+    booked = current_user.booked? session
+    if (taken < session.need) || (!session.expired? && (admin? || booked)) %>
+          <div class="row">
+            <div class="span<%= span %>">
+<%    if session.expired?
+        if taken < session.need %>
+              <%= t( "court_session.need.not_met",
+                     count: session.need - taken) %>
+<%      end
+      elsif admin? %>
+<%=     render partial: "court_sessions/new_or_edit",
+               locals: { session: session} %>
+<%    elsif booked %>
+              <div style="float:left">
+                <%= form_tag booking_path( booked), method: :delete,
+                                                    class: "form-inline" do %>
+                  <%= submit_tag t( "booking.unbook.label",
+                                    session: t( "court_session.name#{
+                                                  session.start}.short")) %>
+                <% end %>
+              </div>
+<%      if taken > session.need %>
+              <span class="overbooked">
+                &nbsp;(<%= t( "court_session.need.over") %>)
+              </span>
+<%      elsif taken < session.need %>
+              &nbsp;(<%= t( "court_session.need.left.short",
+                      count: session.need - taken) %>)
+<%      end
+      elsif taken < session.need %>
+              <div style="float:left">
+<%=     render partial: "bookings/new",
+               locals: { booking: Booking.new( user: current_user,
+                                               court_session: session),
+                         session_name: t( "court_session.name#{ session.start
+                                                              }.short")} %>
+              </div>
+              <div>
+                &nbsp;(<%= t( "court_session.need.left.short",
+                              count: session.need - taken) %>)
+              </div>
+<%    end %>
+            </div>
+          </div>
+<%  end %>

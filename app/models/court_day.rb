@@ -12,14 +12,13 @@ class CourtDay
 
   def inspect
     "|#{ court.name}|#{ sessions.collect{ |s|
-                          "#{ s.date_start_to_time.iso8601 }|#{ s.need}|"}
-                      }|#{ note.text}|"
+                     "#{ s.start_time.iso8601 }|#{ s.need}|"}}|#{ note.text}|"
   end
 
   def self.page( court, date_in_first_week, *start_tods)
     start_tods = START_TIMES_OF_DAY_DEFAULT if start_tods.count == 0
     first_monday = monday( date_in_first_week)
-    (5 * WEEKS_P_PAGE).times.collect do |n|
+    @@page = (5 * WEEKS_P_PAGE).times.collect do |n|
       attrs = { court: court}
       weeks, days = n.divmod 5
       date = first_monday + 7 * weeks + days
@@ -34,6 +33,8 @@ class CourtDay
       new attrs
     end
   end
+
+  def self.find_on_present_page( date); @@page.find{ |cd| cd.date == date} end
 
   def self.monday( date)
     date = date.to_date

@@ -1,5 +1,4 @@
 class Booking < ActiveRecord::Base
-include Massign
 
   validates :user_id, presence: true
   validates :court_session_id, presence: true
@@ -10,7 +9,7 @@ include Massign
 
   def inspect
     "|#{ user && user.court && user.court.name}|#{ user && user.email}|#{
-               court_session && court_session.date_start_to_time.iso8601}|"
+               court_session && court_session.start_time.iso8601}|"
   end
 
   def expired?; court_session.expired? end

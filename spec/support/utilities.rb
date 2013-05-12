@@ -217,30 +217,3 @@ def create_test_court_day_note_do( attrs, do_not_save, increment = false)
 end
 private :create_test_court_day_note_do
 
-def bookings
-  [ [ 1, 3], [ 1, 6], [ 2, 5], [ 2, 2], [ 3, 1], [ 3, 3]]
-end
-
-def create_test_bookings
-  u1, u2, u3 = create_test_user count: 3
-  s1, s2, s3, s4, s5, s6 = create_test_court_session count: 6
-  6.times{ |i| eval( "s#{ i + 1}").update_attribute :need, i / 2 + 1}
-  bookings.each do |u, s|
-    Booking.create! user: eval( "u#{ u}"), court_session: eval( "s#{ s}")
-  end
-end
-
-def diff_to_text( diff, unit, less, more)
-  if diff < -1
-    "#{ diff.abs} #{ unit}s #{ less}"
-  elsif diff == -1
-    "1 #{ unit} #{ less}"
-  elsif diff == 0
-    "at"
-  elsif diff == 1
-    "1 #{ unit} #{ more}"
-  else
-    "#{ diff} #{ unit}s #{ more}"
-  end
-end
-

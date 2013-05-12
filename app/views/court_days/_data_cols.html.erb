@@ -1,8 +1,7 @@
-        <div class="span2 weekday">
+        <div class="span<%= date_span %> weekday">
           <span>
 <% date = court_day.date
-   too_late = court_day.date < Date.today
-   if admin? && !too_late %>
+   if admin? && !date.expired? %>
             <%= submit_tag( "#{ t( 'general.cwday')[ date.cwday]}") %>
 <% else %>
             <%= t( "general.cwday")[ date.cwday] %>
@@ -16,22 +15,22 @@
      bookings = court_day.send( "#{ session}_bookings")
      taken = bookings.count
      booked = current_user.booked? court_day, session
-     if (!admin? || too_late) && parallel == 0 && taken == 0
+     if (!admin? || session.expired?) && parallel == 0 && taken == 0
        offset += session_span
      else %>
           <div class="<%= offset_n_span_to_class( offset, session_span)
                        %>" id="<%= "court-day-#{ date}-#{ session}" %>">
-<%     if (taken < parallel) || (!too_late && (admin? || booked)) %>
+<%     if (taken < parallel) || (!session.expired? && (admin? || booked)) %>
             <div class="row">
               <div class="span<%= session_span %>">
-<%       if too_late
+<%       if session.expired?
            if taken < parallel %>
-                <%= t( "court_day.req.not_met",
+                <%= t( "court_session.need.not_met",
                        count: parallel - taken) %>
 <%         end
          elsif admin? %>
                 <div style="float:left">
-                  <%= label_tag session, t( "court_day.req.label") %>
+                  <%= label_tag session, t( "court_session.need.label") %>
                   <%= select_tag "#{ session}-#{ date}",
                     options_for_select( (PARALLEL_SESSIONS_MAX + 1).times.
                                           inject( [ ]){ |acc, n| acc << n},
@@ -47,12 +46,12 @@
 <%           else %>
                 <div class="to-book">
 <%           end %>
-                  <%= t( "court_day.req.left.long",
+                  <%= t( "court_session.need.left.long",
                          count: parallel - taken) %>
                 </div>
 <%         elsif  taken > parallel %>
                 <div class="overbooked">
-                  <%= t( "court_day.req.over").capitalize %>
+                  <%= t( "court_session.need.over").capitalize %>
                 </div>
 <%         end %>
 <%       elsif booked
@@ -61,15 +60,15 @@
 <%         end %>
                   <%= submit_tag t( "booking.#{ session}.unbook") %>
 <%         if taken > parallel %>
-                  (<%= t( "court_day.req.over") %>)
+                  (<%= t( "court_session.need.over") %>)
                 </div>
 <%         elsif taken < parallel %>
-                (<%= t( "court_day.req.left.short",
+                (<%= t( "court_session.need.left.short",
                         count: parallel - taken) %>)
 <%         end
          elsif taken < parallel %>
                 <%= submit_tag t( "booking.#{ session}.book") %>
-                (<%= t( "court_day.req.left.short",
+                (<%= t( "court_session.need.left.short",
                         count: parallel - taken) %>)
 <%       end %>
               </div>
@@ -81,7 +80,7 @@
 <%       if current_user? booking.user %>
                 <b>
 <%       end
-         if admin? && !too_late %>
+         if admin? && !booking.expired? %>
                 <%= link_to booking.user.name, booking_path( booking),
                             method: :delete,
                             data: { confirm:
@@ -103,19 +102,19 @@
 <%     offset = 0
      end
    end  # [ :morning, :afternoon].each do |session|
-   if admin? && !too_late
+   if admin? && !date.expired?
      # the following is to prevent browser automatic fill-in
-     notes = court_day.notes.blank? ? " " : court_day.notes %>
-          <div class="span<%= notes_span %>">
+     note = court_day.note.blank? ? " " : court_day.note %>
+          <div class="span<%= note_span %>">
             <div class="row">
-              <div class="span<%= notes_span %>">
-                <%= text_area_tag "notes-#{ date}", notes %>
+              <div class="span<%= note_span %>">
+                <%= text_area_tag "note-#{ date}", note %>
               </div>
             </div>
           </div>
-<% elsif !court_day.notes.blank? %>
-          <div class="<%= offset_n_span_to_class( offset, notes_span) %>">
-            <%= h( court_day.notes).gsub( "\n", "<br/>").html_safe %>
+<% elsif !court_day.note.blank? %>
+          <div class="<%= offset_n_span_to_class( offset, note_span) %>">
+            <%= h( court_day.note).gsub( "\n", "<br/>").html_safe %>
           </div>
 <% end %>
 

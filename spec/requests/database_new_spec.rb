@@ -1,6 +1,20 @@
 require "spec_helper"
+require "database"
 
 describe "Database load form" do
+
+  def create_sample_data
+    u1, u2, u3 = create_test_user count: 3
+    s1, s2, s3, s4, s5, s6 = create_test_court_session count: 6
+    6.times do |i|
+      s = eval "s#{ i + 1}"
+      s.update_attribute :need, i / 2 + 1
+      create_test_court_day_note date: s.date if rand( 3) > 0
+    end
+    [ [ 1, 3], [ 1, 6], [ 2, 5], [ 2, 2], [ 3, 1], [ 3, 3]].collect do |u, s|
+      Booking.create! user: eval( "u#{ u}"), court_session: eval( "s#{ s}")
+    end
+  end
 
   subject{ page}
 
@@ -42,26 +56,28 @@ describe "Database load form" do
     before :all do
       create_test_user :court => court_this, :email => email_m1,
                        :role => "master", :password => email_m1
-      create_test_bookings
+      @orig_bookings = create_sample_data.collect{ |b| b.inspect}.sort
       @deleted_email = User.where( "role = ?", "normal").sample.email
       @kept_email = User.where( "role = ? and email != ?",
                                 "normal", @deleted_email).sample.email
       xml_data = Database.new.all_data
       File.open( correct_xml, "w"){ |f| f.write( xml_data)}
       File.open( erronous_xml, "w"){ |f| f.write( xml_data + "<extra>")}
-      @orig_count = [ Court, User, CourtDay, Booking].inject( { }) do |a, mdl|
-        a[ mdl] = mdl.count
-        a
+      @orig_count = AllDataDefs.model_tags.inject( { }) do |cnt, tag|
+        cls = AllDataDefs.model_class( tag)
+        cnt[ cls] = cls.count
+        cnt
       end
       User.all.each{ |u| u.destroy if u.email != @kept_email}
-      @curr_count = [ Court, User, CourtDay, Booking].inject( { }) do |a, mdl|
-        a[ mdl] = mdl.count + (mdl == User ? 1 : 0)
-        a
+      @curr_count = AllDataDefs.model_tags.inject( { }) do |cnt, tag|
+        cls = AllDataDefs.model_class( tag)
+        cnt[ cls] = cls.count + (cls == User ? 1 : 0)
+        cnt
       end
     end
 
     after :all do
-      [ Booking, CourtDay, User, Court].each{ |model| model.destroy_all}
+      AllDataDefs.model_tags.each{ |t| AllDataDefs.model_class( t).delete_all}
     end
 
     before do
@@ -113,7 +129,8 @@ describe "Database load form" do
       end
 
       context "database is intact" do
-        [ Court, User, CourtDay, Booking].each do |model|
+        AllDataDefs.model_tags.each do |tag|
+          model = AllDataDefs.model_class( tag)
           context( "#{ model}.count"
                  ){ specify{ model.count.should == @curr_count[ model]}}
         end
@@ -185,23 +202,29 @@ describe "Database load form" do
           result.delete_if{ |u| [ email_m1, email_m2].include?( u.email)}
           result
         end
-        let( :court_days) do
-          result = CourtDay.where( "court_id = ?",  # date order
-                                   Court.find_by_name( "This Court"))
-          result.each{ |cd| cd.court}  # (sic!) some lazy eval problem???
-          result
+        let( :court_sessions) do
+        # result =
+          CourtSession.where( "court_id = ?",  # (date, start) order
+                              Court.find_by_name( "This Court"))
+        # result.each{ |cd| cd.court}  # (sic!) some lazy eval problem???
+        # result
         end
 
-        [ Court, User, CourtDay, Booking].each do |model|
+        AllDataDefs.model_tags.each do |tag|
+          model = AllDataDefs.model_class( tag)
           context( "#{ model}.count") do
             specify{ model.count.should ==
                               @orig_count[ model] + ((model == User) ? 1 : 0)}
           end
         end
 
-        booking_schema.each do |user_ix, court_day_ix, session|
-          it{ users[ user_ix - 1].
-                should be_booked( court_days[ court_day_ix - 1], session)}
+        context "bookings" do
+          specify do
+            Booking.all.inject( [ ]) do |a, b|
+              next a unless b.user.court == court_this
+              a << b.inspect
+            end.sort.should == @orig_bookings
+          end
         end
       end
     end

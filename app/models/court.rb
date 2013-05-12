@@ -1,5 +1,4 @@
 class Court < ActiveRecord::Base
-include Massign
   validates :name, presence: true, uniqueness: true
   default_scope order: "name"
   has_many :court_sessions, dependent: :destroy

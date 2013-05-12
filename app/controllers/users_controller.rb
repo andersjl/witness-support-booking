@@ -27,8 +27,11 @@ extend Authorization
 
   def create
     user = User.new
-    user.massign params[ :user],
-                 :court, :email, :name, :password, :password_confirmation
+    user.court_id              = params[ :user][ :court]
+    user.email                 = params[ :user][ :email]
+    user.name                  = params[ :user][ :name]
+    user.password              = params[ :user][ :password]
+    user.password_confirmation = params[ :user][ :password_confirmation]
     if user.save
       log_in user
       flash[ :success] = t( "user.created", name: user.name)
@@ -61,8 +64,12 @@ extend Authorization
   def update
     @user = User.find params[ :id]
     if @user
-      @user.massign params[ :user],
-                    :email, :name, :password, :password_confirmation
+      if current_user? @user
+        @user.email               = params[ :user][ :email]
+        @user.name                = params[ :user][ :name]
+      end
+      @user.password              = params[ :user][ :password]
+      @user.password_confirmation = params[ :user][ :password_confirmation]
       if @user.save
         if current_user? @user
           log_in @user  # because remember_token has been reset

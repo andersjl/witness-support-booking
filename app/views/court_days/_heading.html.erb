@@ -1,0 +1,19 @@
+      <div class="row heading">
+        <div class="span<%= date_span %> weekday">
+          <%= t( "general.date").capitalize %>
+        </div>
+<% START_TIMES_OF_DAY_DEFAULT.each do |start_tod| %>
+        <div class="span<%= session_span %>">
+          <%= t( "court_session.name#{ start_tod}.long").capitalize %>
+        </div>
+<% end %>
+        <div class="span<%= note_span %>">
+<% if @disabled_count > 0 %>
+          <%= link_to t( "court_days.index.users_to_enable",
+                         count: @disabled_count),
+                      users_path, class: "disabled-user" %>
+<% else %>
+          <%= t( "court_days.index.note") %>
+<% end %>
+        </div>
+      </div>

@@ -1,6 +1,6 @@
 class CourtDayNote < ActiveRecord::Base
-include Massign
 
+  before_save{ |note| note.text.strip!}
   validates :court, presence: true
   validates :date, presence: true,
             uniqueness: { scope: :court_id,

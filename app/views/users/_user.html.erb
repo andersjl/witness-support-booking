@@ -3,7 +3,7 @@
   <%= link_to user.court.name, user.court.link %> |
 <% end %>
   <%= link_to user.name, user %>
-<% if admin? && current_user > user %>
+<% if admin? && current_user.role_to_order > user.role_to_order %>
   <% unless user.enabled? %>
     | <%= link_to t( "user.enable.label"), enable_user_path( user),
                   :method => :put,

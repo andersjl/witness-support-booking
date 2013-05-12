@@ -221,9 +221,11 @@ div.to-book {
   }
 }
 
-div.overbooked {
-  color: $ajlRed;
-  font-weight: bold;
+div, span {
+  .overbooked {
+    color: $ajlRed;
+    font-weight: bold;
+  }
 }
 
 .weekpicker {

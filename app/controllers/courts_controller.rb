@@ -5,7 +5,8 @@ extend Authorization
 
   def create
     court = Court.new
-    court.massign params[ :court], :name, :link
+    court.name = params[ :court][ :name]
+    court.link = params[ :court][ :link]
     if court.save
       flash[ :success] = t( "court.created", court: court.name) if court
       redirect_to courts_path
@@ -28,7 +29,8 @@ extend Authorization
   def update
     @court = Court.find params[ :id]
     if @court
-      @court.massign params[ :court], :name, :link
+      @court.name = params[ :court][ :name]
+      @court.link = params[ :court][ :link]
       if @court.save
         flash.now[ :success] = t( "court.changed")
         redirect_to courts_path

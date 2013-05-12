@@ -7,7 +7,9 @@ extend Authorization
 
   def create
     court_day_note = CourtDayNote.new
-    court_day_note.massign params[ :court_day_note], :court_id, :date, :text
+    court_day_note.court_id = params[ :court_day_note][ :court_id]
+    court_day_note.date     = params[ :court_day_note][ :date]
+    court_day_note.text     = params[ :court_day_note][ :text]
     if !court_day_note.text.blank? && !court_day_note.save
       @model_with_errors = court_day_note
     end
@@ -17,7 +19,7 @@ extend Authorization
   def update
     court_day_note = CourtDayNote.find params[ :id]
     if court_day_note
-      court_day_note.massign params[ :court_day_note], :text
+      court_day_note.text = params[ :court_day_note][ :text]
       if court_day_note.text.blank?
         court_day_note.destroy
       elsif !court_day_note.save

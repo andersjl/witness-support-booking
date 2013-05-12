@@ -107,13 +107,12 @@ sv:
     error:
       no_reason_to_exist: %{session} saknar både behov och bokningar
       start_taken: redan definierad detta datum vid denna domstol
-    name:
-      29700:
-        long: förmiddag
-        short: fm
-      44100:
-        long: eftermiddag
-        short: em
+    name29700:
+      long: förmiddag
+      short: fm
+    name44100:
+      long: eftermiddag
+      short: em
     need:
       left:
         long: %{count} kvar att boka

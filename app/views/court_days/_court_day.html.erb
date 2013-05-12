@@ -1,0 +1,34 @@
+      <div class="row court-day<%= last ? ' last' : ''
+                             %>" id="court-day-<%= court_day.date.iso8601 %>">
+<%= render partial: "court_days/date",
+           locals:  { court_day: court_day, span: date_span} %>
+<%  offset = 0
+    court_day.sessions.each do |session|
+      if (!admin? || session.expired?) &&
+           session.need == 0 && session.bookings.count == 0
+        offset += session_span
+      else %>
+        <div class="<%= offset_n_span_to_class( offset, session_span)
+                     %>" id="<%= "session-#{ session.start_time.iso8601}" %>">
+<%= render partial: "court_days/session_button",
+           locals: { session: session, span: session_span} %>
+<%= render partial: "bookings/index",
+           locals: { bookings: session.bookings, span: session_span} %>
+        </div>
+<%      offset = 0
+      end
+    end %>
+        <div class="<%= offset_n_span_to_class( offset, note_span)
+                     %>" id="<%= "note-#{ court_day.date.iso8601}" %>">
+          <div class="row-fluid">
+<%  if admin? && !court_day.note.expired? %>
+<%=   render partial: "court_day_notes/new_or_edit",
+             locals:  { note: court_day.note} %>
+<%  elsif !court_day.note.text.blank? %>
+            <div class="span12">
+              <%= h( court_day.note.text).gsub( "\n", "<br/>").html_safe %>
+            </div>
+<%  end %>
+          </div>
+        </div>
+      </div>

@@ -1,0 +1,6 @@
+                <%= form_for booking do |f| %>
+                  <%= f.hidden_field :user_id %>
+                  <%= f.hidden_field :court_session_id %>
+                  <%= f.submit t( "booking.book.label", session: session_name
+                                ) %>
+                <% end %>

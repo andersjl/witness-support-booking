@@ -32,7 +32,7 @@ describe "Static pages" do
         end
         it_behaves_like "any user's start page"
         it{ should have_link t( "general.log_out"), :href => log_out_path}
-        if User.role_to_order( role) > User.role_to_order( "disabled")
+        if USER_ROLES.index( role) > USER_ROLES.index( "disabled")
           it_behaves_like "any enabled user's start page"
         end
       end

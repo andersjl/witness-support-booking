@@ -1,0 +1,34 @@
+              <div style="float:left">
+                <%= form_for session, html: { class: "form-inline"} do |f| %>
+                  <%= f.hidden_field :court_id %>
+<%  if session.new_record? %>
+                  <%= f.hidden_field :date %>
+                  <%= f.hidden_field :start %>
+<%  end %>
+                  <%= f.label :need %>
+                  <%= f.select :need,
+                               options_for_select( (PARALLEL_SESSIONS_MAX + 1
+                                                   ).times.to_a, session.need) %>
+                  <%= f.submit t( "general.ok") %>
+                <% end %>
+              </div>
+<%  taken = session.bookings.count
+    if taken < session.need
+      days_to_go = session.date - Date.today
+      if days_to_go < BOOKING_DAYS_AHEAD_MIN %>
+              <div class="to-book immediate">
+<%    elsif days_to_go < BOOKING_DAYS_AHEAD_MAX %>
+              <div class="to-book urgent">
+<%    else %>
+              <div class="to-book">
+<%    end %>
+                <%= "&nbsp;".html_safe + t( "court_session.need.left.long",
+                                            count: session.need - taken) %>
+              </div>
+<%  elsif  taken > session.need %>
+              <div class="overbooked">
+                <%= "&nbsp;".html_safe + t( "court_session.need.over"
+                                          ).capitalize %>
+              </div>
+<%  end %>
+
