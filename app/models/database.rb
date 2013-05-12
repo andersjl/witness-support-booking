@@ -105,32 +105,40 @@ include AllDataDefs
 
   def start_element( tag_name, attrs = [ ]) 
     @current.push tag_name
-    send @state, tag_name
+    send @state, tag_name, attrs
   end
 
-  def start_file( tag_name)
+  def start_file( tag_name, attrs)
     expect( tag_name, "db_dump")
     @state = :start_model
+  # f.close if Rails.env.development?
+    expected_version = ActiveRecord::Migrator.current_version.to_s
+    read_version = lambda{ |v| v.is_a?( Array) ? v[ 1] : "none"
+                         }.call( attrs.assoc( "version"))
+    unless read_version == expected_version
+      raise XmlParseError.new(
+            "expected DB version #{ expected_version}, got #{ read_version}")
+    end
   end
 
-  def start_model( tag_name)
+  def start_model( tag_name, attrs)
     expect( tag_name, AllDataDefs.model_tags)
     @state = :start_attr
-    @new_db.push( { :model => tag_name})
+    @new_db.push( { model: tag_name})
   end
 
-  def start_attr( tag_name)
+  def start_attr( tag_name, attrs)
     expect( tag_name, AllDataDefs.attr_tags( @new_db.last[ :model]))
     @state = :read_attr
     @value = ""
   end
 
-  def read_attr( tag_name)
+  def read_attr( tag_name, attrs)
     expect( tag_name, "no start tag while reading attribute value")
   end
 
   # does not seem to happen, actually
-  def end_file( tag_name)
+  def end_file( tag_name, attrs)
     expect( tag_name, "no start tag after db_dump end tag")
   end
 
@@ -142,9 +150,6 @@ include AllDataDefs
     expect( tag_name, @current.pop)
     case @state
     when :start_model
-      File.open( "/home/anders/tmp/debug_xml.txt", "w") do |f|
-        @new_db.each{ |m| f.puts m.inspect}
-      end unless Rails.env.production?
       @state = :end_file
     when :start_attr
       @state = :start_model
@@ -182,8 +187,9 @@ include AllDataDefs
   end
 
   def all_data
-    Nokogiri::XML::Builder.new( :encoding => "UTF-8") do |xml|
-      xml.db_dump( :time => Time.now.strftime( "%Y-%m-%dT%H:%M:%S")
+    Nokogiri::XML::Builder.new( encoding: "UTF-8") do |xml|
+      xml.db_dump( time: Time.now.strftime( "%Y-%m-%dT%H:%M:%S"),
+                   version: ActiveRecord::Migrator.current_version.to_s
                  ) do
         AllDataDefs.model_tags.each do |model_tag|
           AllDataDefs.model_class( model_tag).all.each do |model_obj|
@@ -201,15 +207,12 @@ include AllDataDefs
 
   def replace!
     return unless @replace_descr
-  # f = File.open( "tmp/test/debug.txt", "w") if Rails.env.development?
     digests = User.all.inject( [ ]) do |acc, user|
       acc << [ user.court.name, user.name, user.email, user.role,
                user.read_attribute( :password_digest)]
     end
-  # f.puts digests.inspect if Rails.env.development?
     AllDataDefs.model_tags.each{ |t| AllDataDefs.model_class( t).delete_all}
     @replace_descr.each do |obj_descr|
-  #   f.puts obj_descr.inspect if Rails.env.development?
       model_tag = obj_descr[ :model]
       model_obj = AllDataDefs.model_class( model_tag).new
       AllDataDefs.attr_tags( model_tag).each do |attr_tag|
@@ -223,28 +226,24 @@ include AllDataDefs
         model_obj.update_attribute :password_digest,
                                    obj_descr[ "password_digest"]
       end
-  #   f.puts model_obj.inspect if Rails.env.development?
     end
     digests.each do |cnam_unam_email_role_digest|
       cnam, unam, email, role, digest = cnam_unam_email_role_digest
-      court = Court.find_by_name( cnam) || Court.create!( :name => cnam)
+      court = Court.find_by_name( cnam) || Court.create!( name: cnam)
       user = User.find_by_court_id_and_email court.id, email
       if user
         user.update_attribute :name, unam
         user.update_attribute :role, role
-  #     f.puts "updated #{ user.inspect}" if Rails.env.development?
       else
-        user = User.new :email => email, :name => unam,
-                        :password => "dummy_password",
-                        :password_confirmation => "dummy_password"
+        user = User.new email: email, name: unam,
+                        password: "dummy_password",
+                        password_confirmation: "dummy_password"
         user.court = court
         user.role = role
         user.save!
-  #     f.puts "created #{ user.inspect}" if Rails.env.development?
       end
       user.update_attribute :password_digest, digest
     end
-  # f.close if Rails.env.development?
   end
 end
 
