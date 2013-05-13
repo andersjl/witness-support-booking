@@ -20,15 +20,11 @@
     end %>
         <div class="<%= offset_n_span_to_class( offset, note_span)
                      %>" id="<%= "note-#{ court_day.date.iso8601}" %>">
-          <div class="row-fluid">
 <%  if admin? && !court_day.note.expired? %>
 <%=   render partial: "court_day_notes/new_or_edit",
              locals:  { note: court_day.note} %>
 <%  elsif !court_day.note.text.blank? %>
-            <div class="span12">
-              <%= h( court_day.note.text).gsub( "\n", "<br/>").html_safe %>
-            </div>
+          <%= h( court_day.note.text).gsub( "\n", "<br/>").html_safe %>
 <%  end %>
-          </div>
         </div>
       </div>

@@ -246,6 +246,9 @@ div, span {
 #court-days {
   .heading {
     font-weight: bold;
+    .weekday {
+      text-align: center;
+    }
   }
   .court-day {
     border-top: 1px solid $grayLight;

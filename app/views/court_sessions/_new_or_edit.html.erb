@@ -1,15 +1,16 @@
               <div style="float:left">
                 <%= form_for session, html: { class: "form-inline"} do |f| %>
-                  <%= f.hidden_field :court_id %>
 <%  if session.new_record? %>
+                  <%= f.hidden_field :court_id %>
                   <%= f.hidden_field :date %>
                   <%= f.hidden_field :start %>
 <%  end %>
                   <%= f.label :need %>
                   <%= f.select :need,
                                options_for_select( (PARALLEL_SESSIONS_MAX + 1
-                                                   ).times.to_a, session.need) %>
-                  <%= f.submit t( "general.ok") %>
+                                                   ).times.to_a, session.need
+                                                 ),
+                               { }, onchange: "this.form.submit();" %>
                 <% end %>
               </div>
 <%  taken = session.bookings.count

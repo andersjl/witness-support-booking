@@ -112,7 +112,8 @@ def create_test_court_day( opts = { })
   opts[ :court] ||= court_this
   opts[ :date] ||= Date.current
   opts[ :date] = CourtDay.ensure_weekday opts[ :date]
-  opts[ :sessions] ||= START_TIMES_OF_DAY_DEFAULT.collect{ |s| [ s, 1]}
+  opts[ :sessions] ||=
+    START_TIMES_OF_DAY_DEFAULT.collect{ |s| [ s, 1 + rand( 2)]}
   if count == 1
     create_test_court_day_do opts
   else
@@ -126,7 +127,7 @@ def create_test_court_day_do( attrs, increment = false)
       court:       attrs[ :court],
       date:        attrs[ :date],
       start:       start,
-      need:        need + rand( need + 1))
+      need:        need)
   end
   text = attrs[ :note] || (rand( 3) > 0 ? "Fri text" : nil)
   unless text.blank?
@@ -175,7 +176,7 @@ def create_test_court_session_do( attrs, do_not_save, increment = false)
         (attrs[ :start] + 1 + rand( 24 * 60 *60)) % (24 * 60 * 60)
       end
     while attrs[ :date].to_time_in_current_zone + attrs[ :start] <= old_time
-      attrs[ :date] +=  1
+      attrs[ :date] = CourtDay.add_weekdays( attrs[ :date], 1)
     end
     used[ :need] = used[ :need] + rand( used[ :need] + 1)
   end

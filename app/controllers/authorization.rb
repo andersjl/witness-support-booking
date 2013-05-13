@@ -4,7 +4,7 @@ module Authorization
   def authorize( action, role, &condition)
     actions = [ action].flatten
     roles = [ role].flatten
-    filter_sym = "authorize_#{ roles.join '_'}".intern
+    filter_sym = "authorize_#{ (actions + roles).join '_'}".intern
     before_filter filter_sym, :only => actions
     define_method filter_sym do
       role = logged_in? ? current_user.role : "unknown"

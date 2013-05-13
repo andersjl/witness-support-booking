@@ -5,12 +5,17 @@
              locals: { model: @model_with_errors} %>
 <%  end %>
     <div id="court-days">
-<%= render partial: "court_days/heading",
-           locals: { date_span: 2, session_span: 3, note_span: 4} %>
+<%= date_span = 2
+    session_span = 3
+    note_span = 4
+    render partial: "court_days/heading",
+           locals: { date_span: date_span, session_span: session_span,
+                     note_span: note_span} %>
 <%  @court_days.each_with_index do |court_day, ix| %>
 <%=   render partial: "court_days/court_day",
-             locals:  { court_day: court_day, date_span: 2, session_span: 3,
-                        note_span: 4, last: ix == @court_days.count - 1} %>
+             locals:  { court_day: court_day, date_span: date_span,
+                        session_span: session_span, note_span: note_span,
+                        last: ix == @court_days.count - 1} %>
 <%  end %>
     </div>
 <%= render partial: "court_days/weekpicker",

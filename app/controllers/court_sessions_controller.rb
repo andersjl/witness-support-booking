@@ -1,8 +1,13 @@
 class CourtSessionsController < ApplicationController
 extend Authorization
 
-  authorize [ :create, :update], [ "admin", "master"] do |params, user|
-    user.master? || user.court.id == params[ :court_session][ :court_id].to_i
+  authorize :create, [ "admin", "master"] do |params, user|
+    user.master? || user.court_id == params[ :court_session][ :court_id].to_i
+  end
+
+  authorize :update, [ "admin", "master"] do |params, user|
+    # #update does not use params[ :court_session][ :court_id]
+    user.master? || user.court_id == CourtSession.find( params[ :id]).court_id
   end
 
   def create

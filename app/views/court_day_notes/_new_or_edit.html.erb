@@ -1,12 +1,7 @@
-            <%= form_for note, html: { class: "form-inline"} do |f| %>
-              <%= f.hidden_field :court_id %>
+          <%= form_for note, html: { class: "form-inline"} do |f| %>
 <%  if note.new_record? %>
-              <%= f.hidden_field :date %>
+            <%= f.hidden_field :court_id %>
+            <%= f.hidden_field :date %>
 <%  end %>
-              <div class="span10">
-                    <%= f.text_area :text %>
-              </div>
-                  <div class="span1" style="float:right">
-                    <%= f.submit t( "general.ok") %>
-                  </div>
-            <% end %>
+            <%= f.text_area :text, onchange: "this.form.submit();" %>
+          <% end %>
