@@ -19,20 +19,21 @@ extend Authorization
   end
 
   def destroy
-    destroyed = Booking.find params[ :id]
-    if destroyed
-      user = destroyed.user
-      unless current_user? user
-        user_name = user.name
-        date = destroyed.court_session.date
-        session = t( "court_session.name#{ destroyed.court_session.start
-                                         }.short")
+    cancelled = Booking.find params[ :id]
+    if cancelled
+      user = cancelled.user
+      if current_user? user
+        if cancelled.court_session.date - Date.current < BOOKING_DAYS_AHEAD_MIN
+          flash[ :error] = t( "booking.unbook.late")
+        end
+      else
+        flash[ :success] =
+          t( "booking.destroyed", user: user.name,
+             date: cancelled.court_session.date,
+             session: t( "court_session.name#{ cancelled.court_session.start
+                                             }.short"))
       end
-      destroyed.destroy
-      unless current_user? user
-        flash[ :success] = t( "booking.unbooked",
-                              user: user_name, date: date, session: session)
-      end
+      cancelled.destroy
     end
     redirect_to court_days_path
   end

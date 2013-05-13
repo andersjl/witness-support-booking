@@ -210,6 +210,10 @@ select.parallel-sessions {
   margin-right: 0.4em;
 }
 
+div.own-booking {
+  font-weight: bold;
+}
+
 div.to-book {
   &.urgent {
     color: $ajlYellow;

@@ -620,6 +620,8 @@ describe "court_days/index" do
           within( :id, @tested_id){ click_button @value_book}
         end
 
+        it "flash on late unbooking"
+
         it{ shows @tested_date}
         it{ within( :id, @tested_id){ should_not have_selector(
                 "input[value='#{ @value_book}']")}}

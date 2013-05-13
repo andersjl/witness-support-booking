@@ -13,7 +13,7 @@ module CourtDaysHelper
   end
 
   def collect_court_days( court)
-    session[ :start_date] ||= CourtDay.monday( Date.today).iso8601
+    session[ :start_date] ||= CourtDay.monday( Date.current).iso8601
     @start_date = session[ :start_date]
     @disabled_count = admin? ? User.disabled_count( !master? && court) : 0
     @court_days = CourtDay.page court, Date.parse( session[ :start_date])

@@ -72,8 +72,9 @@ sv:
     book:
       label: Boka %{session}
     unbook:
-      label: Avboka %{session}
       confirm: Avboka %{name} %{date} %{session}?
+      label: Avboka %{session}
+      late: Sen avbokning! Meddela vittnesstödssamordnaren!
     unbooked: %{user} avbokad %{date} %{session}
 
 # subject matter court, regardless of controller

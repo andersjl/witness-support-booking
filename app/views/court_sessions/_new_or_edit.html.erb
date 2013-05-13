@@ -15,7 +15,7 @@
               </div>
 <%  taken = session.bookings.count
     if taken < session.need
-      days_to_go = session.date - Date.today
+      days_to_go = session.date - Date.current
       if days_to_go < BOOKING_DAYS_AHEAD_MIN %>
               <div class="to-book immediate">
 <%    elsif days_to_go < BOOKING_DAYS_AHEAD_MAX %>
