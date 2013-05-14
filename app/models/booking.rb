@@ -4,6 +4,8 @@ class Booking < ActiveRecord::Base
   validates :court_session_id, presence: true
   validate :not_overbooked, :within_one_court
 
+  after_destroy :destroy_session_without_reason_to_exist
+
   belongs_to :user
   belongs_to :court_session
 
@@ -29,4 +31,9 @@ class Booking < ActiveRecord::Base
                      user: user.inspect, court_session: court_session.inspect)
     end
   end
+  
+  def destroy_session_without_reason_to_exist
+    court_session.destroy if court_session && !court_session.reason_to_exist?
+  end
 end
+

@@ -72,6 +72,15 @@ describe "Booking model" do
       specify{ expect{ @booking.reload
                      }.to raise_error ActiveRecord::RecordNotFound}
     end
+
+    context "when destroying last booking on session with zero need" do
+      before do
+        @session.update_attribute :need, 0
+        @booking.destroy
+      end
+      specify{ expect{ @session.reload
+                     }.to raise_error ActiveRecord::RecordNotFound}
+    end
   end
 end
 
