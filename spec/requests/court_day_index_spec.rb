@@ -148,7 +148,7 @@ describe "court_days/index" do
       it{ within( :id, @pm_id){ should have_content @booked_user.name}}
       it{ within( :id, @note_id){ should have_content @cd.note.text}}  # no \n!
       it{ within( :id, @cd_id){ should_not have_selector(
-          "input[value='#{ t( 'booking.unbook.label')}']")}}
+          "input[value='#{ t( 'booking.cancel.label')}']")}}
       it{ within( :id, @cd_id){ should_not have_selector(
           "input[value='#{ t( 'booking.book.label')}']")}}
     end
@@ -505,7 +505,7 @@ describe "court_days/index" do
       end
 
       shared_examples_for "any booking button click" do
-        #  @tested_id, @value_book, @value_unbook
+        #  @tested_id, @value_book, @value_cancel
 
         it_behaves_like "on court_days index page"
         it{ within( :id, @tested_id){ should have_content( @user.name)}}
@@ -513,7 +513,7 @@ describe "court_days/index" do
         it{ within( :id, @tested_id){
           should_not have_selector( "input[value='#{ @value_book}']")}}
         it{ within( :id, @tested_id){
-          should have_selector( "input[value='#{ @value_unbook}']")}}
+          should have_selector( "input[value='#{ @value_cancel}']")}}
 
         context "when overbooked" do
           before do
@@ -525,8 +525,8 @@ describe "court_days/index" do
                                 text: "(#{ t( 'court_session.need.over')})")}}
         end
 
-        context "when unbooked" do
-          before{ within( :id, @tested_id){ click_button @value_unbook}}
+        context "when cancelled" do
+          before{ within( :id, @tested_id){ click_button @value_cancel}}
           it_behaves_like "unbooked"
         end
       end
@@ -534,7 +534,7 @@ describe "court_days/index" do
       shared_examples_for "any other user" do
         it_behaves_like "on court_days index page"
         it{ within( :id, @tested_id){
-          should_not have_selector( "input[value='#{ @value_unbook}']")}}
+          should_not have_selector( "input[value='#{ @value_cancel}']")}}
       end
 
       context "last" do
@@ -543,7 +543,7 @@ describe "court_days/index" do
           @tested_id = @cd_id
           @value_book = t( 'booking.book.label',
                            session: session_to_label( :morning))
-          @value_unbook = t( "booking.unbook.label",
+          @value_cancel = t( "booking.cancel.label",
                              session: session_to_label( :morning))
           @morning_id = date_session_to_id @cd.date, :morning
           visit_date @first_date
@@ -571,7 +571,7 @@ describe "court_days/index" do
           @tested_id = @cd_id
           @value_book = t( "booking.book.label",
                            session: session_to_label( :afternoon))
-          @value_unbook = t( "booking.unbook.label",
+          @value_cancel = t( "booking.cancel.label",
                              session: session_to_label( :afternoon))
           @afternoon_id = date_session_to_id @cd.date, :afternoon
           visit_date @first_date
@@ -615,26 +615,26 @@ describe "court_days/index" do
           create_and_visit_tested_date
           @value_book = t( "booking.book.label",
                            session: session_to_label( :morning))
-          @value_unbook = t( "booking.unbook.label",
+          @value_cancel = t( "booking.cancel.label",
                              session: session_to_label( :morning))
           within( :id, @tested_id){ click_button @value_book}
         end
 
-        it "flash on late unbooking"
+        it "flash on late cancelling"
 
         it{ shows @tested_date}
         it{ within( :id, @tested_id){ should_not have_selector(
                 "input[value='#{ @value_book}']")}}
         it{ within( :id, @tested_id){ should have_selector(
-                "input[value='#{ @value_unbook}']")}}
+                "input[value='#{ @value_cancel}']")}}
 
-        context "unbooking" do
-          before{ within( :id, @tested_id){ click_button @value_unbook}}
+        context "cancelling" do
+          before{ within( :id, @tested_id){ click_button @value_cancel}}
           it{ shows @tested_date}
           it{ within( :id, @tested_id){ should have_selector(
                   "input[value='#{ @value_book}']")}}
           it{ within( :id, @tested_id){ should_not have_selector(
-                  "input[value='#{ @value_unbook}']")}}
+                  "input[value='#{ @value_cancel}']")}}
         end
       end
     end

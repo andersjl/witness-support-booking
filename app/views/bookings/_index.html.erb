@@ -6,7 +6,7 @@
               <%= link_to booking.user.name, booking,
                           method: :delete,
                           data: { confirm:
-                              t( "booking.unbook.confirm",
+                              t( "booking.cancel.confirm",
                                  name: booking.user.name,
                                  date: booking.court_session.date,
                                  session: t( "court_session.name#{ booking.

@@ -38,15 +38,15 @@ en:
       book: Book PM
       long: Afternoon
       short: PM
-      unbook: Unbook PM
+      cancel: Cancel PM
     morning:
       book: Book AM
       long: Morning
       short: AM
-      unbook: Unbook AM
-    unbook:
+      cancel: Cancel AM
+    cancel:
       confirm: Unbook %{name} %{date} %{session}?
-    unbooked: %{user} unbooked %{date} %{session}
+    cancelled: %{user} unbooked %{date} %{session}
 
 # subject matter court, regardless of controller
   court:

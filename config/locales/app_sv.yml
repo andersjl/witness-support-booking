@@ -71,11 +71,11 @@ sv:
       full: %{court_session} är fullbokad
     book:
       label: Boka %{session}
-    unbook:
+    cancel:
       confirm: Avboka %{name} %{date} %{session}?
       label: Avboka %{session}
       late: Sen avbokning! Meddela vittnesstödssamordnaren!
-    unbooked: %{user} avbokad %{date} %{session}
+    cancelled: %{user} avbokad %{date} %{session}
 
 # subject matter court, regardless of controller
   court:

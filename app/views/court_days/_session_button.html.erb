@@ -15,7 +15,7 @@
               <div style="float:left">
                 <%= form_tag booking_path( booked), method: :delete,
                                                     class: "form-inline" do %>
-                  <%= submit_tag t( "booking.unbook.label",
+                  <%= submit_tag t( "booking.cancel.label",
                                     session: t( "court_session.name#{
                                                   session.start}.short")) %>
                 <% end %>
