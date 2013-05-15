@@ -1,12 +1,10 @@
-<%  taken = session.bookings.count
-    booked = current_user.booked? session
-    if (taken < session.need) || (!session.expired? && (admin? || booked)) %>
+<%  booked = current_user.booked? session
+    if !session.fully_booked? || (!session.expired? && (admin? || booked)) %>
           <div class="row">
             <div class="span<%= span %>">
 <%    if session.expired?
-        if taken < session.need %>
-              <%= t( "court_session.need.not_met",
-                     count: session.need - taken) %>
+        if !session.fully_booked? %>
+              <%= t( "court_session.need.not_met", count: session.needed) %>
 <%      end
       elsif admin? %>
 <%=     render partial: "court_sessions/new_or_edit",
@@ -20,15 +18,15 @@
                                                   session.start}.short")) %>
                 <% end %>
               </div>
-<%      if taken > session.need %>
+<%      if session.overbooked? %>
               <span class="overbooked">
                 &nbsp;(<%= t( "court_session.need.over") %>)
               </span>
-<%      elsif taken < session.need %>
-              &nbsp;(<%= t( "court_session.need.left.short",
-                      count: session.need - taken) %>)
+<%      elsif !session.fully_booked? %>
+              &nbsp;(<%= t "court_session.need.left.short",
+                           count: session.needed %>)
 <%      end
-      elsif taken < session.need %>
+      elsif !session.fully_booked? %>
               <div style="float:left">
 <%=     render partial: "bookings/new",
                locals: { booking: Booking.new( user: current_user,
@@ -37,8 +35,8 @@
                                                               }.short")} %>
               </div>
               <div>
-                &nbsp;(<%= t( "court_session.need.left.short",
-                              count: session.need - taken) %>)
+                &nbsp;(<%= t "court_session.need.left.short",
+                             count: session.needed %>)
               </div>
 <%    end %>
             </div>

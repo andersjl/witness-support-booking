@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130407080044) do
+ActiveRecord::Schema.define(:version => 20130514062433) do
 
   create_table "bookings", :force => true do |t|
     t.integer  "user_id",          :null => false
@@ -22,6 +22,16 @@ ActiveRecord::Schema.define(:version => 20130407080044) do
 
   add_index "bookings", ["court_session_id", "user_id"], :name => "index_bookings_on_court_session_id_and_user_id", :unique => true
   add_index "bookings", ["user_id"], :name => "index_bookings_on_user_id"
+
+  create_table "cancelled_bookings", :force => true do |t|
+    t.integer  "user_id",          :null => false
+    t.integer  "court_session_id", :null => false
+    t.datetime "cancelled_at",     :null => false
+    t.datetime "created_at",       :null => false
+    t.datetime "updated_at",       :null => false
+  end
+
+  add_index "cancelled_bookings", ["court_session_id", "user_id"], :name => "index_cancelled_bookings_on_court_session_id_and_user_id", :unique => true
 
   create_table "court_day_notes", :force => true do |t|
     t.integer  "court_id",   :null => false

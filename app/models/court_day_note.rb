@@ -1,6 +1,5 @@
 class CourtDayNote < ActiveRecord::Base
 
-  before_save{ |note| note.text.strip!}
   validates :court, presence: true
   validates :date, presence: true,
             uniqueness: { scope: :court_id,
@@ -13,6 +12,8 @@ class CourtDayNote < ActiveRecord::Base
     end
   end
   validates :text, presence: true
+
+  before_save{ |note| note.text.strip!}
 
   default_scope order: "date"
 

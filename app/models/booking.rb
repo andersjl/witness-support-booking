@@ -4,6 +4,7 @@ class Booking < ActiveRecord::Base
   validates :court_session_id, presence: true
   validate :not_overbooked, :within_one_court
 
+  before_save :destroy_cancelled_booking
   after_destroy :destroy_session_without_reason_to_exist
 
   belongs_to :user
@@ -18,7 +19,7 @@ class Booking < ActiveRecord::Base
 
   def not_overbooked
     return unless court_session  # handled by other validation
-    if court_session.bookings.count >= court_session.need
+    if court_session.fully_booked?
       errors[ :base] << I18n.t( "booking.error.full",
                                 court_session: court_session.inspect)
     end
@@ -31,7 +32,19 @@ class Booking < ActiveRecord::Base
                      user: user.inspect, court_session: court_session.inspect)
     end
   end
-  
+
+  def destroy_and_log
+    CancelledBooking.create! court_session: court_session, user: user,
+                             cancelled_at: Time.current
+    destroy
+  end
+
+  def destroy_cancelled_booking
+    cancelled = CancelledBooking.find_by_court_session_id_and_user_id(
+                                   court_session.id, user.id)
+    cancelled.destroy if cancelled
+  end
+
   def destroy_session_without_reason_to_exist
     court_session.destroy if court_session && !court_session.reason_to_exist?
   end

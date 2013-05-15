@@ -2,9 +2,6 @@ class User < ActiveRecord::Base
 
   has_secure_password
 
-  before_save{ |user| user.email = email.downcase}
-  before_save :create_remember_token
-
   validates :court, presence: true
   validates :email, presence: true,
                     uniqueness: { scope: :court_id, case_sensitive: false,
@@ -14,8 +11,12 @@ class User < ActiveRecord::Base
   validates :password_confirmation, presence: true
   validates :role, presence: true, inclusion: { in: USER_ROLES}
 
+  before_save{ |user| user.email = email.downcase}
+  before_save :create_remember_token
+
   belongs_to :court
-  has_many :bookings, dependent: :destroy
+  has_many :bookings, dependent: :destroy  # may destroy court_session, too
+  has_many :cancelled_bookings, dependent: :delete_all  # nothing to destroy
 
   def inspect; "|#{ court && court.name}|#{ name}|#{ email}|#{ role}|" end
 

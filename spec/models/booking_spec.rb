@@ -59,8 +59,6 @@ describe "Booking model" do
 
   describe "cascading" do
 
-    before{ @booking.save!}
-
     context "when user is destroyed" do
       before{ @user.destroy}
       specify{ expect{ @booking.reload
@@ -80,6 +78,26 @@ describe "Booking model" do
       end
       specify{ expect{ @session.reload
                      }.to raise_error ActiveRecord::RecordNotFound}
+    end
+  end
+
+  describe "#destroy_and_log" do
+    before do
+      @booking.destroy_and_log
+      @cancelled = CancelledBooking.find_by_court_session_id_and_user_id(
+                                      @booking.court_session, @booking.user)
+    end
+    context( "log entry"){ specify{ @cancelled.should_not be_nil}}
+    context( "now - #cancelled_at"){
+      specify{ (Time.now - @cancelled.cancelled_at).should < 1}}
+    context "and recreated" do
+      before do
+        Booking.create! user: @booking.user,
+                        court_session: @booking.court_session
+        @cancelled = CancelledBooking.find_by_court_session_id_and_user_id(
+                                      @booking.court_session, @booking.user)
+      end
+      context( "log entry"){ specify{ @cancelled.should be_nil}}
     end
   end
 end

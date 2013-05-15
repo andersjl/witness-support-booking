@@ -23,7 +23,9 @@ class CourtSession < ActiveRecord::Base
   default_scope order: "date, start"
 
   belongs_to :court
-  has_many :bookings, dependent: :destroy
+  has_many :bookings, dependent: :delete_all  # booking.destroy creates
+                                       # infinite loop unless reason_to_exist?
+  has_many :cancelled_bookings, dependent: :delete_all  # nothing to destroy
 
   def inspect
     "|#{ court && court.name}|#{ start_time.iso8601}|#{ need}|"
@@ -31,6 +33,22 @@ class CourtSession < ActiveRecord::Base
 
   def start_time
     date && start && (date.to_time_in_current_zone + start)
+  end
+
+  def fully_booked?; bookings.count >= need end
+  def overbooked?; bookings.count > need end
+  def booked?; bookings.count > 0 end
+  def unbooked?; !booked end
+  def needed; need - bookings.count end
+
+  def late_cancels
+    if expired? || fully_booked?
+      [ ]
+    else
+      cancelled_bookings.select do |cancelled|
+        date - cancelled.cancelled_at.to_date <= BOOKING_DAYS_AHEAD_MIN
+      end
+    end
   end
 
   def reason_to_exist?; need > 0 || !bookings.empty? end

@@ -4,16 +4,20 @@
            locals:  { court_day: court_day, span: date_span} %>
 <%  offset = 0
     court_day.sessions.each do |session|
-      if (!admin? || session.expired?) &&
-           session.need == 0 && session.bookings.count == 0
+      if (!admin? || session.expired?) && !session.reason_to_exist?
         offset += session_span
       else %>
         <div class="<%= offset_n_span_to_class( offset, session_span)
                      %>" id="<%= "session-#{ session.start_time.iso8601}" %>">
-<%= render partial: "court_days/session_button",
-           locals: { session: session, span: session_span} %>
-<%= render partial: "bookings/index",
-           locals: { bookings: session.bookings, span: session_span} %>
+<%=     render partial: "court_days/session_button",
+               locals: { session: session, span: session_span} %>
+<%      if admin? %>
+<%=       render partial: "cancelled_bookings/index",
+                 locals: { late_cancels: session.late_cancels,
+                           span: session_span} %>
+<%      end %>
+<%=     render partial: "bookings/index",
+               locals: { bookings: session.bookings, span: session_span} %>
         </div>
 <%      offset = 0
       end

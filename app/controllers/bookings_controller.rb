@@ -23,17 +23,20 @@ extend Authorization
     if cancelled
       user = cancelled.user
       if current_user? user
-        if cancelled.court_session.date - Date.current < BOOKING_DAYS_AHEAD_MIN
+        session = cancelled.court_session
+        if (session.date - Date.current) < BOOKING_DAYS_AHEAD_MIN &&
+             session.need >= session.bookings.count
           flash[ :error] = t( "booking.cancel.late")
         end
+        cancelled.destroy_and_log
       else
         flash[ :success] =
           t( "booking.cancelled", user: user.name,
              date: cancelled.court_session.date,
              session: t( "court_session.name#{ cancelled.court_session.start
                                              }.short"))
+        cancelled.destroy
       end
-      cancelled.destroy
     end
     redirect_to court_days_path
   end

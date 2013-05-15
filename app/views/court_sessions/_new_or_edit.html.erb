@@ -13,8 +13,7 @@
                                { }, onchange: "this.form.submit();" %>
                 <% end %>
               </div>
-<%  taken = session.bookings.count
-    if taken < session.need
+<%  if !session.fully_booked?
       days_to_go = session.date - Date.current
       if days_to_go < BOOKING_DAYS_AHEAD_MIN %>
               <div class="to-book immediate">
@@ -24,9 +23,9 @@
               <div class="to-book">
 <%    end %>
                 <%= "&nbsp;".html_safe + t( "court_session.need.left.long",
-                                            count: session.need - taken) %>
+                                            count: session.needed) %>
               </div>
-<%  elsif  taken > session.need %>
+<%  elsif session.overbooked? %>
               <div class="overbooked">
                 <%= "&nbsp;".html_safe + t( "court_session.need.over"
                                           ).capitalize %>

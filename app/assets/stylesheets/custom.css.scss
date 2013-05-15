@@ -232,6 +232,11 @@ div, span {
   }
 }
 
+div.late-cancel {
+  color: $ajlRed;
+  text-decoration: line-through;
+}
+
 .weekpicker {
   text-align: center;
   .datepicker {

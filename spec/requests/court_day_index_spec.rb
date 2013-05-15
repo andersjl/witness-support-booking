@@ -51,12 +51,16 @@ describe "court_days/index" do
 
   before do
     @monday = CourtDay.monday( Date.current)
-    test_mon = CourtDay.monday( Date.current + 2)
-    @first_date = test_mon <= Date.current ? Date.current + 1 : test_mon
+    @first_date = Date.current + BOOKING_DAYS_AHEAD_MIN + 1
+    @first_date += 8 - @first_date.cwday if @first_date.cwday >= 5
     @n_changeable = 6 - @first_date.cwday
-    # Today                 | @cd.date possible range
-    # Sunday   .. Wednesday | Tomorrow    .. Friday
-    # Thursday .. Saturday  | Next Monday .. next Friday
+    # assuming BOOKING_DAYS_AHEAD_MIN == 3,
+    # Today              | @cd.date possible range
+    # -------------------+------------------------------
+    # Monday .. Thursday | Next Monday    .. next Friday
+    # Friday             | Next Tuesday   .. next Friday
+    # Saturday           | Next Wednesday .. next Friday
+    # Sunday             | Next Thursday  .. next Friday
     @cd = create_test_court_day date: @first_date + rand( @n_changeable),
       sessions: [ [ MORNING_TIME_OF_DAY, 1], [ AFTERNOON_TIME_OF_DAY, 3]],
       note: "tested note"
@@ -75,8 +79,9 @@ describe "court_days/index" do
     it{ should have_selector( "h1", text: t( "court_days.index.title"))}
   end
 
- shared_examples_for "any week" do
+  shared_examples_for "any week" do
     # @tested_date, @user
+    # adjusts tests according to @user.role
 
     it "has correct days" do
       test_dates( @tested_date) do |date, show|
@@ -96,24 +101,21 @@ describe "court_days/index" do
           start = date.to_time_in_current_zone + start_tod
           next unless start > Time.current
           session = page.first :id, "session-#{ start.iso8601}"
-          next unless session
-          within session do
-            if @user.admin?
-              should have_selector "select"
-            else
-              should have_selector "input",
-                value: t( "booking.book.label", session: t(
-                                     "court_session.name#{ start_tod}.short"))
-            end
+          if @user.admin?
+            session.should have_selector "select"
+          else
+            next unless session
+            session.should have_selector "input",
+              value: t( "booking.book.label", session: t(
+                                   "court_session.name#{ start_tod}.short"))
           end
         end
         if @user.admin? && date >= Date.current
-          within( :id, "note-#{ date.iso8601}"){
-            should have_selector "textarea"}
+          page.first( :id, "note-#{ date.iso8601}"
+                    ).should have_selector "textarea"
         end
       end
     end
-
 
     it "has no controls in the past" do
       test_dates( @tested_date) do |date, show|
@@ -135,7 +137,9 @@ describe "court_days/index" do
   end
 
   shared_examples_for "any user" do
-    # @user
+    # @user, @monday
+    # assumses on page showing @monday
+    # adjusts some tests according to @user.role
 
     context "this week" do
       before{ @tested_date = @monday}
@@ -147,10 +151,6 @@ describe "court_days/index" do
       it{ within( :id, @cd_id){ should have_content @cd.date}}
       it{ within( :id, @pm_id){ should have_content @booked_user.name}}
       it{ within( :id, @note_id){ should have_content @cd.note.text}}  # no \n!
-      it{ within( :id, @cd_id){ should_not have_selector(
-          "input[value='#{ t( 'booking.cancel.label')}']")}}
-      it{ within( :id, @cd_id){ should_not have_selector(
-          "input[value='#{ t( 'booking.book.label')}']")}}
     end
 
     context "going one week back" do
@@ -192,36 +192,6 @@ describe "court_days/index" do
         it_behaves_like "any week"
       end
     end
-  end
-
-  shared_examples_for "any changed day" do
-    # @morning, @afternoon, @note, @first_line,
-    # @changed_date, @changed_obj,
-
-    it "model object has correct data" do
-      @changed_obj.sessions[ 0].need.should == @morning.to_i
-      @changed_obj.sessions[ 1].need.should == @afternoon.to_i
-      @changed_obj.note.text.should == @note.strip
-    end
-
-    it "page has correct data" do
-      within( :id, "court-day-#{ @changed_date}") do
-        should have_content( @changed_date)
-        @changed_obj.sessions.each_with_index do |session, ix|
-          left_to_book = instance_variable_get(
-                           "@#{ ix == 0 ? "morning" : "afternoon"}").to_i -
-                           session.bookings.count
-          within( :id, "session-#{ session.start_time.iso8601}"){
-            should have_content( t( "court_session.need.left.long",
-                                     count: left_to_book))}
-        end
-        should have_content( @first_line)
-      end
-    end
-  end
-
-  shared_examples_for "disabled link" do
-    # @user
 
     context "disabled users" do
 
@@ -282,12 +252,82 @@ describe "court_days/index" do
     end
   end
 
+  shared_examples_for "any changed day" do
+    # @morning, @afternoon, @note, @first_line,
+    # @changed_date, @changed_obj
+    # the logged-in user must be admin
+
+    it "model object has correct data" do
+      @changed_obj.sessions[ 0].need.should == @morning.to_i
+      @changed_obj.sessions[ 1].need.should == @afternoon.to_i
+      @changed_obj.note.text.should == @note.strip
+    end
+
+    it "page has correct data" do
+      within( :id, "court-day-#{ @changed_date}") do
+        should have_content( @changed_date)
+        @changed_obj.sessions.each_with_index do |session, ix|
+          left_to_book = instance_variable_get(
+                           "@#{ ix == 0 ? "morning" : "afternoon"}").to_i -
+                           session.bookings.count
+          within( :id, "session-#{ session.start_time.iso8601}"){
+            should have_content( t( "court_session.need.left.long",
+                                     count: left_to_book))}
+        end
+        should have_content( @first_line)
+      end
+    end
+  end
+
   shared_examples_for "any court admin" do
     # @user = @admin, @booked_user, @monday, @cd, @cd_id
+    # the logged-in @user must be admin
 
     it_behaves_like "on court_days index page"
-    it_behaves_like "any user"
 
+    context "late cancels" do
+      def cancel( at = nil)
+        @booking.destroy_and_log
+        if at
+          CancelledBooking.find_by_court_session_id_and_user_id(
+                             @booking.court_session, @booking.user).
+            update_attribute :cancelled_at, at
+        end
+        visit_date @session.date
+      end
+      before do
+        soon = CourtDay.add_weekdays Date.current, 1  # friday?
+        @session = CourtSession.find_by_date_and_court_id( soon, @cd.court
+               ) || create_test_court_session( date: soon, court: @cd.court)
+        @session.bookings.delete_all
+        @session_id = "session-#{ @session.start_time.iso8601}"
+        @session.update_attribute :need, 2
+        Booking.create! user: create_test_user( court: @session.court),
+                        court_session: @session
+        @booking = Booking.create! user: @booked_user, court_session: @session
+      end
+      context "leaving need" do
+        before{ cancel}
+        it{ within( :id, @session_id){ should have_selector(
+                                "div.late-cancel", text: @booked_user.name)}}
+      end
+      context "was overbooked" do
+        before do
+          @session.update_attribute :need, @session.need - 1
+          cancel
+        end
+        it{ within( :id, @session_id
+                  ){ should_not have_content( @booked_user.name)}}
+      end
+      context "not too late" do
+        before{ cancel (@session.date - BOOKING_DAYS_AHEAD_MIN - 1).
+                         to_time_in_current_zone}
+        it{ within( :id, @session_id
+                  ){ should_not have_content( @booked_user.name)}}
+      end
+    end
+=begin
+seems covered by "any week" ???
     it "has input controls for each changeable Court Day" do
       (5 * WEEKS_P_PAGE).times do |n|
         weeks, days = n.divmod( 5)
@@ -309,6 +349,7 @@ describe "court_days/index" do
         end
       end
     end
+=end
 
     context "changing and saving" do
 
@@ -455,15 +496,13 @@ describe "court_days/index" do
       it{ within( :id, date_session_to_id( @cd.date, :morning)){
             should have_content(
               "(#{ t( 'court_session.need.left.short',
-                   count: @cd.sessions[ 0].need -
-                            @cd.sessions[ 0].bookings.count)})")}}
+                      count: @cd.sessions[ 0].needed)})")}}
       it{ within( :id, date_session_to_id( @cd.date, :afternoon)){
             should have_selector( "input[value='#{ t( "booking.book.label",
                                 session: session_to_label( :afternoon))}']")}}
       it{ within( :id, date_session_to_id( @cd.date, :afternoon)){
             should have_content( "(#{ t( 'court_session.need.left.short',
-                                         count: @cd.sessions[ 1].need -
-                                        @cd.sessions[ 1].bookings.count)})")}}
+                                         count: @cd.sessions[ 1].needed)})")}}
 
       it "has no controls when nothing to book" do
         test_dates( @first_date) do |date, show|
@@ -488,13 +527,16 @@ describe "court_days/index" do
                                 email: "normal@example.com")
       fake_log_in @user
       @tested_id = @cd_id
-      visit_date @cd.date
     end
 
     it_behaves_like "any user"
-    it{ within( :id, @cd_id){ should have_content( t( 'general.cwday')[ @cd.date.cwday])}}
-    it_behaves_like "unbooked"
-    it_behaves_like "disabled link"
+
+    context "contents" do
+      before{ visit_date @cd.date}
+      it{ within( :id, @cd_id){ should have_content(
+                                  t( 'general.cwday')[ @cd.date.cwday])}}
+      it_behaves_like "unbooked"
+    end
 
     context "booking" do
 
@@ -509,6 +551,8 @@ describe "court_days/index" do
 
         it_behaves_like "on court_days index page"
         it{ within( :id, @tested_id){ should have_content( @user.name)}}
+        it{ within( :id, @tested_id){ should_not have_selector(
+                                                   "div.alert.alert-error")}}
         it{ within( :id, @tested_id){ should_not have_link( @user.name)}}
         it{ within( :id, @tested_id){
           should_not have_selector( "input[value='#{ @value_book}']")}}
@@ -580,8 +624,8 @@ describe "court_days/index" do
 
         it_behaves_like "any booking button click"
         it{ within( :id, @afternoon_id){ should have_content(
-                "(#{ t( 'court_session.need.left.short', count:
-                @cd.sessions[ 1].need - @cd.sessions[ 1].bookings.count)})")}}
+                "(#{ t( 'court_session.need.left.short',
+                        count: @cd.sessions[ 1].needed)})")}}
 
         context "switch user" do
           before do
@@ -620,8 +664,6 @@ describe "court_days/index" do
           within( :id, @tested_id){ click_button @value_book}
         end
 
-        it "flash on late cancelling"
-
         it{ shows @tested_date}
         it{ within( :id, @tested_id){ should_not have_selector(
                 "input[value='#{ @value_book}']")}}
@@ -635,6 +677,34 @@ describe "court_days/index" do
                   "input[value='#{ @value_book}']")}}
           it{ within( :id, @tested_id){ should_not have_selector(
                   "input[value='#{ @value_cancel}']")}}
+        end
+      end
+
+      context "late cancelling" do
+        def cancel
+          within( :id, "session-#{ @session.start_time.iso8601}"
+                ){ click_button t( "booking.cancel.label",
+                   session: t( "court_session.name#{ @session.start}.short"))}
+        end
+        before do
+          soon = CourtDay.add_weekdays Date.current, 1  # friday?
+          @session = CourtSession.find_by_date_and_court_id( soon, @cd.court
+                 ) || create_test_court_session( date: soon, court: @cd.court)
+          @session.bookings.delete_all
+          Booking.create! user: @user, court_session: @session
+          visit_date soon
+        end
+        context "leaving need" do
+          before{ cancel}
+          it{ should have_selector( "div.alert.alert-error",
+                                    text: t( "booking.cancel.late"))}
+        end
+        context "overbooked" do
+          before do
+            @session.update_attribute :need, 0
+            cancel
+          end
+          it{ should_not have_selector( "div.alert.alert-error")}
         end
       end
     end
@@ -660,12 +730,12 @@ describe "court_days/index" do
       @admin = create_test_user( name: "Admin",
                                  email: "admin@example.com",
                                  role: "admin")
-      @user = @admin  # for any court admin and disabled link
+      @user = @admin
       fake_log_in @admin
     end
 
+    it_behaves_like "any user"
     it_behaves_like "any court admin"
-    it_behaves_like "disabled link"
   end
 
   context "when master" do
@@ -674,12 +744,12 @@ describe "court_days/index" do
       @admin = create_test_user( name: "Master",
                                  email: "master@example.com",
                                  role: "master")
-      @user = @admin  # for any court admin and disabled link
+      @user = @admin
       fake_log_in @admin
     end
 
+    it_behaves_like "any user"
     it_behaves_like "any court admin"
-    it_behaves_like "disabled link"
   end
 end
 

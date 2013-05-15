@@ -10,8 +10,8 @@ rescue RSpec::Expectations::ExpectationNotMetError => e
 end
 
 def clear_models
-  [ Booking, CourtDayNote, CourtSession, User, Court].
-    each{ |m| m.send :delete_all}
+  [ Booking, CancelledBooking, CourtDayNote, CourtSession, User, Court
+  ].each{ |m| m.send :delete_all}
 end
 
 def court_this; court_default "This Court" end
