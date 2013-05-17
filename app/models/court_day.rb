@@ -45,6 +45,8 @@ class CourtDay
   def self.add_weekdays( date, days)
     start = ensure_weekday( date)
     offs = start.cwday - 1
+    # ensure that add_weekdays( <sat or sun>, 1) = <mon>
+    days -= 1 if start > date && days > 0
     start - offs + lambda{ |w, d| 7 * w + d}.call( *((offs + days).divmod 5))
   end
 

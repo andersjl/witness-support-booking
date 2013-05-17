@@ -151,11 +151,6 @@ def create_test_court_session( opts = { })
   opts[ :court] ||= court_this
   opts[ :date] ||= Date.tomorrow
   opts[ :start] ||= START_TIMES_OF_DAY_DEFAULT.sample
-  while opts[ :date].cwday > 5 ||
-      CourtSession.find_by_date_and_court_id_and_start(
-                     opts[ :date], opts[ :court], opts[ :start])
-    opts[ :date] += 1
-  end
   opts[ :need] ||= 1
   if count == 1
     create_test_court_session_do opts, do_not_save
@@ -164,6 +159,11 @@ def create_test_court_session( opts = { })
   end
 end
 def create_test_court_session_do( attrs, do_not_save, increment = false)
+  while attrs[ :date].cwday > 5 ||
+      CourtSession.find_by_date_and_court_id_and_start(
+                     attrs[ :date], attrs[ :court], attrs[ :start])
+    attrs[ :date] += 1
+  end
   used = attrs.dup
   if increment
     old_time = attrs[ :date].to_time_in_current_zone + attrs[ :start]

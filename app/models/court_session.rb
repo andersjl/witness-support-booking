@@ -45,9 +45,7 @@ class CourtSession < ActiveRecord::Base
     if expired? || fully_booked?
       [ ]
     else
-      cancelled_bookings.select do |cancelled|
-        date - cancelled.cancelled_at.to_date <= BOOKING_DAYS_AHEAD_MIN
-      end
+      cancelled_bookings.select{ |cancelled| cancelled.late?}
     end
   end
 

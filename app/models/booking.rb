@@ -34,9 +34,9 @@ class Booking < ActiveRecord::Base
   end
 
   def destroy_and_log
+    destroy
     CancelledBooking.create! court_session: court_session, user: user,
                              cancelled_at: Time.current
-    destroy
   end
 
   def destroy_cancelled_booking

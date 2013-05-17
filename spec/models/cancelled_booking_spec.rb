@@ -27,7 +27,7 @@ describe "CancelledBooking model" do
                               court_session: s, cancelled_at: Time.current}
       end
       CourtSession.all.each{ |s| s.update_attribute :date,
-                                     s.date - BOOKING_DAYS_AHEAD_MAX - 14}
+                CourtDay.add_weekdays( s.date, - BOOKING_DAYS_AHEAD_MAX - 14)}
       CancelledBooking.purge_old
       CancelledBooking.count.should == total - purged
     end

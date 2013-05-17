@@ -51,16 +51,16 @@ describe "court_days/index" do
 
   before do
     @monday = CourtDay.monday( Date.current)
-    @first_date = Date.current + BOOKING_DAYS_AHEAD_MIN + 1
-    @first_date += 8 - @first_date.cwday if @first_date.cwday >= 5
+    @first_date =
+      CourtDay.add_weekdays Date.current, BOOKING_DAYS_AHEAD_MIN + 1
+    @first_date += 3 if @first_date.cwday == 5
     @n_changeable = 6 - @first_date.cwday
     # assuming BOOKING_DAYS_AHEAD_MIN == 3,
-    # Today              | @cd.date possible range
-    # -------------------+------------------------------
-    # Monday .. Thursday | Next Monday    .. next Friday
-    # Friday             | Next Tuesday   .. next Friday
-    # Saturday           | Next Wednesday .. next Friday
-    # Sunday             | Next Thursday  .. next Friday
+    # Today                | @cd.date possible range
+    # ---------------------+------------------------------------------
+    # Monday    .. Tuesday | Next Monday                .. next Friday
+    # Wednesday .. Friday  | Next (Tuesday .. Thursday) .. next Friday
+    # Saturday  .. Sunday  | Next Thursday              .. next Friday
     @cd = create_test_court_day date: @first_date + rand( @n_changeable),
       sessions: [ [ MORNING_TIME_OF_DAY, 1], [ AFTERNOON_TIME_OF_DAY, 3]],
       note: "tested note"
@@ -296,7 +296,7 @@ describe "court_days/index" do
         visit_date @session.date
       end
       before do
-        soon = CourtDay.add_weekdays Date.current, 1  # friday?
+        soon = CourtDay.add_weekdays Date.current, 1
         @session = CourtSession.find_by_date_and_court_id( soon, @cd.court
                ) || create_test_court_session( date: soon, court: @cd.court)
         @session.bookings.delete_all
@@ -320,8 +320,9 @@ describe "court_days/index" do
                   ){ should_not have_content( @booked_user.name)}}
       end
       context "not too late" do
-        before{ cancel (@session.date - BOOKING_DAYS_AHEAD_MIN - 1).
-                         to_time_in_current_zone}
+        before{ cancel CourtDay.add_weekdays( @session.date,
+                                              -(BOOKING_DAYS_AHEAD_MIN + 1)
+                                            ).to_time_in_current_zone}
         it{ within( :id, @session_id
                   ){ should_not have_content( @booked_user.name)}}
       end
@@ -687,7 +688,7 @@ seems covered by "any week" ???
                    session: t( "court_session.name#{ @session.start}.short"))}
         end
         before do
-          soon = CourtDay.add_weekdays Date.current, 1  # friday?
+          soon = CourtDay.add_weekdays Date.current, 1
           @session = CourtSession.find_by_date_and_court_id( soon, @cd.court
                  ) || create_test_court_session( date: soon, court: @cd.court)
           @session.bookings.delete_all

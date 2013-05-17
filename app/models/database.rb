@@ -25,7 +25,8 @@ module AllDataDefs
       [ "court_session",  COURT_DEF, "date", "start", "need"],
       [ "court_day_note", COURT_DEF, "date", "text"],
       [ "booking",        BOOKING_COURT_DEF, BOOKING_USER_DEF,
-                                             BOOKING_SESSION_DEF]]
+                                             BOOKING_SESSION_DEF],
+      [ "cancelled_booking"]]
 
   def self.define_standard_get( model_tag, attr_tag)
     define_method "get_#{ model_tag}_#{ attr_tag}".intern do |model_obj|
@@ -193,8 +194,10 @@ include AllDataDefs
                  ) do
         AllDataDefs.model_tags.each do |model_tag|
           AllDataDefs.model_class( model_tag).all.each do |model_obj|
+            attr_tags = AllDataDefs.attr_tags( model_tag)
+            next if attr_tags.count == 0
             xml.send( model_tag) do
-              AllDataDefs.attr_tags( model_tag).each do |attr_tag|
+              attr_tags.each do |attr_tag|
                 fixed = attr_tag == "text" ? "text_" : attr_tag
                 xml.send( fixed, attr_get( model_tag, attr_tag, model_obj))
               end

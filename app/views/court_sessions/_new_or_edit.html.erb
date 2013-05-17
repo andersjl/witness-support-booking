@@ -14,10 +14,11 @@
                 <% end %>
               </div>
 <%  if !session.fully_booked?
-      days_to_go = session.date - Date.current
-      if days_to_go < BOOKING_DAYS_AHEAD_MIN %>
+      if session.date < CourtDay.add_weekdays( Date.current,
+                                               BOOKING_DAYS_AHEAD_MIN) %>
               <div class="to-book immediate">
-<%    elsif days_to_go < BOOKING_DAYS_AHEAD_MAX %>
+<%    elsif session.date < CourtDay.add_weekdays( Date.current,
+                                                  BOOKING_DAYS_AHEAD_MAX) %>
               <div class="to-book urgent">
 <%    else %>
               <div class="to-book">

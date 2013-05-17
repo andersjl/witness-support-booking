@@ -211,6 +211,7 @@ describe "Database load form" do
         end
 
         AllDataDefs.model_tags.each do |tag|
+          next if AllDataDefs.attr_tags( tag).count == 0
           model = AllDataDefs.model_class( tag)
           context( "#{ model}.count") do
             specify{ model.count.should ==

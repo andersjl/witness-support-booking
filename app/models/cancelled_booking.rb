@@ -12,14 +12,20 @@ class CancelledBooking < ActiveRecord::Base
                            }|"
   end
 
+  def late?
+    court_session.date < CourtDay.add_weekdays( cancelled_at.to_date,
+                                                 BOOKING_DAYS_AHEAD_MIN)
+  end
+
+  def obsolete?
+    Date.current >
+      CourtDay.add_weekdays( court_session.date, BOOKING_DAYS_AHEAD_MAX)
+  end
+
   def self.purge_old
-    today = Date.current
     ((count + 9) / 10).times do |i|
       cancelled = all.sample
-      if cancelled &&
-          (today - cancelled.court_session.date) > BOOKING_DAYS_AHEAD_MAX
-        cancelled.destroy
-      end
+      cancelled.destroy if cancelled.obsolete?
     end
   end
 end
