@@ -87,6 +87,8 @@ module AllDataDefs
   def attr_set( model_tag, attr_tag, model_obj, value)
     send( "set_#{ model_tag}_#{ attr_tag}", model_obj, value)
   end
+
+  def self.version; ActiveRecord::Migrator.current_version.to_s end
 end
 
 class AllDataDoc < Nokogiri::XML::SAX::Document
@@ -113,7 +115,7 @@ include AllDataDefs
     expect( tag_name, "db_dump")
     @state = :start_model
   # f.close if Rails.env.development?
-    expected_version = ActiveRecord::Migrator.current_version.to_s
+    expected_version = AllDataDefs.version
     read_version = lambda{ |v| v.is_a?( Array) ? v[ 1] : "none"
                          }.call( attrs.assoc( "version"))
     unless read_version == expected_version
@@ -189,9 +191,7 @@ include AllDataDefs
 
   def all_data
     Nokogiri::XML::Builder.new( encoding: "UTF-8") do |xml|
-      xml.db_dump( time: Time.now.strftime( "%Y-%m-%dT%H:%M:%S"),
-                   version: ActiveRecord::Migrator.current_version.to_s
-                 ) do
+      xml.db_dump( time: timestamp, version: version) do
         AllDataDefs.model_tags.each do |model_tag|
           AllDataDefs.model_class( model_tag).all.each do |model_obj|
             attr_tags = AllDataDefs.attr_tags( model_tag)
@@ -207,6 +207,9 @@ include AllDataDefs
       end
     end.to_xml
   end
+
+  def timestamp; @timestamp ||= Time.current.iso8601 end
+  def version; AllDataDefs.version end
 
   def replace!
     return unless @replace_descr
