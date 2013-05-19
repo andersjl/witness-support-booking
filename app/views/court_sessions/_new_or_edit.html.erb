@@ -11,6 +11,9 @@
                                                    ).times.to_a, session.need
                                                  ),
                                { }, onchange: "this.form.submit();" %>
+<%  if Rails.env.test? %>
+                  <%= f.submit "test dummy" %>
+<%  end %>
                 <% end %>
               </div>
 <%  if !session.fully_booked?

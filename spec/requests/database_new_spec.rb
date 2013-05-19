@@ -108,7 +108,6 @@ describe "Database load form" do
         it_behaves_like "logged in"
       end
 
-      it "exists before trying and is also in file keeps role"
       context "normal before trying" do
 
         before do
@@ -203,11 +202,8 @@ describe "Database load form" do
           result
         end
         let( :court_sessions) do
-        # result =
           CourtSession.where( "court_id = ?",  # (date, start) order
                               Court.find_by_name( "This Court"))
-        # result.each{ |cd| cd.court}  # (sic!) some lazy eval problem???
-        # result
         end
 
         AllDataDefs.model_tags.each do |tag|

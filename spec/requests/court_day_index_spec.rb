@@ -28,7 +28,7 @@ describe "court_days/index" do
   def visit_date( date)
     within :id, "weekpicker-bottom" do
       fill_in "datepicker-bottom", with: date
-      click_on t( "general.ok")
+      click_on "test dummy"
     end
   end
 
@@ -174,7 +174,7 @@ describe "court_days/index" do
         @new_start_date = @monday + 4711 + rand( 7)
         within :id, "weekpicker-bottom" do
           fill_in "start_date", with: @new_start_date
-          click_button t( "general.ok")
+          click_button "test dummy"
         end
         @tested_date = CourtDay.monday @new_start_date
       end
@@ -326,6 +326,20 @@ describe "court_days/index" do
         it{ within( :id, @session_id
                   ){ should_not have_content( @booked_user.name)}}
       end
+      context "obsolete" do
+        before do
+          yest = CourtDay.add_weekdays Date.current, -1
+          @session = CourtSession.find_by_date_and_court_id( yest, @cd.court
+                 ) || create_test_court_session( date: yest, court: @cd.court)
+          @session.bookings.delete_all
+          @session_id = "session-#{ @session.start_time.iso8601}"
+          @booking = Booking.create! user: @booked_user, court_session: @session
+          cancel CourtDay.add_weekdays( @session.date, -1
+                                      ).to_time_in_current_zone
+        end
+        it{ within( :id, @session_id
+                  ){ should_not have_content( @booked_user.name)}}
+      end
     end
 =begin
 seems covered by "any week" ???
@@ -356,6 +370,7 @@ seems covered by "any week" ???
 
       def change( date, morning, afternoon, note)
         # >> @changed_obj, @changed_date
+=begin
         @changed_obj = CourtDay.find_on_present_page( date)
         within :id, "court-day-#{ date.iso8601}" do
           within :id, date_session_to_id( date, :morning) do
@@ -371,8 +386,24 @@ seems covered by "any week" ???
         @changed_obj.sessions[ 0].update_attributes need: morning
         @changed_obj.sessions[ 1].update_attributes need: afternoon
         @changed_obj.note.update_attributes text: note
+=end
         visit_date date
+        within :id, "court-day-#{ date.iso8601}" do
+          within :id, date_session_to_id( date, :morning) do
+            select( morning, from: "court_session_need")
+            click_button 'test dummy'
+          end
+          within :id, date_session_to_id( date, :afternoon) do
+            select( afternoon, from: "court_session_need")
+            click_button 'test dummy'
+          end
+          within :id, "note-#{ date.iso8601}" do
+            fill_in( "court_day_note_text", with: note)
+            click_button 'test dummy'
+          end
+        end
         @changed_date = date
+        @changed_obj = CourtDay.find_on_present_page( date)
       end
 
       before do
@@ -385,8 +416,6 @@ seems covered by "any week" ???
         end while @new_date == @cd.date
         visit_date @first_date
       end
-
-      it "Input UI bypassed, i.e. not tested"
 
       context "same week, change and save" do
         before{ change @cd.date, @morning, @afternoon, @note}
