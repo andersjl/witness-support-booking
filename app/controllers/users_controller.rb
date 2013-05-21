@@ -61,6 +61,8 @@ extend Authorization
   end
   private :show_or_edit
 
+  # reads only selected parts of <tt>params</tt> depending of who is logged
+  # in, NEVER changes <tt>court</tt>
   def update
     @user = User.find params[ :id]
     if @user

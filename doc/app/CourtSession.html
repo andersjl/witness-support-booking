@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
+<title>class CourtSession - Rails Application Documentation</title>
+
+<link type="text/css" media="screen" href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="./js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/darkfish.js"></script>
+
+
+<body id="top" class="class">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="./index.html">Home</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>app/models/court_session.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    <nav id="parent-class-section" class="section">
+  <h3 class="section-header">Parent</h3>
+  
+  <p class="link">ActiveRecord::Base
+  
+</nav>
+
+    
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li><a href="#method-i-booked-3F">#booked?</a>
+    
+    <li><a href="#method-i-expired-3F">#expired?</a>
+    
+    <li><a href="#method-i-fully_booked-3F">#fully_booked?</a>
+    
+    <li><a href="#method-i-inspect">#inspect</a>
+    
+    <li><a href="#method-i-late_cancels">#late_cancels</a>
+    
+    <li><a href="#method-i-needed">#needed</a>
+    
+    <li><a href="#method-i-overbooked-3F">#overbooked?</a>
+    
+    <li><a href="#method-i-reason_to_exist-3F">#reason_to_exist?</a>
+    
+    <li><a href="#method-i-start_time">#start_time</a>
+    
+    <li><a href="#method-i-unbooked-3F">#unbooked?</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    <nav id="fileindex-section" class="section project-section">
+  <h3 class="section-header">Pages</h3>
+
+  <ul>
+  
+    <li class="file"><a href="./doc/README_FOR_APP.html">README_FOR_APP</a>
+  
+  </ul>
+</nav>
+
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./AllDataDoc.html">AllDataDoc</a>
+  
+    <li><a href="./AllDataDoc/XmlParseError.html">AllDataDoc::XmlParseError</a>
+  
+    <li><a href="./Generators.html">Generators</a>
+  
+    <li><a href="./Generators/Data.html">Generators::Data</a>
+  
+    <li><a href="./UserSessionsController.html">UserSessionsController</a>
+  
+    <li><a href="./UserSessionsController/UserSession.html">UserSessionsController::UserSession</a>
+  
+    <li><a href="./AllDataDefs.html">AllDataDefs</a>
+  
+    <li><a href="./ApplicationController.html">ApplicationController</a>
+  
+    <li><a href="./ApplicationHelper.html">ApplicationHelper</a>
+  
+    <li><a href="./Authorization.html">Authorization</a>
+  
+    <li><a href="./Booking.html">Booking</a>
+  
+    <li><a href="./BookingsController.html">BookingsController</a>
+  
+    <li><a href="./CancelledBooking.html">CancelledBooking</a>
+  
+    <li><a href="./Court.html">Court</a>
+  
+    <li><a href="./CourtDay.html">CourtDay</a>
+  
+    <li><a href="./CourtDayNote.html">CourtDayNote</a>
+  
+    <li><a href="./CourtDayNotesController.html">CourtDayNotesController</a>
+  
+    <li><a href="./CourtDaysController.html">CourtDaysController</a>
+  
+    <li><a href="./CourtDaysHelper.html">CourtDaysHelper</a>
+  
+    <li><a href="./CourtSession.html">CourtSession</a>
+  
+    <li><a href="./CourtSessionsController.html">CourtSessionsController</a>
+  
+    <li><a href="./CourtsController.html">CourtsController</a>
+  
+    <li><a href="./Database.html">Database</a>
+  
+    <li><a href="./DatabasesController.html">DatabasesController</a>
+  
+    <li><a href="./StaticPagesController.html">StaticPagesController</a>
+  
+    <li><a href="./User.html">User</a>
+  
+    <li><a href="./UserSessionsHelper.html">UserSessionsHelper</a>
+  
+    <li><a href="./UsersController.html">UsersController</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="class">class CourtSession</h1>
+
+  <div id="description" class="description">
+    
+<h3 id="label-Validation">Validation</h3>
+
+<p><code>court</code>, <code>date</code>, <code>start</code>, and
+<code>need</code> must all be present.</p>
+<dl class="rdoc-list note-list"><dt><code>date</code>
+<dd>
+<p>must not be on a weekend.</p>
+</dd><dt><code>start</code>
+<dd>
+<p>must be an integer less than the seconds in 24 hours, and must be unique
+within the court and date.</p>
+</dd><dt><code>need</code>
+<dd>
+<p>must be less than <code>PARALLEL_SESSIONS_MAX</code>, defined in
+<code>config/initializers/site_ruby.rb</code>.</p>
+</dd></dl>
+
+<h3 id="label-Cascading">Cascading</h3>
+
+<p>It <code>delete</code>s dependent <code>bookings</code> and
+<code>cancelled_bookings</code> rather than <code>destroy</code>ing them. 
+For <code>bookings</code>, this is because <code>booking.destroy</code> may
+create an infinite loop if this object has no
+<code>reason_to_exist?</code>.  For <code>cancelled_bookings</code>, there
+is really nothing to <code>destroy</code>.</p>
+
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    <!-- Methods -->
+    
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-booked-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">booked?</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="booked-3F-source">
+            <pre><span class="ruby-comment"># File app/models/court_session.rb, line 57</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">booked?</span>; <span class="ruby-identifier">bookings</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span> <span class="ruby-keyword">end</span></pre>
+          </div><!-- booked-3F-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- booked-3F-method -->
+
+    
+      <div id="method-i-expired-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">expired?</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="expired-3F-source">
+            <pre><span class="ruby-comment"># File app/models/court_session.rb, line 70</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">expired?</span>; <span class="ruby-identifier">start_time</span> <span class="ruby-operator">&lt;</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">current</span> <span class="ruby-keyword">end</span></pre>
+          </div><!-- expired-3F-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- expired-3F-method -->
+
+    
+      <div id="method-i-fully_booked-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">fully_booked?</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="fully_booked-3F-source">
+            <pre><span class="ruby-comment"># File app/models/court_session.rb, line 55</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">fully_booked?</span>; <span class="ruby-identifier">bookings</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-identifier">need</span> <span class="ruby-keyword">end</span></pre>
+          </div><!-- fully_booked-3F-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- fully_booked-3F-method -->
+
+    
+      <div id="method-i-inspect" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">inspect</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="inspect-source">
+            <pre><span class="ruby-comment"># File app/models/court_session.rb, line 47</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">inspect</span>
+  <span class="ruby-node">&quot;|#{ court &amp;&amp; court.name}|#{ start_time.iso8601}|#{ need}|&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- inspect-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- inspect-method -->
+
+    
+      <div id="method-i-late_cancels" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">late_cancels</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="late_cancels-source">
+            <pre><span class="ruby-comment"># File app/models/court_session.rb, line 61</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">late_cancels</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">expired?</span> <span class="ruby-operator">||</span> <span class="ruby-identifier">fully_booked?</span>
+    [ ]
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">cancelled_bookings</span>.<span class="ruby-identifier">select</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">cancelled</span><span class="ruby-operator">|</span> <span class="ruby-identifier">cancelled</span>.<span class="ruby-identifier">late?</span>}
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- late_cancels-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- late_cancels-method -->
+
+    
+      <div id="method-i-needed" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">needed</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="needed-source">
+            <pre><span class="ruby-comment"># File app/models/court_session.rb, line 59</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">needed</span>; <span class="ruby-identifier">need</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">bookings</span>.<span class="ruby-identifier">count</span> <span class="ruby-keyword">end</span></pre>
+          </div><!-- needed-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- needed-method -->
+
+    
+      <div id="method-i-overbooked-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">overbooked?</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="overbooked-3F-source">
+            <pre><span class="ruby-comment"># File app/models/court_session.rb, line 56</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">overbooked?</span>; <span class="ruby-identifier">bookings</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">&gt;</span> <span class="ruby-identifier">need</span> <span class="ruby-keyword">end</span></pre>
+          </div><!-- overbooked-3F-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- overbooked-3F-method -->
+
+    
+      <div id="method-i-reason_to_exist-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">reason_to_exist?</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="reason_to_exist-3F-source">
+            <pre><span class="ruby-comment"># File app/models/court_session.rb, line 69</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">reason_to_exist?</span>; <span class="ruby-identifier">need</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span> <span class="ruby-operator">||</span> <span class="ruby-operator">!</span><span class="ruby-identifier">bookings</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-keyword">end</span></pre>
+          </div><!-- reason_to_exist-3F-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- reason_to_exist-3F-method -->
+
+    
+      <div id="method-i-start_time" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">start_time</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="start_time-source">
+            <pre><span class="ruby-comment"># File app/models/court_session.rb, line 51</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">start_time</span>
+  <span class="ruby-identifier">date</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">start</span> <span class="ruby-operator">&amp;&amp;</span> (<span class="ruby-identifier">date</span>.<span class="ruby-identifier">to_time_in_current_zone</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">start</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- start_time-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- start_time-method -->
+
+    
+      <div id="method-i-unbooked-3F" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">unbooked?</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="unbooked-3F-source">
+            <pre><span class="ruby-comment"># File app/models/court_session.rb, line 58</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">unbooked?</span>; <span class="ruby-operator">!</span><span class="ruby-identifier">booked</span> <span class="ruby-keyword">end</span></pre>
+          </div><!-- unbooked-3F-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- unbooked-3F-method -->
+
+    
+    </section><!-- public-instance-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.2.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

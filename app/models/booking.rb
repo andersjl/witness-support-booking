@@ -17,6 +17,13 @@ class Booking < ActiveRecord::Base
 
   def expired?; court_session.expired? end
 
+  # creates a CancelledBooking to mirror <tt>self</tt>
+  def destroy_and_log
+    destroy
+    CancelledBooking.create! court_session: court_session, user: user,
+                             cancelled_at: Time.current
+  end
+
   def not_overbooked
     return unless court_session  # handled by other validation
     if court_session.fully_booked?
@@ -24,6 +31,7 @@ class Booking < ActiveRecord::Base
                                 court_session: court_session.inspect)
     end
   end
+  private :not_overbooked
 
   def within_one_court
     return unless user && court_session  # handled by other validations
@@ -32,21 +40,18 @@ class Booking < ActiveRecord::Base
                      user: user.inspect, court_session: court_session.inspect)
     end
   end
-
-  def destroy_and_log
-    destroy
-    CancelledBooking.create! court_session: court_session, user: user,
-                             cancelled_at: Time.current
-  end
+  private :within_one_court
 
   def destroy_cancelled_booking
     cancelled = CancelledBooking.find_by_court_session_id_and_user_id(
                                    court_session.id, user.id)
     cancelled.destroy if cancelled
   end
+  private :destroy_cancelled_booking
 
   def destroy_session_without_reason_to_exist
     court_session.destroy if court_session && !court_session.reason_to_exist?
   end
+  private :destroy_session_without_reason_to_exist
 end
 

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
+<title>class AllDataDoc - Rails Application Documentation</title>
+
+<link type="text/css" media="screen" href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="./js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/darkfish.js"></script>
+
+
+<body id="top" class="class">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="./index.html">Home</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>app/models/database.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    <nav id="parent-class-section" class="section">
+  <h3 class="section-header">Parent</h3>
+  
+  <p class="link">Nokogiri::XML::SAX::Document
+  
+</nav>
+
+    <!-- Included Modules -->
+<nav id="includes-section" class="section">
+  <h3 class="section-header">Included Modules</h3>
+
+  <ul class="link-list">
+  
+  
+    <li><a class="include" href="AllDataDefs.html">AllDataDefs</a>
+  
+  
+  </ul>
+</nav>
+
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li><a href="#method-c-new">::new</a>
+    
+    <li><a href="#method-i-characters">#characters</a>
+    
+    <li><a href="#method-i-end_element">#end_element</a>
+    
+    <li><a href="#method-i-end_file">#end_file</a>
+    
+    <li><a href="#method-i-error">#error</a>
+    
+    <li><a href="#method-i-expect">#expect</a>
+    
+    <li><a href="#method-i-read_attr">#read_attr</a>
+    
+    <li><a href="#method-i-start_attr">#start_attr</a>
+    
+    <li><a href="#method-i-start_element">#start_element</a>
+    
+    <li><a href="#method-i-start_file">#start_file</a>
+    
+    <li><a href="#method-i-start_model">#start_model</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    <nav id="fileindex-section" class="section project-section">
+  <h3 class="section-header">Pages</h3>
+
+  <ul>
+  
+    <li class="file"><a href="./doc/README_FOR_APP.html">README_FOR_APP</a>
+  
+  </ul>
+</nav>
+
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./AllDataDoc.html">AllDataDoc</a>
+  
+    <li><a href="./AllDataDoc/XmlParseError.html">AllDataDoc::XmlParseError</a>
+  
+    <li><a href="./Generators.html">Generators</a>
+  
+    <li><a href="./Generators/Data.html">Generators::Data</a>
+  
+    <li><a href="./UserSessionsController.html">UserSessionsController</a>
+  
+    <li><a href="./UserSessionsController/UserSession.html">UserSessionsController::UserSession</a>
+  
+    <li><a href="./AllDataDefs.html">AllDataDefs</a>
+  
+    <li><a href="./ApplicationController.html">ApplicationController</a>
+  
+    <li><a href="./ApplicationHelper.html">ApplicationHelper</a>
+  
+    <li><a href="./Authorization.html">Authorization</a>
+  
+    <li><a href="./Booking.html">Booking</a>
+  
+    <li><a href="./BookingsController.html">BookingsController</a>
+  
+    <li><a href="./CancelledBooking.html">CancelledBooking</a>
+  
+    <li><a href="./Court.html">Court</a>
+  
+    <li><a href="./CourtDay.html">CourtDay</a>
+  
+    <li><a href="./CourtDayNote.html">CourtDayNote</a>
+  
+    <li><a href="./CourtDayNotesController.html">CourtDayNotesController</a>
+  
+    <li><a href="./CourtDaysController.html">CourtDaysController</a>
+  
+    <li><a href="./CourtDaysHelper.html">CourtDaysHelper</a>
+  
+    <li><a href="./CourtSession.html">CourtSession</a>
+  
+    <li><a href="./CourtSessionsController.html">CourtSessionsController</a>
+  
+    <li><a href="./CourtsController.html">CourtsController</a>
+  
+    <li><a href="./Database.html">Database</a>
+  
+    <li><a href="./DatabasesController.html">DatabasesController</a>
+  
+    <li><a href="./StaticPagesController.html">StaticPagesController</a>
+  
+    <li><a href="./User.html">User</a>
+  
+    <li><a href="./UserSessionsHelper.html">UserSessionsHelper</a>
+  
+    <li><a href="./UsersController.html">UsersController</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="class">class AllDataDoc</h1>
+
+  <div id="description" class="description">
+    
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+    <!-- Attributes -->
+    <section id="attribute-method-details" class="method-section section">
+      <h3 class="section-header">Attributes</h3>
+
+      
+      <div id="attribute-i-new_db" class="method-detail">
+        <div class="method-heading attribute-method-heading">
+          <span class="method-name">new_db</span><span
+            class="attribute-access-type">[R]</span>
+        </div>
+
+        <div class="method-description">
+        
+        
+        
+        </div>
+      </div>
+      
+    </section><!-- attribute-method-details -->
+    
+
+    <!-- Methods -->
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Class Methods</h3>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 132</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>
+  <span class="ruby-ivar">@current</span> = [ ]
+  <span class="ruby-ivar">@new_db</span> = [ ]
+  <span class="ruby-ivar">@state</span> = <span class="ruby-value">:start_file</span>
+  <span class="ruby-ivar">@value</span> = <span class="ruby-string">&quot;&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- new-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- new-method -->
+
+    
+    </section><!-- public-class-method-details -->
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-characters" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">characters</span><span
+            class="method-args">( str)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="characters-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 177</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">characters</span>( <span class="ruby-identifier">str</span>)
+  <span class="ruby-ivar">@value</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">str</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@state</span> <span class="ruby-operator">==</span> <span class="ruby-value">:read_attr</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- characters-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- characters-method -->
+
+    
+      <div id="method-i-end_element" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">end_element</span><span
+            class="method-args">( tag_name)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="end_element-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 181</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">end_element</span>( <span class="ruby-identifier">tag_name</span>)
+  <span class="ruby-identifier">expect</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-ivar">@current</span>.<span class="ruby-identifier">pop</span>)
+  <span class="ruby-keyword">case</span> <span class="ruby-ivar">@state</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:start_model</span>
+    <span class="ruby-ivar">@state</span> = <span class="ruby-value">:end_file</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:start_attr</span>
+    <span class="ruby-ivar">@state</span> = <span class="ruby-value">:start_model</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">:read_attr</span>
+    <span class="ruby-ivar">@state</span> = <span class="ruby-value">:start_attr</span>
+    <span class="ruby-ivar">@new_db</span>.<span class="ruby-identifier">last</span>[ <span class="ruby-identifier">tag_name</span>] = <span class="ruby-ivar">@value</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- end_element-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- end_element-method -->
+
+    
+      <div id="method-i-end_file" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">end_file</span><span
+            class="method-args">( tag_name, attrs)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>does not seem to happen, actually</p>
+          
+
+          
+          <div class="method-source-code" id="end_file-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 173</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">end_file</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-identifier">attrs</span>)
+  <span class="ruby-identifier">expect</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-node">&quot;no start tag after #{ ROOT_TAG} end tag&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- end_file-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- end_file-method -->
+
+    
+      <div id="method-i-error" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">error</span><span
+            class="method-args">( message)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="error-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 201</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">error</span>( <span class="ruby-identifier">message</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-constant">XmlParseError</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">message</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- error-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- error-method -->
+
+    
+      <div id="method-i-expect" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">expect</span><span
+            class="method-args">( got, expected)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="expect-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 194</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">expect</span>( <span class="ruby-identifier">got</span>, <span class="ruby-identifier">expected</span>)
+  <span class="ruby-keyword">unless</span> [ <span class="ruby-identifier">expected</span>].<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">include?</span>( <span class="ruby-identifier">got</span>)
+    <span class="ruby-identifier">raise</span> <span class="ruby-constant">XmlParseError</span>.<span class="ruby-identifier">new</span>(
+            <span class="ruby-node">&quot;got #{ got.inspect}, expected #{ expected.inspect}&quot;</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- expect-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- expect-method -->
+
+    
+      <div id="method-i-read_attr" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">read_attr</span><span
+            class="method-args">( tag_name, attrs)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="read_attr-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 168</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">read_attr</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-identifier">attrs</span>)
+  <span class="ruby-identifier">expect</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-string">&quot;no start tag while reading attribute value&quot;</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- read_attr-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- read_attr-method -->
+
+    
+      <div id="method-i-start_attr" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">start_attr</span><span
+            class="method-args">( tag_name, attrs)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="start_attr-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 162</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">start_attr</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-identifier">attrs</span>)
+  <span class="ruby-identifier">expect</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-constant">AllDataDefs</span>.<span class="ruby-identifier">attr_tags</span>( <span class="ruby-ivar">@new_db</span>.<span class="ruby-identifier">last</span>[ <span class="ruby-value">:model</span>]))
+  <span class="ruby-ivar">@state</span> = <span class="ruby-value">:read_attr</span>
+  <span class="ruby-ivar">@value</span> = <span class="ruby-string">&quot;&quot;</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- start_attr-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- start_attr-method -->
+
+    
+      <div id="method-i-start_element" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">start_element</span><span
+            class="method-args">( tag_name, attrs = [ ])</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="start_element-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 139</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">start_element</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-identifier">attrs</span> = [ ]) 
+  <span class="ruby-ivar">@current</span>.<span class="ruby-identifier">push</span> <span class="ruby-identifier">tag_name</span>
+  <span class="ruby-identifier">send</span> <span class="ruby-ivar">@state</span>, <span class="ruby-identifier">tag_name</span>, <span class="ruby-identifier">attrs</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- start_element-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- start_element-method -->
+
+    
+      <div id="method-i-start_file" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">start_file</span><span
+            class="method-args">( tag_name, attrs)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="start_file-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 144</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">start_file</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-identifier">attrs</span>)
+  <span class="ruby-identifier">expect</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-constant">ROOT_TAG</span>)
+  <span class="ruby-ivar">@state</span> = <span class="ruby-value">:start_model</span>
+  <span class="ruby-identifier">expected_version</span> = <span class="ruby-constant">AllDataDefs</span>.<span class="ruby-identifier">version</span>
+  <span class="ruby-identifier">read_version</span> = <span class="ruby-identifier">lambda</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">v</span><span class="ruby-operator">|</span> <span class="ruby-identifier">v</span>.<span class="ruby-identifier">is_a?</span>( <span class="ruby-constant">Array</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">v</span>[ <span class="ruby-value">1</span>] <span class="ruby-operator">:</span> <span class="ruby-string">&quot;none&quot;</span>
+                       }.<span class="ruby-identifier">call</span>( <span class="ruby-identifier">attrs</span>.<span class="ruby-identifier">assoc</span>( <span class="ruby-string">&quot;version&quot;</span>))
+  <span class="ruby-keyword">unless</span> <span class="ruby-identifier">read_version</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">expected_version</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-constant">XmlParseError</span>.<span class="ruby-identifier">new</span>(
+          <span class="ruby-node">&quot;expected DB version #{ expected_version}, got #{ read_version}&quot;</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- start_file-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- start_file-method -->
+
+    
+      <div id="method-i-start_model" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">start_model</span><span
+            class="method-args">( tag_name, attrs)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="start_model-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 156</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">start_model</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-identifier">attrs</span>)
+  <span class="ruby-identifier">expect</span>( <span class="ruby-identifier">tag_name</span>, <span class="ruby-constant">AllDataDefs</span>.<span class="ruby-identifier">model_tags</span>)
+  <span class="ruby-ivar">@state</span> = <span class="ruby-value">:start_attr</span>
+  <span class="ruby-ivar">@new_db</span>.<span class="ruby-identifier">push</span>( { <span class="ruby-identifier">model</span><span class="ruby-operator">:</span> <span class="ruby-identifier">tag_name</span>})
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- start_model-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- start_model-method -->
+
+    
+    </section><!-- public-instance-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.2.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

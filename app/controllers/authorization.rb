@@ -1,4 +1,15 @@
-# extend your controller class with this module
+=begin rdoc
+Usage:
+  class MyController < ApplicationController
+  extend Authorization
+    aurhorise [ :action_1, :action_2], [ role_1, role_2] do |params, user|
+      an_optional_block_returning_true_if_the_user_is_authorized
+    end
+    ...
+  end
+Without block, the user roles role_1 and role_2 are authorized to action_1 and
+action_2.  With block, the block must also return true.
+=end
 module Authorization
 
   def authorize( action, role, &condition)

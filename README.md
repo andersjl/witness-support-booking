@@ -1,19 +1,18 @@
 # Witness Support Booking
 
-<small><p>
+
 Copyright (c) 2013 Anders Lindeberg
-</p><p>
+
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
 Foundation; either version 2 of the License, or (at your option) any later
 version.
-</p></small>
 
 This is a simple Ruby-on-Rails application for witness support organizations
 to define need for witness support, and for volunteers to register and book
 their support sessions.
 
-*I.e., it is not intended for booking witness support*, but rather "witness
+I.e., it is *not intended for booking witness support*, but rather "witness
 supporters".
 
 It should be straightforward to convert this to a more general volunteer
@@ -86,14 +85,14 @@ Just a name (ID) and a link to a court.
 ### User
 
 A user ID is the combination of a court and an email.  A volunteer that
-supports witnesses at more than one court has one totally independent user in
-the application for each court.  The email is not used in the application and
-can actually be any string.
+supports witnesses at more than one court has several totally independent
+users in the application, one for each court.  The email is not used in the
+application and can actually be any string.
 
 A user has one of four roles, "disabled", "normal", "admin", or "master".  A
-disabled user has signed up but disabled, a normal user is a witness support
-volunteer, an admin user defines the needs for witness support at one court,
-and a master user can do anything at any court.
+disabled user has signed up but cannot do anything, a normal user is a witness
+support volunteer, an admin user defines the needs for witness support at one
+court, and a master user can do anything at any court.
 
 ### Court Session
 
@@ -165,6 +164,6 @@ used to find the session names and are computed in the views as e.g.
 
 ### Other models
 
-No Customization (except translation of `config/locales/app_sv.yml`)
+No customization (except translation of `config/locales/app_sv.yml`)
 anticipated.
 

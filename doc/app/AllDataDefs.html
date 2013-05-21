@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
+<title>module AllDataDefs - Rails Application Documentation</title>
+
+<link type="text/css" media="screen" href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="./js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/darkfish.js"></script>
+
+
+<body id="top" class="module">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="./index.html">Home</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>app/models/database.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    
+    
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li><a href="#method-c-attr_tags">::attr_tags</a>
+    
+    <li><a href="#method-c-model_class">::model_class</a>
+    
+    <li><a href="#method-c-model_tags">::model_tags</a>
+    
+    <li><a href="#method-c-version">::version</a>
+    
+    <li><a href="#method-i-attr_get">#attr_get</a>
+    
+    <li><a href="#method-i-attr_set">#attr_set</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    <nav id="fileindex-section" class="section project-section">
+  <h3 class="section-header">Pages</h3>
+
+  <ul>
+  
+    <li class="file"><a href="./doc/README_FOR_APP.html">README_FOR_APP</a>
+  
+  </ul>
+</nav>
+
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./AllDataDoc.html">AllDataDoc</a>
+  
+    <li><a href="./AllDataDoc/XmlParseError.html">AllDataDoc::XmlParseError</a>
+  
+    <li><a href="./Generators.html">Generators</a>
+  
+    <li><a href="./Generators/Data.html">Generators::Data</a>
+  
+    <li><a href="./UserSessionsController.html">UserSessionsController</a>
+  
+    <li><a href="./UserSessionsController/UserSession.html">UserSessionsController::UserSession</a>
+  
+    <li><a href="./AllDataDefs.html">AllDataDefs</a>
+  
+    <li><a href="./ApplicationController.html">ApplicationController</a>
+  
+    <li><a href="./ApplicationHelper.html">ApplicationHelper</a>
+  
+    <li><a href="./Authorization.html">Authorization</a>
+  
+    <li><a href="./Booking.html">Booking</a>
+  
+    <li><a href="./BookingsController.html">BookingsController</a>
+  
+    <li><a href="./CancelledBooking.html">CancelledBooking</a>
+  
+    <li><a href="./Court.html">Court</a>
+  
+    <li><a href="./CourtDay.html">CourtDay</a>
+  
+    <li><a href="./CourtDayNote.html">CourtDayNote</a>
+  
+    <li><a href="./CourtDayNotesController.html">CourtDayNotesController</a>
+  
+    <li><a href="./CourtDaysController.html">CourtDaysController</a>
+  
+    <li><a href="./CourtDaysHelper.html">CourtDaysHelper</a>
+  
+    <li><a href="./CourtSession.html">CourtSession</a>
+  
+    <li><a href="./CourtSessionsController.html">CourtSessionsController</a>
+  
+    <li><a href="./CourtsController.html">CourtsController</a>
+  
+    <li><a href="./Database.html">Database</a>
+  
+    <li><a href="./DatabasesController.html">DatabasesController</a>
+  
+    <li><a href="./StaticPagesController.html">StaticPagesController</a>
+  
+    <li><a href="./User.html">User</a>
+  
+    <li><a href="./UserSessionsHelper.html">UserSessionsHelper</a>
+  
+    <li><a href="./UsersController.html">UsersController</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="module">module AllDataDefs</h1>
+
+  <div id="description" class="description">
+    
+<p>Defines how to store and read the models’ data in XML.</p>
+
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+    <!-- Constants -->
+    <section id="constants-list" class="section">
+      <h3 class="section-header">Constants</h3>
+      <dl>
+      
+        <dt id="MODEL_DEFS">MODEL_DEFS
+        
+        <dd class="description"><p>An array of arrays.</p>
+
+<p>The first element in each subarray is the underscore variant of the model
+name, and will also be the XML tag for that model’s data.</p>
+
+<p>If this is the only element in the subarray, this model is NOT written to
+or read from the XML file, but any existing objects are deleted when
+reading XML.</p>
+
+<p>Each remaining element describes an attribute.  It is either simply the
+attribute name, or an array where the first element is the attribute name.
+The attribute name will be the XML tag for the data.</p>
+
+<p>If the attribute is not described by an array, it is simply stored and read
+using default data conversions - WHICH MAY BE LOCALIZATION DEPENDENT! (e.g.
+date formats).</p>
+
+<p>If the attribute <em>is</em> described by an array, the second and third
+elements are either <code>nil</code> or data conversion
+<code>lambda</code>s of the form</p>
+
+<pre class="ruby"><span class="ruby-identifier">lambda</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">model_obj</span><span class="ruby-operator">|</span> <span class="ruby-identifier">getter</span>( <span class="ruby-identifier">model_obj</span>)}
+<span class="ruby-identifier">lambda</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">model_obj</span>, <span class="ruby-identifier">value</span><span class="ruby-operator">|</span> <span class="ruby-identifier">setter</span>( <span class="ruby-identifier">model_obj</span>, <span class="ruby-identifier">value</span>)}
+</pre>
+        
+      
+        <dt id="ROOT_TAG">ROOT_TAG
+        
+        <dd class="description"><p>The root element in the XML file.</p>
+        
+      
+      </dl>
+    </section>
+    
+
+    
+
+    <!-- Methods -->
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Class Methods</h3>
+
+    
+      <div id="method-c-attr_tags" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">attr_tags</span><span
+            class="method-args">( model_tag)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="attr_tags-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 105</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">attr_tags</span>( <span class="ruby-identifier">model_tag</span>)
+  (<span class="ruby-identifier">@@attr_tags</span> <span class="ruby-operator">||=</span> { })[ <span class="ruby-identifier">model_tag</span>] <span class="ruby-operator">||=</span>
+    <span class="ruby-constant">MODEL_DEFS</span>.<span class="ruby-identifier">assoc</span>( <span class="ruby-identifier">model_tag</span>)[ <span class="ruby-value">1</span> <span class="ruby-operator">..</span> <span class="ruby-value">-1</span>].
+      <span class="ruby-identifier">collect</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">a</span><span class="ruby-operator">|</span> <span class="ruby-identifier">a</span>.<span class="ruby-identifier">is_a?</span>( <span class="ruby-constant">Array</span>) <span class="ruby-operator">?</span> <span class="ruby-identifier">a</span>.<span class="ruby-identifier">first</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">a</span>}
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- attr_tags-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- attr_tags-method -->
+
+    
+      <div id="method-c-model_class" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">model_class</span><span
+            class="method-args">( model_tag)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="model_class-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 101</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">model_class</span>( <span class="ruby-identifier">model_tag</span>)
+  (<span class="ruby-identifier">@@model_classes</span> <span class="ruby-operator">||=</span> { })[ <span class="ruby-identifier">model_tag</span>] <span class="ruby-operator">||=</span> <span class="ruby-identifier">model_tag</span>.<span class="ruby-identifier">camelize</span>.<span class="ruby-identifier">constantize</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- model_class-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- model_class-method -->
+
+    
+      <div id="method-c-model_tags" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">model_tags</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="model_tags-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 97</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">model_tags</span>
+  <span class="ruby-identifier">@@model_tags</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">MODEL_DEFS</span>.<span class="ruby-identifier">collect</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">md</span><span class="ruby-operator">|</span> <span class="ruby-identifier">md</span>.<span class="ruby-identifier">first</span>}
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- model_tags-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- model_tags-method -->
+
+    
+      <div id="method-c-version" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">version</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="version-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 121</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">version</span>; <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">Migrator</span>.<span class="ruby-identifier">current_version</span>.<span class="ruby-identifier">to_s</span> <span class="ruby-keyword">end</span></pre>
+          </div><!-- version-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- version-method -->
+
+    
+    </section><!-- public-class-method-details -->
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-attr_get" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">attr_get</span><span
+            class="method-args">( model_tag, attr_tag, model_obj)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Call the getter that has been defined based on <code>MODEL_DEFS</code>.</p>
+          
+
+          
+          <div class="method-source-code" id="attr_get-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 112</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">attr_get</span>( <span class="ruby-identifier">model_tag</span>, <span class="ruby-identifier">attr_tag</span>, <span class="ruby-identifier">model_obj</span>)
+  <span class="ruby-identifier">send</span>( <span class="ruby-node">&quot;get_#{ model_tag}_#{ attr_tag}&quot;</span>, <span class="ruby-identifier">model_obj</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- attr_get-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- attr_get-method -->
+
+    
+      <div id="method-i-attr_set" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">attr_set</span><span
+            class="method-args">( model_tag, attr_tag, model_obj, value)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Call the setter that has been defined based on <code>MODEL_DEFS</code>.</p>
+          
+
+          
+          <div class="method-source-code" id="attr_set-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 117</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">attr_set</span>( <span class="ruby-identifier">model_tag</span>, <span class="ruby-identifier">attr_tag</span>, <span class="ruby-identifier">model_obj</span>, <span class="ruby-identifier">value</span>)
+  <span class="ruby-identifier">send</span>( <span class="ruby-node">&quot;set_#{ model_tag}_#{ attr_tag}&quot;</span>, <span class="ruby-identifier">model_obj</span>, <span class="ruby-identifier">value</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- attr_set-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- attr_set-method -->
+
+    
+    </section><!-- public-instance-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.2.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

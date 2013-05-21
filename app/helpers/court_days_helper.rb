@@ -12,6 +12,7 @@ module CourtDaysHelper
     render "court_days/index"
   end
 
+  # collects data for the <tt>court_days/index</tt> page
   def collect_court_days( court)
     session[ :start_date] ||= CourtDay.monday( Date.current).iso8601
     @start_date = session[ :start_date]
