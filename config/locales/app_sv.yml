@@ -45,13 +45,13 @@ sv:
     date: datum
     cwday:
     - 
-    - må
-    - ti
-    - "on"
-    - to
-    - fr
-    - lö
-    - sö
+    - mån
+    - tis
+    - ons
+    - tor
+    - fre
+    - lör
+    - sön
     destroy: Ta bort
     edit: Ändra
     help:
@@ -182,7 +182,6 @@ sv:
     week_picker:
       prompt: |
         Växla vecka med pilarna eller skriv in ett datum i den önskade veckan
-        och tryck "OK"
   databases:
     new:
       title: Läs in fil

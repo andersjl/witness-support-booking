@@ -11,13 +11,13 @@ en:
     date: Date
     cwday:
     - 
-    - Mo
-    - Tu
-    - We
-    - Th
-    - Fr
-    - Sa
-    - Su
+    - Mon
+    - Tue
+    - Wed
+    - Thu
+    - Fri
+    - Sat
+    - Sun
     destroy: Remove
     edit: Edit
     help:
@@ -32,20 +32,15 @@ en:
 
 # subject matter booking, regardless of controller
   booking:
-    court_mismatch: %{court_day} and %{user} belong to different courts
-    full: %{court_day} is fully booked %{session}
-    afternoon:
-      book: Book PM
-      long: Afternoon
-      short: PM
-      cancel: Cancel PM
-    morning:
-      book: Book AM
-      long: Morning
-      short: AM
-      cancel: Cancel AM
+    error:
+      court_mismatch: %{court_day} and %{user} belong to different courts
+      full: %{court_day} is fully booked %{session}
+    book:
+      label: Book %{session}
     cancel:
       confirm: Unbook %{name} %{date} %{session}?
+      label: Cancel %{session}
+      late: Late cancellation! Contact your witness support coordinator!
     cancelled: %{user} unbooked %{date} %{session}
 
 # subject matter court, regardless of controller
@@ -64,12 +59,28 @@ en:
 
 # subject matter court day, regardless of controller
   court_day:
-    date:
-      taken: already taken at this court
-      weekend: %{date} is a %{dow}
-    empty: Nothing to do at %{court} %{date}
-    req:
+    error:
+      weekend: is a %{dow}
+    need:
       label: Need
+
+# subject matter court day note, regardless of controller
+  court_day_note:
+    error:
+      date_taken: already taken at this court
+
+# subject matter court session, regardless of controller
+  court_session:
+    error:
+      no_reason_to_exist: %{session} has neither need nor bookings
+      start_taken: already defined this date at this court
+    name29700:
+      long: morning
+      short: AM
+    name44100:
+      long: afternoon
+      short: PM
+    need:
       left:
         long: %{count} left to book
         short: %{count} left
@@ -85,7 +96,7 @@ en:
       confirm: |
         Are You sure?  If loading fails you will be left without users and
         bookings!
-      label: ERASE THE ENTIRE DATABASE and load data from the file.
+      label: ERASE THE ENTIRE DATABASE and load data from the file
     error:
       message: "%{reason}: %{message}. The database is not affected."
       parse: Loading failed
@@ -103,11 +114,11 @@ en:
     disable:
       label: Disable
       confirm: Disable %{name}?
-    email:
-      taken: already taken at this court
     enable:
       label: Enable
       confirm: Enable %{name}?
+    error:
+      email_taken: already taken at this court
     promote:
       label: Promote
       confirm: |
@@ -135,7 +146,6 @@ en:
     week_picker:
       prompt: |
         Change week by clicking the arrows or enter a date in the desired week
-        and press "OK"
   databases:
     new:
       title: Load file

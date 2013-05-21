@@ -158,7 +158,7 @@ If you find that you need to change the controllers or models to get the
 schedule you need - *treat that as a bug*.
 
 The only existing connection between the schedule and the localization should
-be the keys `court_session.name29700` and `court_session.name29700`, which are
+be the keys `court_session.name29700` and `court_session.name44100`, which are
 used to find the session names and are computed in the views as e.g.
 `"court_session.name#{ session.start}.short"`.
 
