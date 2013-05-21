@@ -1,3 +1,8 @@
+# === Cascading
+#
+# You cannot destroy a court that has users.
+#
+# Court sessions and court day notes, however, are destroyed with the court.
 class Court < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
   default_scope order: "name"

@@ -1,3 +1,20 @@
+# === Validations
+#
+# <tt>court</tt>, <tt>email</tt>, <tt>name</tt>, <tt>password</tt>,
+# <tt>password_confirmation</tt>, and <tt>role</tt> are all required.
+# <tt>email</tt>::     Must be unique within the <tt>court</tt>.
+# <tt>password</tt>::  At least six characters.
+# <tt>role</tt>::      One of <tt>USER_ROLES</tt>, defined in
+#                      <tt>config/initializers/site_config.rb</tt>.
+#
+# === Cascading
+#
+# It <tt>destroys</tt>s dependent <tt>bookings</tt>.  This means that
+# <tt>CourtSession</tt>s that no longer have any <tt>reason_to_exist?</tt> are
+# also destroyed.
+#
+# <tt>cancelled_bookings</tt> are <tt>deleted</tt>.  There is really nothing
+# to <tt>destroy</tt>.
 class User < ActiveRecord::Base
 
   has_secure_password

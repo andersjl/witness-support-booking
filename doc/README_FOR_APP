@@ -1,4 +1,10 @@
 
-This is a proof-of-concept application for booking witness support to Swedish
-Courts.
+This is a simple Ruby-on-Rails application for witness support organizations
+to define need for witness support, and for volunteers to register and book
+their support sessions.
+
+I.e., it is <em>not intended for booking witness support</em>, but rather
+"witness supporters".
+
+See the project README[link:../../README.md].
 

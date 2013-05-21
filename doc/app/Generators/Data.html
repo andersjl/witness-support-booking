@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
+<title>module Generators::Data - Rails Application Documentation</title>
+
+<link type="text/css" media="screen" href="../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="../js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="../js/darkfish.js"></script>
+
+
+<body id="top" class="module">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="../index.html">Home</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>lib/generators/data.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    
+    
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li><a href="#method-i-generate_bookings">#generate_bookings</a>
+    
+    <li><a href="#method-i-generate_court_days">#generate_court_days</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    <nav id="fileindex-section" class="section project-section">
+  <h3 class="section-header">Pages</h3>
+
+  <ul>
+  
+    <li class="file"><a href="../doc/README_FOR_APP.html">README_FOR_APP</a>
+  
+  </ul>
+</nav>
+
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="../AllDataDoc.html">AllDataDoc</a>
+  
+    <li><a href="../AllDataDoc/XmlParseError.html">AllDataDoc::XmlParseError</a>
+  
+    <li><a href="../Generators.html">Generators</a>
+  
+    <li><a href="../Generators/Data.html">Generators::Data</a>
+  
+    <li><a href="../UserSessionsController.html">UserSessionsController</a>
+  
+    <li><a href="../UserSessionsController/UserSession.html">UserSessionsController::UserSession</a>
+  
+    <li><a href="../AllDataDefs.html">AllDataDefs</a>
+  
+    <li><a href="../ApplicationController.html">ApplicationController</a>
+  
+    <li><a href="../ApplicationHelper.html">ApplicationHelper</a>
+  
+    <li><a href="../Authorization.html">Authorization</a>
+  
+    <li><a href="../Booking.html">Booking</a>
+  
+    <li><a href="../BookingsController.html">BookingsController</a>
+  
+    <li><a href="../CancelledBooking.html">CancelledBooking</a>
+  
+    <li><a href="../Court.html">Court</a>
+  
+    <li><a href="../CourtDay.html">CourtDay</a>
+  
+    <li><a href="../CourtDayNote.html">CourtDayNote</a>
+  
+    <li><a href="../CourtDayNotesController.html">CourtDayNotesController</a>
+  
+    <li><a href="../CourtDaysController.html">CourtDaysController</a>
+  
+    <li><a href="../CourtDaysHelper.html">CourtDaysHelper</a>
+  
+    <li><a href="../CourtSession.html">CourtSession</a>
+  
+    <li><a href="../CourtSessionsController.html">CourtSessionsController</a>
+  
+    <li><a href="../CourtsController.html">CourtsController</a>
+  
+    <li><a href="../Database.html">Database</a>
+  
+    <li><a href="../DatabasesController.html">DatabasesController</a>
+  
+    <li><a href="../StaticPagesController.html">StaticPagesController</a>
+  
+    <li><a href="../User.html">User</a>
+  
+    <li><a href="../UserSessionsHelper.html">UserSessionsHelper</a>
+  
+    <li><a href="../UsersController.html">UsersController</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="module">module Generators::Data</h1>
+
+  <div id="description" class="description">
+    
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    <!-- Methods -->
+    
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-generate_bookings" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">generate_bookings</span><span
+            class="method-args">( *courts) { |court, bookings, unbooked| ... }</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="generate_bookings-source">
+            <pre><span class="ruby-comment"># File lib/generators/data.rb, line 41</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_bookings</span>( *<span class="ruby-identifier">courts</span>)
+  [ <span class="ruby-identifier">courts</span>].<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">court</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">bookings</span> = <span class="ruby-value">0</span>
+    <span class="ruby-identifier">unbooked</span> = <span class="ruby-value">0</span>
+    <span class="ruby-identifier">users</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">where</span>( [ <span class="ruby-string">&quot;court_id = ? and role = ?&quot;</span>, <span class="ruby-identifier">court</span>.<span class="ruby-identifier">id</span>, <span class="ruby-string">&quot;normal&quot;</span>])
+    <span class="ruby-identifier">shortlist</span> = <span class="ruby-identifier">users</span>[ <span class="ruby-value">0</span>, <span class="ruby-value">3</span>].<span class="ruby-identifier">compact</span>
+    <span class="ruby-constant">CourtSession</span>.<span class="ruby-identifier">where</span>( [ <span class="ruby-string">&quot;court_id = ?&quot;</span>, <span class="ruby-identifier">court</span>]).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">session</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">bookings_before</span> = <span class="ruby-identifier">bookings</span>
+      <span class="ruby-identifier">session</span>.<span class="ruby-identifier">need</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword">do</span>
+        <span class="ruby-identifier">user</span> = (<span class="ruby-identifier">rand</span>( <span class="ruby-value">3</span>) <span class="ruby-operator">==</span> <span class="ruby-value">0</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">shortlist</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">users</span>).<span class="ruby-identifier">sample</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">rand</span>( <span class="ruby-value">3</span>) <span class="ruby-operator">!=</span> <span class="ruby-value">0</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-operator">!</span><span class="ruby-identifier">user</span>.<span class="ruby-identifier">booked?</span>( <span class="ruby-identifier">session</span>)
+          <span class="ruby-constant">Booking</span>.<span class="ruby-identifier">create</span> <span class="ruby-identifier">user</span><span class="ruby-operator">:</span> <span class="ruby-identifier">user</span>, <span class="ruby-identifier">court_session</span><span class="ruby-operator">:</span> <span class="ruby-identifier">session</span>
+          <span class="ruby-identifier">bookings</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+        <span class="ruby-keyword">end</span>
+      <span class="ruby-keyword">end</span>
+      <span class="ruby-identifier">unbooked</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">bookings</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">bookings_before</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">yield</span> <span class="ruby-identifier">court</span>, <span class="ruby-identifier">bookings</span>, <span class="ruby-identifier">unbooked</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- generate_bookings-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- generate_bookings-method -->
+
+    
+      <div id="method-i-generate_court_days" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">generate_court_days</span><span
+            class="method-args">( start_date, no_weekdays, *courts) { |court, sessions, notes| ... }</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="generate_court_days-source">
+            <pre><span class="ruby-comment"># File lib/generators/data.rb, line 5</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">generate_court_days</span>( <span class="ruby-identifier">start_date</span>, <span class="ruby-identifier">no_weekdays</span>, *<span class="ruby-identifier">courts</span>)
+  <span class="ruby-identifier">first_monday</span> = <span class="ruby-constant">CourtDay</span>.<span class="ruby-identifier">monday</span>( <span class="ruby-identifier">start_date</span>)
+  <span class="ruby-identifier">start_day</span> = <span class="ruby-identifier">start_date</span> <span class="ruby-operator">-</span> <span class="ruby-identifier">first_monday</span>
+  [ <span class="ruby-identifier">courts</span>].<span class="ruby-identifier">flatten</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">court</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">sessions</span> = <span class="ruby-value">0</span>
+    <span class="ruby-identifier">notes</span> = <span class="ruby-value">0</span>
+    <span class="ruby-identifier">long_text</span> = <span class="ruby-identifier">rand</span>( <span class="ruby-identifier">no_weekdays</span>)
+    <span class="ruby-identifier">no_weekdays</span>.<span class="ruby-identifier">times</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">d</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">weeks</span>, <span class="ruby-identifier">days</span> = (<span class="ruby-identifier">start_day</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">d</span>).<span class="ruby-identifier">divmod</span>( <span class="ruby-value">5</span>)
+      <span class="ruby-identifier">date</span> = <span class="ruby-identifier">first_monday</span> <span class="ruby-operator">+</span> <span class="ruby-value">7</span> * <span class="ruby-identifier">weeks</span> <span class="ruby-operator">+</span> <span class="ruby-identifier">days</span>
+      [ <span class="ruby-value">0</span>, <span class="ruby-value">1</span>].<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">start_ix</span><span class="ruby-operator">|</span>
+        <span class="ruby-identifier">need</span> = <span class="ruby-identifier">rand</span>( <span class="ruby-value">4</span>)
+        <span class="ruby-identifier">need</span> <span class="ruby-operator">+=</span> <span class="ruby-identifier">rand</span>( <span class="ruby-constant">PARALLEL_SESSIONS_MAX</span> <span class="ruby-operator">-</span> <span class="ruby-value">2</span>) <span class="ruby-keyword">if</span> <span class="ruby-identifier">need</span> <span class="ruby-operator">==</span> <span class="ruby-value">3</span>
+        <span class="ruby-keyword">if</span> <span class="ruby-identifier">need</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+          <span class="ruby-constant">CourtSession</span>.<span class="ruby-identifier">create</span>(
+            <span class="ruby-identifier">court</span><span class="ruby-operator">:</span> <span class="ruby-identifier">court</span>,
+            <span class="ruby-identifier">date</span><span class="ruby-operator">:</span>  <span class="ruby-identifier">date</span>,
+            <span class="ruby-identifier">start</span><span class="ruby-operator">:</span> <span class="ruby-constant">START_TIMES_OF_DAY_DEFAULT</span>[ <span class="ruby-identifier">start_ix</span>],
+            <span class="ruby-identifier">need</span><span class="ruby-operator">:</span>  <span class="ruby-identifier">need</span>)
+          <span class="ruby-identifier">sessions</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+        <span class="ruby-keyword">end</span>
+      <span class="ruby-keyword">end</span>
+      <span class="ruby-keyword">if</span> <span class="ruby-identifier">d</span> <span class="ruby-operator">==</span> <span class="ruby-identifier">long_text</span>
+        <span class="ruby-identifier">note</span> = <span class="ruby-string">%QEn lång text med en radbrytning här -&gt;\r\noch så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare och så vidare$</span> 
+      <span class="ruby-keyword">elsif</span> <span class="ruby-identifier">rand</span>( <span class="ruby-value">3</span>) <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+        <span class="ruby-identifier">note</span> = <span class="ruby-node">&quot;Fri text nummer #{ d + 1}&quot;</span>
+      <span class="ruby-keyword">end</span>
+      <span class="ruby-keyword">unless</span> <span class="ruby-identifier">note</span>.<span class="ruby-identifier">blank?</span>
+        <span class="ruby-constant">CourtDayNote</span>.<span class="ruby-identifier">create</span>( <span class="ruby-identifier">court</span><span class="ruby-operator">:</span> <span class="ruby-identifier">court</span>, <span class="ruby-identifier">date</span><span class="ruby-operator">:</span> <span class="ruby-identifier">date</span>, <span class="ruby-identifier">text</span><span class="ruby-operator">:</span> <span class="ruby-identifier">note</span>)
+        <span class="ruby-identifier">notes</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">yield</span> <span class="ruby-identifier">court</span>, <span class="ruby-identifier">sessions</span>, <span class="ruby-identifier">notes</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">block_given?</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- generate_court_days-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- generate_court_days-method -->
+
+    
+    </section><!-- public-instance-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.2.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

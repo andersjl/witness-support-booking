@@ -1,6 +1,7 @@
 
 module UserSessionsHelper
 
+  # returns the logged in user, or, if master and spoofing, the spoofed user
   def current_user
     unless @current_user
       @current_user = User.find_by_remember_token( session[ :remember_token])
@@ -28,6 +29,7 @@ module UserSessionsHelper
     user == current_user
   end
 
+  # kills any spoofing going on
   def log_in( user)
     reset_session
     session[ :remember_token] = user.remember_token
@@ -49,10 +51,12 @@ module UserSessionsHelper
     current_user && current_user.enabled?
   end
 
+  # master? => admin?
   def admin?
     current_user && current_user.admin?
   end
 
+  # master? => admin?
   def master?
     current_user && current_user.master?
   end

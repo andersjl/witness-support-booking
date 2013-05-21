@@ -1,3 +1,21 @@
+# === Validation
+#
+# <tt>court</tt>, <tt>date</tt>, <tt>start</tt>, and <tt>need</tt> must all be
+# present.
+#
+# <tt>date</tt>::   must not be on a weekend.
+# <tt>start</tt>::  must be an integer less than the seconds in 24 hours, and
+#                   must be unique within the court and date.  
+# <tt>need</tt>::   must be less than <tt>PARALLEL_SESSIONS_MAX</tt>, defined
+#                   in <tt>config/initializers/site_ruby.rb</tt>.
+#
+# === Cascading
+#
+# It <tt>delete</tt>s dependent <tt>bookings</tt> and
+# <tt>cancelled_bookings</tt> rather than <tt>destroy</tt>ing them.  For
+# <tt>bookings</tt>, this is because <tt>booking.destroy</tt> may create an
+# infinite loop if this object has no <tt>reason_to_exist?</tt>.  For
+# <tt>cancelled_bookings</tt>, there is really nothing to <tt>destroy</tt>.
 class CourtSession < ActiveRecord::Base
 
   validates :court, presence: true
@@ -23,9 +41,8 @@ class CourtSession < ActiveRecord::Base
   default_scope order: "date, start"
 
   belongs_to :court
-  has_many :bookings, dependent: :delete_all  # booking.destroy creates
-                                       # infinite loop unless reason_to_exist?
-  has_many :cancelled_bookings, dependent: :delete_all  # nothing to destroy
+  has_many :bookings, dependent: :delete_all
+  has_many :cancelled_bookings, dependent: :delete_all
 
   def inspect
     "|#{ court && court.name}|#{ start_time.iso8601}|#{ need}|"
@@ -59,5 +76,6 @@ class CourtSession < ActiveRecord::Base
                                 session: inspect)
     end
   end
+  private :error_unless_reason_to_exist
 end
 

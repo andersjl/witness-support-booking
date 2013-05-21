@@ -1,24 +1,52 @@
 require "nokogiri"
 
+# Defines how to store and read the models' data in XML.
 module AllDataDefs
 
-  COURT_DEF =
+  COURT_DEF =  # :nodoc:
     [ "court", lambda{ |model_obj| model_obj.court.name},
       lambda{ |model_obj, name| model_obj.court = Court.find_by_name( name)}]
-  BOOKING_COURT_DEF =
+  BOOKING_COURT_DEF =  # :nodoc:
     [ "court", lambda{ |booking| booking.user.court.name},
       lambda{ |booking, court_name|
               @booking_court = Court.find_by_name( court_name)}]
-  BOOKING_USER_DEF =
+  BOOKING_USER_DEF =  # :nodoc:
     [ "user", lambda{ |booking| booking.user.email},
       lambda{ |booking, email| booking.user =
                 User.find_by_court_id_and_email( @booking_court, email)}]
-  BOOKING_SESSION_DEF =
+  BOOKING_SESSION_DEF =  # :nodoc:
     [ "session", lambda{ |booking| booking.court_session.start_time.iso8601},
       lambda{ |booking, time| booking.court_session =
                 CourtSession.find_by_date_and_court_id_and_start(
                   time.to_date, @booking_court,
                   time.to_time - time.to_date.to_time_in_current_zone)}]
+
+  # The root element in the XML file.
+  ROOT_TAG = "db_dump"
+
+  # An array of arrays.
+  #
+  # The first element in each subarray is the underscore variant of the model
+  # name, and will also be the XML tag for that model's data.
+  #
+  # If this is the only element in the subarray, this model is NOT written to
+  # or read from the XML file, but any existing objects are deleted when
+  # reading XML.
+  #
+  # Each remaining element describes an attribute.  It is either simply the
+  # attribute name, or an array where the first element is the attribute name.
+  # The attribute name will be the XML tag for the data.
+  #
+  # If the attribute is not described by an array, it is simply stored and
+  # read using default data conversions - WHICH MAY BE LOCALIZATION DEPENDENT!
+  # (e.g. date formats).
+  #
+  # If the attribute <em>is</em> described by an array, the second and third
+  # elements are either <tt>nil</tt> or data conversion <tt>lambda</tt>s of
+  # the form
+  # 
+  #   lambda{ |model_obj| getter( model_obj)}
+  #   lambda{ |model_obj, value| setter( model_obj, value)}
   MODEL_DEFS =  # order matters, hence no Hash
     [ [ "court",          "name", "link"],
       [ "user",           COURT_DEF, "name", "email", "password_digest"],
@@ -28,13 +56,13 @@ module AllDataDefs
                                              BOOKING_SESSION_DEF],
       [ "cancelled_booking"]]
 
-  def self.define_standard_get( model_tag, attr_tag)
+  def self.define_standard_get( model_tag, attr_tag)  # :nodoc:
     define_method "get_#{ model_tag}_#{ attr_tag}".intern do |model_obj|
       model_obj.send( attr_tag)
     end
   end
 
-  def self.define_standard_set( model_tag, attr_tag)
+  def self.define_standard_set( model_tag, attr_tag)  # :nodoc:
     define_method "set_#{ model_tag}_#{ attr_tag}".intern do
       |model_obj, value| model_obj.send( "#{ attr_tag}=", value)
     end
@@ -80,10 +108,12 @@ module AllDataDefs
         collect{ |a| a.is_a?( Array) ? a.first : a}
   end
 
+  # Call the getter that has been defined based on <tt>MODEL_DEFS</tt>.
   def attr_get( model_tag, attr_tag, model_obj)
     send( "get_#{ model_tag}_#{ attr_tag}", model_obj)
   end
 
+  # Call the setter that has been defined based on <tt>MODEL_DEFS</tt>.
   def attr_set( model_tag, attr_tag, model_obj, value)
     send( "set_#{ model_tag}_#{ attr_tag}", model_obj, value)
   end
@@ -112,9 +142,8 @@ include AllDataDefs
   end
 
   def start_file( tag_name, attrs)
-    expect( tag_name, "db_dump")
+    expect( tag_name, ROOT_TAG)
     @state = :start_model
-  # f.close if Rails.env.development?
     expected_version = AllDataDefs.version
     read_version = lambda{ |v| v.is_a?( Array) ? v[ 1] : "none"
                          }.call( attrs.assoc( "version"))
@@ -142,7 +171,7 @@ include AllDataDefs
 
   # does not seem to happen, actually
   def end_file( tag_name, attrs)
-    expect( tag_name, "no start tag after db_dump end tag")
+    expect( tag_name, "no start tag after #{ ROOT_TAG} end tag")
   end
 
   def characters( str)
@@ -191,7 +220,7 @@ include AllDataDefs
 
   def all_data
     Nokogiri::XML::Builder.new( encoding: "UTF-8") do |xml|
-      xml.db_dump( time: timestamp, version: version) do
+      xml.send( ROOT_TAG, time: timestamp, version: version) do
         AllDataDefs.model_tags.each do |model_tag|
           AllDataDefs.model_class( model_tag).all.each do |model_obj|
             attr_tags = AllDataDefs.attr_tags( model_tag)

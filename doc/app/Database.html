@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+
+<title>class Database - Rails Application Documentation</title>
+
+<link type="text/css" media="screen" href="./rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+</script>
+
+<script type="text/javascript" charset="utf-8" src="./js/jquery.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/navigation.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search_index.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/search.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/searcher.js"></script>
+<script type="text/javascript" charset="utf-8" src="./js/darkfish.js"></script>
+
+
+<body id="top" class="class">
+<nav id="metadata">
+  <nav id="home-section" class="section">
+  <h3 class="section-header">
+    <a href="./index.html">Home</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </h3>
+</nav>
+
+
+  <nav id="search-section" class="section project-section" class="initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <h3 class="section-header">
+      <input type="text" name="search" placeholder="Search" id="search-field"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </h3>
+  </form>
+
+  <ul id="search-results" class="initially-hidden"></ul>
+</nav>
+
+
+  <div id="file-metadata">
+    <nav id="file-list-section" class="section">
+  <h3 class="section-header">Defined In</h3>
+  <ul>
+    <li>app/models/database.rb
+  </ul>
+</nav>
+
+    
+  </div>
+
+  <div id="class-metadata">
+    
+    <nav id="parent-class-section" class="section">
+  <h3 class="section-header">Parent</h3>
+  
+  <p class="link">ActiveRecord::Base
+  
+</nav>
+
+    <!-- Included Modules -->
+<nav id="includes-section" class="section">
+  <h3 class="section-header">Included Modules</h3>
+
+  <ul class="link-list">
+  
+  
+    <li><a class="include" href="AllDataDefs.html">AllDataDefs</a>
+  
+  
+  </ul>
+</nav>
+
+    <!-- Method Quickref -->
+<nav id="method-list-section" class="section">
+  <h3 class="section-header">Methods</h3>
+
+  <ul class="link-list">
+    
+    <li><a href="#method-c-columns">::columns</a>
+    
+    <li><a href="#method-i-all_data">#all_data</a>
+    
+    <li><a href="#method-i-all_data-3D">#all_data=</a>
+    
+    <li><a href="#method-i-replace-21">#replace!</a>
+    
+    <li><a href="#method-i-timestamp">#timestamp</a>
+    
+    <li><a href="#method-i-version">#version</a>
+    
+  </ul>
+</nav>
+
+  </div>
+
+  <div id="project-metadata">
+    <nav id="fileindex-section" class="section project-section">
+  <h3 class="section-header">Pages</h3>
+
+  <ul>
+  
+    <li class="file"><a href="./doc/README_FOR_APP.html">README_FOR_APP</a>
+  
+  </ul>
+</nav>
+
+    <nav id="classindex-section" class="section project-section">
+  <h3 class="section-header">Class and Module Index</h3>
+
+  <ul class="link-list">
+  
+    <li><a href="./AllDataDoc.html">AllDataDoc</a>
+  
+    <li><a href="./AllDataDoc/XmlParseError.html">AllDataDoc::XmlParseError</a>
+  
+    <li><a href="./Generators.html">Generators</a>
+  
+    <li><a href="./Generators/Data.html">Generators::Data</a>
+  
+    <li><a href="./UserSessionsController.html">UserSessionsController</a>
+  
+    <li><a href="./UserSessionsController/UserSession.html">UserSessionsController::UserSession</a>
+  
+    <li><a href="./AllDataDefs.html">AllDataDefs</a>
+  
+    <li><a href="./ApplicationController.html">ApplicationController</a>
+  
+    <li><a href="./ApplicationHelper.html">ApplicationHelper</a>
+  
+    <li><a href="./Authorization.html">Authorization</a>
+  
+    <li><a href="./Booking.html">Booking</a>
+  
+    <li><a href="./BookingsController.html">BookingsController</a>
+  
+    <li><a href="./CancelledBooking.html">CancelledBooking</a>
+  
+    <li><a href="./Court.html">Court</a>
+  
+    <li><a href="./CourtDay.html">CourtDay</a>
+  
+    <li><a href="./CourtDayNote.html">CourtDayNote</a>
+  
+    <li><a href="./CourtDayNotesController.html">CourtDayNotesController</a>
+  
+    <li><a href="./CourtDaysController.html">CourtDaysController</a>
+  
+    <li><a href="./CourtDaysHelper.html">CourtDaysHelper</a>
+  
+    <li><a href="./CourtSession.html">CourtSession</a>
+  
+    <li><a href="./CourtSessionsController.html">CourtSessionsController</a>
+  
+    <li><a href="./CourtsController.html">CourtsController</a>
+  
+    <li><a href="./Database.html">Database</a>
+  
+    <li><a href="./DatabasesController.html">DatabasesController</a>
+  
+    <li><a href="./StaticPagesController.html">StaticPagesController</a>
+  
+    <li><a href="./User.html">User</a>
+  
+    <li><a href="./UserSessionsHelper.html">UserSessionsHelper</a>
+  
+    <li><a href="./UsersController.html">UsersController</a>
+  
+  </ul>
+</nav>
+
+  </div>
+</nav>
+
+<div id="documentation">
+  <h1 class="class">class Database</h1>
+
+  <div id="description" class="description">
+    
+  </div><!-- description -->
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    <!-- Methods -->
+    
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Class Methods</h3>
+
+    
+      <div id="method-c-columns" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">columns</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="columns-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 209</span>
+<span class="ruby-keyword">def</span> <span class="ruby-keyword">self</span>.<span class="ruby-identifier">columns</span>
+  <span class="ruby-ivar">@columns</span> <span class="ruby-operator">||=</span> [ <span class="ruby-constant">ActiveRecord</span><span class="ruby-operator">::</span><span class="ruby-constant">ConnectionAdapters</span><span class="ruby-operator">::</span><span class="ruby-constant">Column</span>.<span class="ruby-identifier">new</span>(
+                   <span class="ruby-value">:all_data</span>, <span class="ruby-value">:string</span>, <span class="ruby-keyword">nil</span>, <span class="ruby-keyword">false</span>)]
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- columns-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- columns-method -->
+
+    
+    </section><!-- public-class-method-details -->
+  
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section section">
+      <h3 class="section-header">Public Instance Methods</h3>
+
+    
+      <div id="method-i-all_data" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">all_data</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="all_data-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 221</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">all_data</span>
+  <span class="ruby-constant">Nokogiri</span><span class="ruby-operator">::</span><span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">Builder</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">encoding</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;UTF-8&quot;</span>) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">xml</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">send</span>( <span class="ruby-constant">ROOT_TAG</span>, <span class="ruby-identifier">time</span><span class="ruby-operator">:</span> <span class="ruby-identifier">timestamp</span>, <span class="ruby-identifier">version</span><span class="ruby-operator">:</span> <span class="ruby-identifier">version</span>) <span class="ruby-keyword">do</span>
+      <span class="ruby-constant">AllDataDefs</span>.<span class="ruby-identifier">model_tags</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">model_tag</span><span class="ruby-operator">|</span>
+        <span class="ruby-constant">AllDataDefs</span>.<span class="ruby-identifier">model_class</span>( <span class="ruby-identifier">model_tag</span>).<span class="ruby-identifier">all</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">model_obj</span><span class="ruby-operator">|</span>
+          <span class="ruby-identifier">attr_tags</span> = <span class="ruby-constant">AllDataDefs</span>.<span class="ruby-identifier">attr_tags</span>( <span class="ruby-identifier">model_tag</span>)
+          <span class="ruby-keyword">next</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">attr_tags</span>.<span class="ruby-identifier">count</span> <span class="ruby-operator">==</span> <span class="ruby-value">0</span>
+          <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">send</span>( <span class="ruby-identifier">model_tag</span>) <span class="ruby-keyword">do</span>
+            <span class="ruby-identifier">attr_tags</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">attr_tag</span><span class="ruby-operator">|</span>
+              <span class="ruby-identifier">fixed</span> = <span class="ruby-identifier">attr_tag</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;text&quot;</span> <span class="ruby-operator">?</span> <span class="ruby-string">&quot;text_&quot;</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">attr_tag</span>
+              <span class="ruby-identifier">xml</span>.<span class="ruby-identifier">send</span>( <span class="ruby-identifier">fixed</span>, <span class="ruby-identifier">attr_get</span>( <span class="ruby-identifier">model_tag</span>, <span class="ruby-identifier">attr_tag</span>, <span class="ruby-identifier">model_obj</span>))
+            <span class="ruby-keyword">end</span>
+          <span class="ruby-keyword">end</span>
+        <span class="ruby-keyword">end</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>.<span class="ruby-identifier">to_xml</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- all_data-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- all_data-method -->
+
+    
+      <div id="method-i-all_data-3D" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">all_data=</span><span
+            class="method-args">( uploaded)</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="all_data-3D-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 214</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">all_data=</span>( <span class="ruby-identifier">uploaded</span>)
+  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">uploaded</span>
+  <span class="ruby-identifier">all_data_doc</span> = <span class="ruby-constant">AllDataDoc</span>.<span class="ruby-identifier">new</span>
+  <span class="ruby-constant">Nokogiri</span><span class="ruby-operator">::</span><span class="ruby-constant">XML</span><span class="ruby-operator">::</span><span class="ruby-constant">SAX</span><span class="ruby-operator">::</span><span class="ruby-constant">Parser</span>.<span class="ruby-identifier">new</span>( <span class="ruby-identifier">all_data_doc</span>).<span class="ruby-identifier">parse</span>( <span class="ruby-identifier">uploaded</span>.<span class="ruby-identifier">read</span>)
+  <span class="ruby-ivar">@replace_descr</span> = <span class="ruby-identifier">all_data_doc</span>.<span class="ruby-identifier">new_db</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- all_data-3D-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- all_data-3D-method -->
+
+    
+      <div id="method-i-replace-21" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">replace!</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="replace-21-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 243</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">replace!</span>
+  <span class="ruby-keyword">return</span> <span class="ruby-keyword">unless</span> <span class="ruby-ivar">@replace_descr</span>
+  <span class="ruby-identifier">digests</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">all</span>.<span class="ruby-identifier">inject</span>( [ ]) <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">acc</span>, <span class="ruby-identifier">user</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">acc</span> <span class="ruby-operator">&lt;&lt;</span> [ <span class="ruby-identifier">user</span>.<span class="ruby-identifier">court</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">user</span>.<span class="ruby-identifier">name</span>, <span class="ruby-identifier">user</span>.<span class="ruby-identifier">email</span>, <span class="ruby-identifier">user</span>.<span class="ruby-identifier">role</span>,
+             <span class="ruby-identifier">user</span>.<span class="ruby-identifier">read_attribute</span>( <span class="ruby-value">:password_digest</span>)]
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-constant">AllDataDefs</span>.<span class="ruby-identifier">model_tags</span>.<span class="ruby-identifier">each</span>{ <span class="ruby-operator">|</span><span class="ruby-identifier">t</span><span class="ruby-operator">|</span> <span class="ruby-constant">AllDataDefs</span>.<span class="ruby-identifier">model_class</span>( <span class="ruby-identifier">t</span>).<span class="ruby-identifier">delete_all</span>}
+  <span class="ruby-ivar">@replace_descr</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">obj_descr</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">model_tag</span> = <span class="ruby-identifier">obj_descr</span>[ <span class="ruby-value">:model</span>]
+    <span class="ruby-identifier">model_obj</span> = <span class="ruby-constant">AllDataDefs</span>.<span class="ruby-identifier">model_class</span>( <span class="ruby-identifier">model_tag</span>).<span class="ruby-identifier">new</span>
+    <span class="ruby-constant">AllDataDefs</span>.<span class="ruby-identifier">attr_tags</span>( <span class="ruby-identifier">model_tag</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">attr_tag</span><span class="ruby-operator">|</span>
+      <span class="ruby-identifier">attr_set</span>( <span class="ruby-identifier">model_tag</span>, <span class="ruby-identifier">attr_tag</span>, <span class="ruby-identifier">model_obj</span>, <span class="ruby-identifier">obj_descr</span>[ <span class="ruby-identifier">attr_tag</span>])
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">model_tag</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;user&quot;</span>
+     <span class="ruby-identifier">model_obj</span>.<span class="ruby-identifier">password</span> = <span class="ruby-identifier">model_obj</span>.<span class="ruby-identifier">password_confirmation</span> = <span class="ruby-string">&quot;dummy_password&quot;</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-identifier">model_obj</span>.<span class="ruby-identifier">save!</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">model_tag</span> <span class="ruby-operator">==</span> <span class="ruby-string">&quot;user&quot;</span>
+      <span class="ruby-identifier">model_obj</span>.<span class="ruby-identifier">update_attribute</span> <span class="ruby-value">:password_digest</span>,
+                                 <span class="ruby-identifier">obj_descr</span>[ <span class="ruby-string">&quot;password_digest&quot;</span>]
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">digests</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">cnam_unam_email_role_digest</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">cnam</span>, <span class="ruby-identifier">unam</span>, <span class="ruby-identifier">email</span>, <span class="ruby-identifier">role</span>, <span class="ruby-identifier">digest</span> = <span class="ruby-identifier">cnam_unam_email_role_digest</span>
+    <span class="ruby-identifier">court</span> = <span class="ruby-constant">Court</span>.<span class="ruby-identifier">find_by_name</span>( <span class="ruby-identifier">cnam</span>) <span class="ruby-operator">||</span> <span class="ruby-constant">Court</span>.<span class="ruby-identifier">create!</span>( <span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">cnam</span>)
+    <span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">find_by_court_id_and_email</span> <span class="ruby-identifier">court</span>.<span class="ruby-identifier">id</span>, <span class="ruby-identifier">email</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">user</span>
+      <span class="ruby-identifier">user</span>.<span class="ruby-identifier">update_attribute</span> <span class="ruby-value">:name</span>, <span class="ruby-identifier">unam</span>
+      <span class="ruby-identifier">user</span>.<span class="ruby-identifier">update_attribute</span> <span class="ruby-value">:role</span>, <span class="ruby-identifier">role</span>
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">user</span> = <span class="ruby-constant">User</span>.<span class="ruby-identifier">new</span> <span class="ruby-identifier">email</span><span class="ruby-operator">:</span> <span class="ruby-identifier">email</span>, <span class="ruby-identifier">name</span><span class="ruby-operator">:</span> <span class="ruby-identifier">unam</span>,
+                      <span class="ruby-identifier">password</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;dummy_password&quot;</span>,
+                      <span class="ruby-identifier">password_confirmation</span><span class="ruby-operator">:</span> <span class="ruby-string">&quot;dummy_password&quot;</span>
+      <span class="ruby-identifier">user</span>.<span class="ruby-identifier">court</span> = <span class="ruby-identifier">court</span>
+      <span class="ruby-identifier">user</span>.<span class="ruby-identifier">role</span> = <span class="ruby-identifier">role</span>
+      <span class="ruby-identifier">user</span>.<span class="ruby-identifier">save!</span>
+    <span class="ruby-keyword">end</span>
+    <span class="ruby-identifier">user</span>.<span class="ruby-identifier">update_attribute</span> <span class="ruby-value">:password_digest</span>, <span class="ruby-identifier">digest</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div><!-- replace-21-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- replace-21-method -->
+
+    
+      <div id="method-i-timestamp" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">timestamp</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="timestamp-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 240</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">timestamp</span>; <span class="ruby-ivar">@timestamp</span> <span class="ruby-operator">||=</span> <span class="ruby-constant">Time</span>.<span class="ruby-identifier">current</span>.<span class="ruby-identifier">iso8601</span> <span class="ruby-keyword">end</span></pre>
+          </div><!-- timestamp-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- timestamp-method -->
+
+    
+      <div id="method-i-version" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">version</span><span
+            class="method-args">()</span>
+          <span class="method-click-advice">click to toggle source</span>
+        </div>
+        
+
+        <div class="method-description">
+          
+          
+          
+
+          
+          <div class="method-source-code" id="version-source">
+            <pre><span class="ruby-comment"># File app/models/database.rb, line 241</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">version</span>; <span class="ruby-constant">AllDataDefs</span>.<span class="ruby-identifier">version</span> <span class="ruby-keyword">end</span></pre>
+          </div><!-- version-source -->
+          
+        </div>
+
+        
+
+        
+      </div><!-- version-method -->
+
+    
+    </section><!-- public-instance-method-details -->
+  
+  </section><!-- 5Buntitled-5D -->
+
+</div><!-- documentation -->
+
+
+<footer id="validator-badges">
+  <p><a href="http://validator.w3.org/check/referer">[Validate]</a>
+  <p>Generated by <a href="https://github.com/rdoc/rdoc">RDoc</a> 3.12.2.
+  <p>Generated with the <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish Rdoc Generator</a> 3.
+</footer>
+

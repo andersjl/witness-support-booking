@@ -1,4 +1,10 @@
 
+# Note that this class does NOT inherit <tt>ActiveRecord::Base</tt>.  It is a
+# pseudo model mainly used to collect data from the other models to serve the
+# <tt>court_days/index</tt> view.
+#
+# It also contains some business logic that has to do with that view always
+# starting on a monday and never showing weekends.
 class CourtDay
 
   attr_reader :court, :date, :sessions, :note

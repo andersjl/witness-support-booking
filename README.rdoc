@@ -1,4 +1,0 @@
-== Witness Support for Swedish Courts
-
-This is a proof-of-concept application.
-

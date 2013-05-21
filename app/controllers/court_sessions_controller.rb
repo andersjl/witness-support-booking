@@ -10,6 +10,8 @@ extend Authorization
     user.master? || user.court_id == CourtSession.find( params[ :id]).court_id
   end
 
+  # silently does nothing at all if the data in <tt>params</tt> gives no
+  # <tt>#reason_to_exist?</tt>
   def create
     court_session = CourtSession.new
     court_session.court_id = params[ :court_session][ :court_id]
@@ -22,6 +24,8 @@ extend Authorization
     back_to_court_days
   end
 
+  # ignores all of <tt>params</tt> except <tt>[ :court_session][ :need]</tt>,
+  # silently destroys an existing object if no <tt>#reason_to_exist?</tt>
   def update
     court_session = CourtSession.find params[ :id]
     if court_session
