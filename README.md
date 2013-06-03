@@ -167,3 +167,44 @@ used to find the session names and are computed in the views as e.g.
 No customization (except translation of `config/locales/app_sv.yml`)
 anticipated.
 
+## Why
+
+It is my firm belief that the reason for an application to exist must be
+agreed upon by all stakeholders.  The following is my understanding of the
+"why" as applies to the Swedish courts.  Before doing any major change to the
+application - please check that you basically agree on the "why", at least the
+big picture.  If not, you probably should NOT change this application, but
+rather write a new one.  (Of course you can start by forking this one, but
+kindly leave my tree alone.)
+
+### Transparent witness support bookings within one court
+
+  * Identified users
+
+  * Each user belongs to a court
+
+  * Users can see all needs and bookings at their own court
+
+    There is probably no *requirement* that users *cannot* see needs and
+    bookings at other courts.
+
+### Simple self-service booking of witness supporter's work
+
+  * One-click booking and cancelling
+
+### Simple entry of need and notes for court admin
+
+  * At least one week's needs and comments can be edited on one screen.
+
+  * All future can be edited.
+
+    There is probably no *requirement* that the past *cannot* be edited, and
+    indeed a knowledgable admin user can do that with the current 
+    implementation, using curl or similar.
+
+  * There is at most one save button per edit screen.
+
+    There is currently *no* save button, everything entered goes straight to
+    the database.  It is not clear to me whether that is a requirement, but
+    they certainly like it.
+
