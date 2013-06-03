@@ -7,9 +7,9 @@
                        id: "datepicker-#{ wp_id}",
                        class: "datepicker",
                        onchange: "this.form.submit();" %>
-<%  if Rails.env.test? %>
-    <%= submit_tag "test dummy" %>
-<%  end %>
+    <noscript>
+      <%= submit_tag "OK" %>
+    </noscript>
     <%= submit_tag VALUE_NEXT_WEEK %>
   <% end %>
 </div>

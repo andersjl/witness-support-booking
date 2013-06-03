@@ -28,7 +28,7 @@ describe "court_days/index" do
   def visit_date( date)
     within :id, "weekpicker-bottom" do
       fill_in "datepicker-bottom", with: date
-      click_on "test dummy"
+      click_on "OK"
     end
   end
 
@@ -174,7 +174,7 @@ describe "court_days/index" do
         @new_start_date = @monday + 4711 + rand( 7)
         within :id, "weekpicker-bottom" do
           fill_in "start_date", with: @new_start_date
-          click_button "test dummy"
+          click_button "OK"
         end
         @tested_date = CourtDay.monday @new_start_date
       end
@@ -391,15 +391,15 @@ seems covered by "any week" ???
         within :id, "court-day-#{ date.iso8601}" do
           within :id, date_session_to_id( date, :morning) do
             select( morning, from: "court_session_need")
-            click_button 'test dummy'
+            click_button 'OK'
           end
           within :id, date_session_to_id( date, :afternoon) do
             select( afternoon, from: "court_session_need")
-            click_button 'test dummy'
+            click_button 'OK'
           end
           within :id, "note-#{ date.iso8601}" do
             fill_in( "court_day_note_text", with: note)
-            click_button 'test dummy'
+            click_button 'OK'
           end
         end
         @changed_date = date
