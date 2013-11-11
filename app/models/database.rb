@@ -47,7 +47,7 @@ module AllDataDefs
   # 
   #   lambda{ |model_obj| getter( model_obj)}
   #   lambda{ |model_obj, value| setter( model_obj, value)}
-  MODEL_DEFS =  # order matters, hence no Hash
+  MODEL_DEFS =  # order matters, hence no Hash (no longer true ...)
     [ [ "court",          "name", "link"],
       [ "user",           COURT_DEF, "name", "email", "password_digest"],
       [ "court_session",  COURT_DEF, "date", "start", "need"],
@@ -235,6 +235,17 @@ include AllDataDefs
         end
       end
     end.to_xml
+  end
+
+  def purge_older_than( date)
+    [ Booking, CancelledBooking
+    ].each{ |m| m.each{ |obj| obj.destroy if obj.court_session.date < date}}
+    [ CourtDayNote, CourtSession
+    ].each{ |model| model.each{ |obj| b.destroy if obj.date < date}}
+  end
+
+  def row_count
+    AllDataDefs.model_tags.sum{ |t| AllDataDefs.model_class( t).count}
   end
 
   def timestamp; @timestamp ||= Time.current.iso8601 end

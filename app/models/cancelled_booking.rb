@@ -19,7 +19,7 @@ class CancelledBooking < ActiveRecord::Base
                                                  BOOKING_DAYS_AHEAD_MIN)
   end
 
-  # the <tt>BOOKING_DAYS_AHEAD_MAX</tt> limit (defined in
+  # The use here of the <tt>BOOKING_DAYS_AHEAD_MAX</tt> limit (defined in
   # <tt>config/initializers/site_ruby.rb</tt>) is rather arbitrary
   def obsolete?
     Date.current >
