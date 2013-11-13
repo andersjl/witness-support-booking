@@ -33,6 +33,10 @@ module AllDataDefs
   # or read from the XML file, but any existing objects are deleted when
   # reading XML.
   #
+  # If the second element is a <tt>lambda</tt>, it should be of the form
+  #   lambda{ |model_obj| filter( model_obj)}
+  # If it returns true, <tt>model_obj</tt> is NOT stored.
+  #
   # Each remaining element describes an attribute.  It is either simply the
   # attribute name, or an array where the first element is the attribute name.
   # The attribute name will be the XML tag for the data.
@@ -47,13 +51,22 @@ module AllDataDefs
   # 
   #   lambda{ |model_obj| getter( model_obj)}
   #   lambda{ |model_obj, value| setter( model_obj, value)}
+  #
   MODEL_DEFS =  # order matters, hence no Hash
     [ [ "court",          "name", "link"],
       [ "user",           COURT_DEF, "name", "email", "password_digest"],
-      [ "court_session",  COURT_DEF, "date", "start", "need"],
+    # Some CourtSessions may exist in spite of having zero need, because there
+    # is still some Booking referring to them and we do not want to remove
+    # bookings without the user knowing it.  But a CourtSession with zero need
+    # causes an error when reading the file back, because the Booking that
+    # gives the CourtSession#reason_to_exist? has not been read yet.  So we
+    # remove such CourtSessions (and their dependent Bookings).
+      [ "court_session",  lambda{ |session| session.need == 0},
+                          COURT_DEF, "date", "start", "need"],
       [ "court_day_note", COURT_DEF, "date", "text"],
-      [ "booking",        BOOKING_COURT_DEF, BOOKING_USER_DEF,
-                                             BOOKING_SESSION_DEF],
+    # See court_session above.
+      [ "booking",        lambda{ |booking| booking.court_session.need == 0},
+                    BOOKING_COURT_DEF, BOOKING_USER_DEF, BOOKING_SESSION_DEF],
       [ "cancelled_booking"]]
 
   def self.define_standard_get( model_tag, attr_tag)  # :nodoc:
@@ -70,6 +83,16 @@ module AllDataDefs
 
   MODEL_DEFS.each do |model_def|
     model_tag = model_def.first
+    if model_def[ 1].is_a? Proc
+      filter_proc = model_def.delete_at 1
+      define_method "filter_#{ model_tag}".intern do |model_obj|
+        filter_proc.call( model_obj)
+      end
+    else
+      define_method "filter_#{ model_tag}".intern do |model_obj|
+        false
+      end
+    end
     model_def[ 1 .. -1].each do |attr_def|
       if attr_def.is_a?( Array)
         attr_tag = attr_def.first
@@ -106,6 +129,11 @@ module AllDataDefs
     (@@attr_tags ||= { })[ model_tag] ||=
       MODEL_DEFS.assoc( model_tag)[ 1 .. -1].
         collect{ |a| a.is_a?( Array) ? a.first : a}
+  end
+
+  # Call the filter that has been defined based on <tt>MODEL_DEFS</tt>.
+  def filter( model_tag, model_obj)
+    send( "filter_#{ model_tag}", model_obj)
   end
 
   # Call the getter that has been defined based on <tt>MODEL_DEFS</tt>.
@@ -225,6 +253,7 @@ include AllDataDefs
           AllDataDefs.model_class( model_tag).all.each do |model_obj|
             attr_tags = AllDataDefs.attr_tags( model_tag)
             next if attr_tags.count == 0
+            next if filter( model_tag, model_obj)
             xml.send( model_tag) do
               attr_tags.each do |attr_tag|
                 fixed = attr_tag == "text" ? "text_" : attr_tag
