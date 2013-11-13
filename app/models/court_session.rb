@@ -36,6 +36,9 @@ class CourtSession < ActiveRecord::Base
     uniqueness:   { scope: [ :date, :court_id],
                     message: I18n.t( "court_session.error.start_taken")}
   validates :need, inclusion: { in: 0 .. PARALLEL_SESSIONS_MAX}
+# If a session has need == 0 but some booking and is saved by the Database
+# model, this validation generates an unwanted error when the saved XML is
+# read back again.
   validate  :error_unless_reason_to_exist
 
   default_scope order: "date, start"
