@@ -58,6 +58,10 @@ extend Authorization
   def show_or_edit
     @user = User.find params[ :id]
     redirect_to users_path unless @user
+    if @user.master?
+      @database = Database.new
+      @count_date = session[ :count_date] || @database.oldest_date
+    end
   end
   private :show_or_edit
 

@@ -105,9 +105,10 @@ describe "court_days/index" do
             session.should have_selector "select"
           else
             next unless session
-            session.should have_selector "input",
-              value: t( "booking.book.label", session: t(
-                                   "court_session.name#{ start_tod}.short"))
+            expected_value = t( "booking.book.label",
+                                session: t( "court_session.name#{ start_tod
+                                                                }.short"))
+            session.should have_selector "input[value='#{ expected_value}']"
           end
         end
         if @user.admin? && date >= Date.current

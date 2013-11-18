@@ -3,10 +3,10 @@ def t( key, opts = { })
   I18n.translate key, opts
 end
 
-def known_problem
+def not_fatal( reason)
   yield
 rescue RSpec::Expectations::ExpectationNotMetError => e
-  pending "#{ e.message} - known problem"
+  pending "#{ e.message} - not fatal: #{ reason}"
 end
 
 def clear_models

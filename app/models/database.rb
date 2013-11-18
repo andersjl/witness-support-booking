@@ -51,6 +51,7 @@ module AllDataDefs
   # 
   #   lambda{ |model_obj| getter( model_obj)}
   #   lambda{ |model_obj, value| setter( model_obj, value)}
+  #
   MODEL_DEFS =  # order matters, hence no Hash (no longer true ...)
     [ [ "court",          "name", "link"],
       [ "user",           COURT_DEF, "name", "email", "password_digest"],
@@ -230,12 +231,28 @@ include AllDataDefs
   end
 end
 
-class Database < ActiveRecord::Base
+class Database
 include AllDataDefs
+include ActiveModel::Validations
+include ActiveModel::Conversion
+extend ActiveModel::Naming
 
-  def self.columns
-    @columns ||= [ ActiveRecord::ConnectionAdapters::Column.new(
-                     :all_data, :string, nil, false)]
+  def self.attributes
+    [ :all_data, :oldest_date]
+  end
+
+  def initialize( attributes = { })
+    attributes && attributes.each do |name, value|
+      send( "#{name}=", value) if respond_to? "#{name}=".intern
+    end
+  end
+
+  def persisted?
+    false
+  end
+
+  def self.inspect
+    "#<#{ self.to_s} #{ self.attributes.collect{ |e| ":#{ e }"}.join(', ')}>"
   end
 
   def all_data=( uploaded)
@@ -265,22 +282,44 @@ include AllDataDefs
     end.to_xml
   end
 
-  def purge_older_than( date)
-    [ Booking, CancelledBooking
-    ].each{ |m| m.each{ |obj| obj.destroy if obj.court_session.date < date}}
-    [ CourtDayNote, CourtSession
-    ].each{ |model| model.each{ |obj| b.destroy if obj.date < date}}
+  def oldest_date=( date)
+    return unless date
+    date = date.to_date
+    @too_old = [ Booking, CancelledBooking].collect do |model|
+                 model.all.inject( [ model]) do |list, obj|
+                   list << obj.id if obj.court_session.date < date
+                   list
+                 end
+               end + [ CourtDayNote, CourtSession].collect do |model|
+                       model.find( :all, conditions: [ "date < ?", date]
+                                 ).inject( [ model]){ |l, o| l << o.id}
+                     end
   end
 
-  def row_count
-    AllDataDefs.model_tags.sum{ |t| AllDataDefs.model_class( t).count}
+  def oldest_date; self.class.oldest_date end
+  def self.oldest_date
+    [ CourtDayNote, CourtSession
+    ].collect{ |model| model.all.collect{ |obj| obj.date}}.flatten.min
+  end
+
+  def row_count( count_date)
+    [ CourtDayNote, CourtSession].inject( 0) do |total, model|
+      total + model.count( conditions: [ 'date >= ?', count_date])
+    end + [ Booking, CancelledBooking].inject( 0) do |total, model|
+            total + model.count( joins: :court_session,
+                      conditions: [ 'court_sessions.date >= ?', count_date])
+          end + Court.count + User.count
+  end
+
+  def save!
+    replace! if @replace_descr
+    destroy_old! if @too_old
   end
 
   def timestamp; @timestamp ||= Time.current.iso8601 end
   def version; AllDataDefs.version end
 
   def replace!
-    return unless @replace_descr
     digests = User.all.inject( [ ]) do |acc, user|
       acc << [ user.court.name, user.name, user.email, user.role,
                user.read_attribute( :password_digest)]
@@ -318,6 +357,12 @@ include AllDataDefs
       end
       user.update_attribute :password_digest, digest
     end
+  end
+  private :replace!
+
+  def destroy_old!
+    @too_old && @too_old.each{ |list| list.shift.delete list}
+    @too_old = nil
   end
 end
 

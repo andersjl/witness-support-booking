@@ -13,11 +13,11 @@ sv:
       user: Användare
     attributes:
       booking:
-        user: Vittnesstöd
         court_session: Pass
+        user: Vittnesstöd
       court:
-        name: Namn
         link: Länk till hemsida
+        name: Namn
       court_day_note:
         court: Domstol
         date: Datum
@@ -25,14 +25,15 @@ sv:
       court_session:
         court: Domstol
         date: Datum
-        start: Starttid
         need: Behov
+        start: Starttid
       database:
         all_data: Alla data
+        oldest_date: Äldsta rad
       user:
         court: Domstol
-        name: Namn
         email: Mejladress
+        name: Namn
         password: Lösenord
         password_confirmation: Lösenord igen
 
@@ -125,16 +126,26 @@ sv:
 
 # subject matter database, regardless of controller
   database:
+    count_date:
+      label: %{rows} rader inte äldre än
     created: Ny databas inläst. Du måste logga in igen.
     create:
       confirm: |
         Är du säker? Om inläsningen misslyckas finns varken användare eller
         bokningar kvar!
       label: RADERA HELA DATABASEN och ersätt den med filen
+    dropped_older_than: Databasen rensad på poster äldre än %{date}
+    drop_older:
+      label: Rensa äldre
+      confirm: |
+        Är du säker? Alla pass, noteringar och bokningar äldre än %{date}
+        kommer att rensas bort oåterkalleligt!
     error:
       message: "%{reason}: %{message}. Databasen är orörd."
       parse: Inläsningen misslyckades
       exception: Undantag %{exception}
+    oldest_date: Äldsta befintliga datum %{date}
+    row_count: rader
 
 # subject matter user, regardless of controller
   user:

@@ -20,5 +20,7 @@
   </aside>
 </div>
 <% if master? && current_user?( @user) %>
-<%= render :partial => "shared/xml_dump_n_restore" %>
+  <%= render partial: "databases/edit",
+             locals: { database: @database, count_date: @count_date} %>
+  <%= render partial: "shared/xml_dump_n_restore" %>
 <% end %>

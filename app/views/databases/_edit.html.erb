@@ -1,0 +1,29 @@
+<div class="row database-management" id="database-management">
+  <div class="span6 right" id="search-form">
+    <%= form_tag database_path, method: "get", class: "form-inline" do |f| %>
+      <%= label_tag :count_date, t( "database.count_date.label",
+                                    rows: database.row_count( count_date)) %>
+      <%= text_field_tag :count_date, count_date,
+                         class:    "datepicker",
+                         onchange: "this.form.submit();" %>
+      <noscript>
+        <%= submit_tag "OK" %>
+      </noscript>
+    <% end %>
+  </div>
+  <div class="span6 left" id="drop-older-form">
+    <div style="float:left">
+      <%= form_for database, url: database_path,
+            html: { method: "put", class: "form-inline"} do |f| %>
+        <%= f.submit t( "database.drop_older.label"),
+                        confirm: t( "database.drop_older.confirm",
+                                    date: count_date) %>
+      <% end %>
+    </div>
+    <div>
+      &nbsp;
+      <%= t( "database.oldest_date", date: database.oldest_date) %>
+    </div>
+  </div>
+</div>
+

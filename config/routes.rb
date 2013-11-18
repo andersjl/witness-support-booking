@@ -9,7 +9,7 @@ WitnessSupportBooking::Application.routes.draw do
   resources :bookings, only: [ :create, :destroy]
   # CourtDay is GET only, it collects Booking, CourtDayNote, and CourtSession
   resources :court_days, only: :index
-  resource :database, only: [ :new, :create, :show]
+  resource  :database, only: [ :new, :create, :show, :update]
   root to: "static_pages#home"
   match "/sign_up", to: "users#new"
   match "/log_in",  to: "user_sessions#new"
