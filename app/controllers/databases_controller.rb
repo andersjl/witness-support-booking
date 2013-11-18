@@ -40,7 +40,8 @@ extend Authorization
   def update
     new_oldest_date = session[ :count_date] || Database.oldest_date
     Database.new( oldest_date: new_oldest_date).save!
-    flash[ :success] = t( "database.dropped_older_than", new_oldest_date)
+    flash[ :success] =
+      t( "database.dropped_older_than", date: new_oldest_date)
     redirect_to user_path( current_user)
   end
 end

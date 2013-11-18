@@ -161,7 +161,8 @@ describe "Database views" do
           click_on t( "general.ok")
         end
 
-        it{ should have_content( t( "database.created"))}
+        it{ within( "div.alert.alert-success"){
+              should have_content( t( "database.created"))}}
 
         context "master when restoring" do
 
@@ -331,6 +332,14 @@ describe "Database views" do
               should have_content @expected_new_first_date}
             if @expected_new_first_date != @chosen_date.to_date
               puts "                count date #{ @chosen_date}"
+            end
+          end
+          it do
+            within( "div.alert.alert-success"){
+                should have_content( @chosen_date)}
+            if @expected_new_first_date != @chosen_date.to_date
+              puts "                new first date #{
+                     @expected_new_first_date}"
             end
           end
         end
