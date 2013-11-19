@@ -47,6 +47,7 @@ module AllDataDefs
   # 
   #   lambda{ |model_obj| getter( model_obj)}
   #   lambda{ |model_obj, value| setter( model_obj, value)}
+  #
   MODEL_DEFS =  # order matters, hence no Hash
     [ [ "court",          "name", "link"],
       [ "user",           COURT_DEF, "name", "email", "password_digest"],
@@ -256,7 +257,7 @@ include AllDataDefs
       if model_tag == "user"
        model_obj.password = model_obj.password_confirmation = "dummy_password"
       end
-      model_obj.save!
+      next unless model_obj.save
       if model_tag == "user"
         model_obj.update_attribute :password_digest,
                                    obj_descr[ "password_digest"]
