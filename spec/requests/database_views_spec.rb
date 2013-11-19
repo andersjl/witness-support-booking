@@ -12,21 +12,19 @@ describe "Database views" do
       s.update_attribute :need, i / 2 + 1
       create_test_court_day_note date: s.date if rand( 3) > 0
     end
-    bookings =
-      [ [ 1, 3], [ 1, 6], [ 2, 5], [ 2, 2], [ 3, 1], [ 3, 3]
-      ].collect do |u, s|
-        Booking.create! user: eval( "u#{ u}"), court_session: eval( "s#{ s}")
-      end
-    s6.need = 0
-    s6.save!  # test that s6 and the booking (u1, s6) are not stored
-    bookings
+    @has_1_booking = s6
+    @has_2_bookings = s3
+    @overbooked_user = u3
+    [ [ 1, 3], [ 1, 6], [ 2, 5], [ 2, 2], [ 3, 1], [ 3, 3]].collect do |u, s|
+      Booking.create! user: eval( "u#{ u}"), court_session: eval( "s#{ s}")
+    end
   end
 
   subject{ page}
 
   describe "save & load" do
 
-    let( :email_m1){ "first@admin"}
+    let( :email_m1){ "first@master"}
 
     context "before loading" do
 
@@ -46,7 +44,8 @@ describe "Database views" do
 
       let( :correct_xml){ "tmp/test/witness_support_dump.xml"}
       let( :erronous_xml){ "tmp/test/witness_support_dump_munged.xml"}
-      let( :email_m2){ "second@admin"}
+      let( :overbooked_xml){ "tmp/test/witness_support_dump_overbooked.xml"}
+      let( :email_m2){ "second@master"}
 
       shared_examples_for "logged in" do  # @logged_in
         it "shows correct page after login" do
@@ -64,27 +63,27 @@ describe "Database views" do
       before :all do
         create_test_user :court => court_this, :email => email_m1,
                          :role => "master", :password => email_m1
-        @exported_bookings = create_sample_data.delete_if{
-                      |b| b.court_session.need == 0}.map!{ |b| b.inspect}.sort
+        @orig_bookings = create_sample_data.collect{ |b| b.inspect}.sort
         @deleted_email = User.where( "role = ?", "normal").sample.email
         @kept_email = User.where( "role = ? and email != ?",
                                   "normal", @deleted_email).sample.email
         xml_data = Database.new.all_data
         File.open( correct_xml, "w"){ |f| f.write( xml_data)}
         File.open( erronous_xml, "w"){ |f| f.write( xml_data + "<extra>")}
-        @exported_count = AllDataDefs.model_tags.inject( { }) do |cnt, tag|
+        @orig_count = AllDataDefs.model_tags.inject( { }) do |cnt, tag|
           cls = AllDataDefs.model_class( tag)
-          cnt[ cls] =
-            case cls.name
-            when "CourtSession"
-              cls.all.count{ |s| s.need > 0}
-            when "Booking"
-              cls.all.count{ |b| b.court_session.need > 0}
-            else
-              cls.count
-            end
+          cnt[ cls] = cls.count
           cnt
         end
+        @has_1_booking.update_attribute :need, 0
+        @has_2_bookings.update_attribute :need, 1
+        xml_data = Database.new.all_data
+        File.open( overbooked_xml, "w"){ |f| f.write( xml_data)}
+        @has_1_booking =
+          [ @has_1_booking.court.name, @has_1_booking.start_time.iso8601]
+        @has_2_bookings =
+          [ @has_2_bookings.court.name, @has_2_bookings.start_time.iso8601]
+        @overbooked_user = [ @overbooked_user.court.name, @overbooked_user.email]
         User.all.each{ |u| u.destroy if u.email != @kept_email}
         @curr_count = AllDataDefs.model_tags.inject( { }) do |cnt, tag|
           cls = AllDataDefs.model_class( tag)
@@ -108,6 +107,7 @@ describe "Database views" do
        text: "#{ t( 'general.application')} | #{ t( 'databases.new.title')}")}
 
       context "with error in data" do
+
         before do
           attach_file "database_all_data", erronous_xml
           click_on t( "general.ok")
@@ -213,24 +213,13 @@ describe "Database views" do
         end
 
         context "restored database" do
-          let :users do
-            result = User.where( "court_id = ?",
-                                 Court.find_by_name( "This Court")
-                               ).sort{ |u1, u2| u1.name <=> u2.name}
-            result.delete_if{ |u| [ email_m1, email_m2].include?( u.email)}
-            result
-          end
-          let( :court_sessions) do
-            CourtSession.where( "court_id = ?",  # (date, start) order
-                                Court.find_by_name( "This Court"))
-          end
 
           AllDataDefs.model_tags.each do |tag|
             next if AllDataDefs.attr_tags( tag).count == 0
             model = AllDataDefs.model_class( tag)
             context( "#{ model}.count") do
               specify{ model.count.should ==
-                         @exported_count[ model] + ((model == User) ? 1 : 0)}
+                                @orig_count[ model] + ((model == User) ? 1 : 0)}
             end
           end
 
@@ -239,8 +228,49 @@ describe "Database views" do
               Booking.all.inject( [ ]) do |a, b|
                 next a unless b.user.court == court_this
                 a << b.inspect
-              end.sort.should == @exported_bookings
+              end.sort.should == @orig_bookings
             end
+          end
+        end
+      end
+
+      context "with overbooked" do
+
+        before do
+          attach_file "database_all_data", overbooked_xml
+          click_on t( "general.ok")
+        end
+
+        it{ within( "div.alert.alert-success"){
+              should have_content( t( "database.created"))}}
+
+        AllDataDefs.model_tags.each do |tag|
+          next if AllDataDefs.attr_tags( tag).count == 0
+          model = AllDataDefs.model_class( tag)
+          context( "#{ model}.count") do
+            specify do
+              model.count.should ==
+                @orig_count[ model] + case tag
+                                      when "user"          then  1
+                                      when "court_session" then -1
+                                      when "booking"       then -2
+                                      else                       0
+                                      end
+            end
+          end
+        end
+
+        context "bookings" do
+          specify do
+            orig_bookings =
+              @orig_bookings.dup.delete_if{ |b|
+                @has_1_booking.inject( true){ |r, e| r && b.include?( e)} ||
+                ( @has_2_bookings.inject( true){ |r, e| r && b.include?( e)} &&
+                  @overbooked_user.inject( true){ |r, e| r && b.include?( e)})}
+            Booking.all.inject( [ ]) do |a, b|
+              next a unless b.user.court == court_this
+              a << b.inspect
+            end.sort.should == orig_bookings
           end
         end
       end

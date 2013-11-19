@@ -141,7 +141,8 @@ sv:
         Är du säker? Alla pass, noteringar och bokningar äldre än %{date}
         kommer att rensas bort oåterkalleligt!
     error:
-      message: "%{reason}: %{message}. Databasen är orörd."
+      untouched: Databasen är orörd
+      compromised: Databasen är påverkad
       parse: Inläsningen misslyckades
       exception: Undantag %{exception}
     oldest_date: Äldsta befintliga datum %{date}

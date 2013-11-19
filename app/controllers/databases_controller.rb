@@ -12,15 +12,13 @@ extend Authorization
     flash[ :success] = t( "database.created")
     redirect_to log_in_path
   rescue AllDataDoc::XmlParseError => e
-    flash[ :error] = t( "database.error.message",
-                        reason: t( "database.error.parse"),
-                        message: e.message)
+    flash[ :error] = "#{ t( 'database.error.parse') }: #{ e.message
+                                       }. #{ t( 'database.error.untouched')}."
     redirect_to new_database_path
   rescue Exception => e
-    flash[ :error] = t( "database.error.message",
-                        reason: t( "database.error.exception",
-                                   exception: e.class.name),
-                        message: e.message)
+    flash[ :error] = "#{ t( 'database.error.exception',
+                            exception: e.class.name)
+                      }: #{ e.message}. #{ t( 'database.error.compromised')}."
     redirect_to new_database_path
   end
 
