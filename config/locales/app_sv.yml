@@ -68,15 +68,15 @@ sv:
 # subject matter booking, regardless of controller
   booking:
     error:
-      court_mismatch: %{court_session} och %{user} tillhör olika domstolar
-      full: %{court_session} är fullbokad
+      court_mismatch: "%{court_session} och %{user} tillhör olika domstolar"
+      full: "%{court_session} är fullbokad"
     book:
       label: Boka %{session}
     cancel:
       confirm: Avboka %{name} %{date} %{session}?
       label: Avboka %{session}
       late: Sen avbokning! Meddela vittnesstödssamordnaren!
-    cancelled: %{user} avbokad %{date} %{session}
+    cancelled: "%{user} avbokad %{date} %{session}"
 
 # subject matter court, regardless of controller
   court:
@@ -107,7 +107,7 @@ sv:
 # subject matter court session, regardless of controller
   court_session:
     error:
-      no_reason_to_exist: %{session} saknar både behov och bokningar
+      no_reason_to_exist: "%{session} saknar både behov och bokningar"
       start_taken: redan definierad detta datum vid denna domstol
     name29700:
       long: förmiddag
@@ -117,17 +117,17 @@ sv:
       short: em
     need:
       left:
-        long: %{count} kvar att boka
-        short: %{count} kvar
+        long: "%{count} kvar att boka"
+        short: "%{count} kvar"
       not_met:
-        one: %{count} blev aldrig bokad
-        other: %{count} blev aldrig bokade
+        one: "%{count} blev aldrig bokad"
+        other: "%{count} blev aldrig bokade"
       over: överbokat!
 
 # subject matter database, regardless of controller
   database:
     count_date:
-      label: %{rows} rader inte äldre än
+      label: "%{rows} rader inte äldre än"
     created: Ny databas inläst. Du måste logga in igen.
     create:
       confirm: |
@@ -187,8 +187,8 @@ sv:
     index:
       title: Rondningar
       users_to_enable:
-        one: %{count} ny att aktivera
-        other: %{count} nya att aktivera
+        one: "%{count} ny att aktivera"
+        other: "%{count} nya att aktivera"
       users_to_enable_common: att aktivera
       note: Notering
     week_picker:
@@ -233,5 +233,5 @@ sv:
       password_confirm: Bekräfta lösenord
       save: Registrera ny användare
     show:
-      title: %{name}
+      title: "%{name}"
 

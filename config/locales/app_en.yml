@@ -33,15 +33,15 @@ en:
 # subject matter booking, regardless of controller
   booking:
     error:
-      court_mismatch: %{court_day} and %{user} belong to different courts
-      full: %{court_day} is fully booked %{session}
+      court_mismatch: "%{court_day} and %{user} belong to different courts"
+      full: "%{court_day} is fully booked %{session}"
     book:
       label: Book %{session}
     cancel:
       confirm: Unbook %{name} %{date} %{session}?
       label: Cancel %{session}
       late: Late cancellation! Contact your witness support coordinator!
-    cancelled: %{user} unbooked %{date} %{session}
+    cancelled: "%{user} unbooked %{date} %{session}"
 
 # subject matter court, regardless of controller
   court:
@@ -72,7 +72,7 @@ en:
 # subject matter court session, regardless of controller
   court_session:
     error:
-      no_reason_to_exist: %{session} has neither need nor bookings
+      no_reason_to_exist: "%{session} has neither need nor bookings"
       start_taken: already defined this date at this court
     name29700:
       long: morning
@@ -82,11 +82,11 @@ en:
       short: PM
     need:
       left:
-        long: %{count} left to book
-        short: %{count} left
+        long: "%{count} left to book"
+        short: "%{count} left"
       not_met:
-        one: %{count} was never booked
-        other: %{count} were never booked
+        one: "%{count} was never booked"
+        other: "%{count} were never booked"
       over: overbooked!
 
 # subject matter database, regardless of controller
@@ -141,7 +141,7 @@ en:
   court_days:
     index:
       title: Sessions
-      users_to_enable: %{count} new to enable
+      users_to_enable: "%{count} new to enable"
       users_to_enable_common: new to enable
     week_picker:
       prompt: |
@@ -185,5 +185,5 @@ en:
       password_confirm: Confirm password
       save: Register new user
     show:
-      title: %{name}
+      title: "%{name}"
 
