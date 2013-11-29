@@ -24,35 +24,34 @@ describe "Database views" do
 
   describe "save & load" do
 
-    let( :email_m1){ "first@master"}
+    EMAIL_M1 = "first@master"
 
     context "before loading" do
 
       before do
-        fake_log_in( create_test_user( :email => email_m1, :role => "master",
-                                       :password => email_m1))
+        fake_log_in( create_test_user( :email => EMAIL_M1, :role => "master",
+                                       :password => EMAIL_M1))
         visit new_database_path
       end
 
       it{ should have_selector( "h1", :text => t( "general.warning.caps"))}
       it{ should have_content( t( "databases.new.erase.caps"))}
-      it{ should have_selector( "title",
-       text: "#{ t( 'general.application')} | #{ t( 'databases.new.title')}")}
+      it{ should have_title(
+            "#{ t( 'general.application')} | #{ t( 'databases.new.title')}")}
     end
 
     context "when file is loaded" do
 
-      let( :correct_xml){ "tmp/test/witness_support_dump.xml"}
-      let( :erronous_xml){ "tmp/test/witness_support_dump_munged.xml"}
-      let( :overbooked_xml){ "tmp/test/witness_support_dump_overbooked.xml"}
+      CORRECT_XML = "tmp/test/witness_support_dump.xml"
+      ERRONOUS_XML = "tmp/test/witness_support_dump_munged.xml"
+      OVERBOOKED_XML = "tmp/test/witness_support_dump_overbooked.xml"
       let( :email_m2){ "second@master"}
 
       shared_examples_for "logged in" do  # @logged_in
         it "shows correct page after login" do
           if @logged_in.enabled?
-            should have_selector( "title",
-                                  text: "#{ t( 'general.application')
-                                        } | #{ t( 'court_days.index.title')}")
+            should have_title( "#{ t( 'general.application')
+                                 } | #{ t( 'court_days.index.title')}")
           else
             should have_content( t( "static_pages.home.disabled",
                                     email: @logged_in.email))
@@ -61,15 +60,15 @@ describe "Database views" do
       end
 
       before :all do
-        create_test_user :court => court_this, :email => email_m1,
-                         :role => "master", :password => email_m1
+        create_test_user :court => court_this, :email => EMAIL_M1,
+                         :role => "master", :password => EMAIL_M1
         @orig_bookings = create_sample_data.collect{ |b| b.inspect}.sort
         @deleted_email = User.where( "role = ?", "normal").sample.email
         @kept_email = User.where( "role = ? and email != ?",
                                   "normal", @deleted_email).sample.email
         xml_data = Database.new.all_data
-        File.open( correct_xml, "w"){ |f| f.write( xml_data)}
-        File.open( erronous_xml, "w"){ |f| f.write( xml_data + "<extra>")}
+        File.open( CORRECT_XML, "w"){ |f| f.write( xml_data)}
+        File.open( ERRONOUS_XML, "w"){ |f| f.write( xml_data + "<extra>")}
         @orig_count = AllDataDefs.model_tags.inject( { }) do |cnt, tag|
           cls = AllDataDefs.model_class( tag)
           cnt[ cls] = cls.count
@@ -78,7 +77,7 @@ describe "Database views" do
         @has_1_booking.update_attribute :need, 0
         @has_2_bookings.update_attribute :need, 1
         xml_data = Database.new.all_data
-        File.open( overbooked_xml, "w"){ |f| f.write( xml_data)}
+        File.open( OVERBOOKED_XML, "w"){ |f| f.write( xml_data)}
         @has_1_booking =
           [ @has_1_booking.court.name, @has_1_booking.start_time.iso8601]
         @has_2_bookings =
@@ -103,13 +102,13 @@ describe "Database views" do
         visit new_database_path
       end
 
-      it{ should have_selector( "title",
-       text: "#{ t( 'general.application')} | #{ t( 'databases.new.title')}")}
+      it{ should have_title(
+            "#{ t( 'general.application')} | #{ t( 'databases.new.title')}")}
 
       context "with error in data" do
 
         before do
-          attach_file "database_all_data", erronous_xml
+          attach_file "database_all_data", ERRONOUS_XML
           click_on t( "general.ok")
         end
 
@@ -142,7 +141,7 @@ describe "Database views" do
           context( "normal"){
             specify{ User.find_by_email( @deleted_email).should be_nil}}
           context( "master"){
-            specify{ User.find_by_email( email_m1).should be_nil}}
+            specify{ User.find_by_email( EMAIL_M1).should be_nil}}
         end
 
         context "database is intact" do
@@ -157,7 +156,7 @@ describe "Database views" do
       context "with good data" do
 
         before do
-          attach_file "database_all_data", correct_xml
+          attach_file "database_all_data", CORRECT_XML
           click_on t( "general.ok")
         end
 
@@ -203,8 +202,8 @@ describe "Database views" do
           context "master" do
 
             before do
-              @logged_in = User.find_by_email( email_m1)
-              fake_log_in @logged_in, email_m1
+              @logged_in = User.find_by_email( EMAIL_M1)
+              fake_log_in @logged_in, EMAIL_M1
             end
 
             it{ @logged_in.should_not be_enabled}
@@ -237,7 +236,7 @@ describe "Database views" do
       context "with overbooked" do
 
         before do
-          attach_file "database_all_data", overbooked_xml
+          attach_file "database_all_data", OVERBOOKED_XML
           click_on t( "general.ok")
         end
 

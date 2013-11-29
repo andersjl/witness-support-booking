@@ -14,8 +14,8 @@ describe "User pages" do
     before{ visit sign_up_path}
 
     it{ should have_selector( "h1", text: t( "users.new.title"))}
-    it{ should have_selector( "title",
-           text: "#{ t( 'general.application')} | #{ t( 'users.new.title')}")}
+    it{ should have_title(
+                 "#{ t( 'general.application')} | #{ t( 'users.new.title')}")}
     unless I18n.locale == :en
       it{ should have_selector( "label",
             text: t( "activerecord.attributes.user.court"))}
@@ -75,8 +75,7 @@ describe "User pages" do
           @user = User.find_by_court_id_and_email( @court, "user@example.com")
         end
         it{ @user.should_not be_enabled}
-        it{ should_not have_selector(
-              "title", text: "#{ t( 'general.application')} | ")}
+        it{ should_not have_title( "#{ t( 'general.application')} | ")}
         it{ should have_content(
               t( "static_pages.home.disabled", email: "user@example.com"))}
         it{ should have_selector( "div.alert.alert-success",
@@ -104,9 +103,7 @@ describe "User pages" do
 
           context "flashes success" do
             it{ should have_selector( "div.alert.alert-success",
-                                      content: @user.name)}
-            it{ should have_selector( "div.alert.alert-success",
-                                      content: @user.email)}
+                                      text: @user.name)}
           end
         end
       end
@@ -170,8 +167,8 @@ describe "User pages" do
       visit users_path
     end
 
-    it{ should have_selector( "title",
-         text: "#{ t( 'general.application')} | #{ t( 'users.index.title')}")}
+    it{ should have_title(
+               "#{ t( 'general.application')} | #{ t( 'users.index.title')}")}
     it{ should have_selector( "h1",
           text: t( "users.index.heading.long", court: @user.court.name))}
     it{ should_not have_content( t( "users.index.rescue"))}
@@ -186,8 +183,8 @@ describe "User pages" do
                              @user.id, @user.court.id).sample
         click_link( @other.name)
       end
-      it{ should have_selector( "title",
-            text: t( "general.application") + " | #{ @other.name}")}
+      it{ should have_title(
+                   t( "general.application") + " | #{ @other.name}")}
     end
 
     it "lists each user with link" do
@@ -296,8 +293,8 @@ describe "User pages" do
 
     shared_examples_for "viewing any user" do
       it{ should have_selector( "h1", text: @shown.name)}
-      it{ should have_selector(
-        "title", text: "#{ t( 'general.application')} | #{ @shown.name}")}
+      it{ should have_title(
+                   "#{ t( 'general.application')} | #{ @shown.name}")}
     end
 
     shared_examples_for "all execept master viewing self" do
@@ -423,9 +420,9 @@ describe "User pages" do
             @old_court_id = @edited.court.id
             @old_email    = @edited.email
             @old_name     = @edited.name
-            fill_in "user_email",                 with: @new_email
-            fill_in "user_name",                  with: @new_name
-            fill_in "user_password",              with: @new_pw
+            fill_in "user_email", with: @new_email, disabled: true
+            fill_in "user_name", with: @new_name, disabled: true
+            fill_in "user_password", with: @new_pw
             fill_in "user_password_confirmation", with: @new_pw
             click_button t( "users.edit.save")
             @edited.reload
@@ -449,8 +446,8 @@ describe "User pages" do
             @edited.reload
           end
 
-          it{ should have_selector( "title", text: "#{
-                  t( 'general.application')} | #{ t( 'users.index.title')}")}
+          it{ should have_title( "#{ t( 'general.application')
+                                   } | #{ t( 'users.index.title')}")}
           it{ within( "div.alert.alert-success"){ should have_content(
                   t( "user.changed.password", name: @edited.name))}}
           specify "still logged in as court admin" do
@@ -476,7 +473,7 @@ describe "User pages" do
     shared_examples_for "editing any user" do
       it{ should have_selector( "h1", text: t( "users.edit.title",
                                                name: @edited.name))}
-      it{ should have_selector( "title", text: "#{ t( "general.application")
+      it{ should have_title( "#{ t( "general.application")
                          } | #{ t( "users.edit.title", name: @edited.name)}")}
     end
 
@@ -484,14 +481,14 @@ describe "User pages" do
       # @edited, @old_pw, @new_pw
       it "old password does not work" do
         fake_log_in @edited, @old_pw
-        should have_selector( "title",
-          text: "#{ t( 'general.application')} | #{ t( 'general.log_in')}")
+        should have_title(
+                 "#{ t( 'general.application')} | #{ t( 'general.log_in')}")
         should have_selector( "div.alert.alert-error")
       end
       it "new password works" do
         fake_log_in @edited, @new_pw
-        should have_selector( "title", text: "#{ t( 'general.application')
-                                } | #{ t( 'court_days.index.title')}")
+        should have_title( "#{ t( 'general.application')
+                             } | #{ t( 'court_days.index.title')}")
       end
     end
 
@@ -548,8 +545,8 @@ describe "User pages" do
         end
 
         it_behaves_like "password change"
-        it{ should have_selector( "title", text: "#{ t( 'general.application')
-                                    } | #{ t('court_days.index.title')}")}
+        it{ should have_title( "#{ t( 'general.application')
+                                 } | #{ t('court_days.index.title')}")}
         it{ within( "div.alert.alert-success"
                   ){ should have_content( t( "user.changed.message"))}}
         it{ should have_link( t( "general.log_out"), href: log_out_path)}

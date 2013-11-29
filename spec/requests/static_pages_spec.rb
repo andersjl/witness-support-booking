@@ -7,7 +7,7 @@ describe "Static pages" do
   describe "Home page" do
 
     shared_examples_for "any user's start page" do
-      it{ should have_selector "title", :text => t( "general.application")}
+      it{ should have_title( t( "general.application"))}
       it{ should have_link t( "general.application"), :href => root_path}
       it{ should have_link t( "general.help.short"), :href => help_path}
       it{ should have_link t( "general.about.long"), :href => about_path}
@@ -42,15 +42,15 @@ describe "Static pages" do
   describe "Help page" do
     before( :each) { visit help_path}
     it { should have_selector( "h1", text: t( "general.help.long"))}
-    it { should have_selector( "title",
-      text: "#{ t( 'general.application')} | #{ t( 'general.help.short')}")}
+    it { should have_title(
+           "#{ t( 'general.application')} | #{ t( 'general.help.short')}")}
   end
 
   describe "About page" do
     before( :each) { visit about_path}
     it { should have_selector( "h1", text: t( "general.about.long"))}
-    it { should have_selector( "title",
-      text: "#{ t( "general.application")} | #{ t( 'general.about.short')}")}
+    it { should have_title(
+           "#{ t( "general.application")} | #{ t( 'general.about.short')}")}
   end
 
 end

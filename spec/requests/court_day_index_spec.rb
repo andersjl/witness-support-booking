@@ -74,8 +74,8 @@ describe "court_days/index" do
   end
 
   shared_examples_for "on court_days index page" do
-    it{ should have_selector( "title",
-    text: "#{ t( 'general.application')} | #{ t( 'court_days.index.title')}")}
+    it{ should have_title(
+          "#{ t( 'general.application')} | #{ t( 'court_days.index.title')}")}
     it{ should have_selector( "h1", text: t( "court_days.index.title"))}
   end
 
@@ -261,7 +261,7 @@ describe "court_days/index" do
     it "model object has correct data" do
       @changed_obj.sessions[ 0].need.should == @morning.to_i
       @changed_obj.sessions[ 1].need.should == @afternoon.to_i
-      @changed_obj.note.text.should == @note.strip
+      @changed_obj.note.text.split( " ").should == @note.strip.split( " ")
     end
 
     it "page has correct data" do

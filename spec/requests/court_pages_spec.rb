@@ -35,8 +35,8 @@ describe "Court pages" do
       visit courts_path
     end
 
-    it{ should have_selector( "title",
-     :text => "#{ t( 'general.application')} | #{ t( 'courts.index.title')}")}
+    it{ should have_title(
+              "#{ t( 'general.application')} | #{ t( 'courts.index.title')}")}
     it{ should have_selector( "h1", text: t( "courts.index.title"))}
     it_behaves_like "any listed court"
 
@@ -72,7 +72,7 @@ describe "Court pages" do
 
     context "should have input for new court" do
       it{ within( :id, "court-new"){
-            should have_selector( "input#court_name", :value => "")}}
+            should have_selector( "input#court_name", text: "")}}
     end
 
     context "when defining a new court" do
@@ -95,8 +95,8 @@ describe "Court pages" do
           @court = Court.find_by_name "New Court"
         end
 
-        it{ should have_selector( "title",
-         text: "#{ t( 'general.application')} | #{ t('courts.index.title')}")}
+        it{ should have_title(
+               "#{ t( 'general.application')} | #{ t('courts.index.title')}")}
         it_behaves_like "any listed court"
       end
     end
@@ -113,8 +113,7 @@ describe "Court pages" do
       visit edit_court_path( @court)
     end
 
-    it{ should have_selector(
-      "title", :text => "#{ t( 'general.application')} | #{ @court.name}")}
+    it{ should have_title( "#{ t( 'general.application')} | #{ @court.name}")}
     it{ should have_selector(
           "h1", text: t( "courts.edit.title", name: @court.name))}
     it{ should have_selector "input[value='#{ @court.name}']"}
@@ -131,8 +130,8 @@ describe "Court pages" do
       end
       specify{ @court.name.should == "New Name"}
       specify{ @court.link.should == "http://example.com"}
-      it{ should have_selector( "title",
-        text: "#{ t( 'general.application')} | #{ t( 'courts.index.title')}")}
+      it{ should have_title(
+              "#{ t( 'general.application')} | #{ t( 'courts.index.title')}")}
       it{ within( :id, "court-#{ @court.id}"){
             should have_content @court.name}}
       it{ within( :id, "court-#{ @court.id}"){

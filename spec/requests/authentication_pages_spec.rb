@@ -8,8 +8,8 @@ describe "Authentication pages" do
     before{ visit log_in_path}
 
     it{ should have_selector( "h1", :text => t( "general.log_in"))}
-    it{ should have_selector( "title",
-          text: "#{ t( 'general.application')} | #{ t( 'general.log_in')}")}
+    it{ should have_title(
+                "#{ t( 'general.application')} | #{ t( 'general.log_in')}")}
   end
 
   describe "log_in" do
@@ -32,9 +32,8 @@ describe "Authentication pages" do
         end
 
         if role != "disabled"
-          it{ should have_selector( "title",
-                text: "#{ t( 'general.application')
-                        } | #{ t( 'court_days.index.title')}")}
+          it{ should have_title( "#{ t( 'general.application')
+                                   } | #{ t( 'court_days.index.title')}")}
         end
         it{ should have_link( @user.court.name, :href => @user.court.link)}
         it{ should have_link( t( "general.log_out"), :href => log_out_path)}
@@ -51,8 +50,8 @@ describe "Authentication pages" do
 
     context "with invalid information" do
       before{ click_button t( "general.log_in")}
-      it{ should have_selector( "title",
-            text: "#{ t( 'general.application')} | #{ t( 'general.log_in')}")}
+      it{ should have_title( "#{ t( 'general.application')
+                               } | #{ t( 'general.log_in')}")}
       it{ should have_selector(
            "div.alert.alert-error", :text => t( "user_sessions.create.error"))}
       describe "after visiting another page" do
@@ -102,8 +101,7 @@ describe "Authentication pages" do
 
             def check_logged_in( user, spoofer = nil)
               visit edit_user_path( user)
-              page.should have_selector(
-                  "input[id='user_name']", value: user.name)
+              page.find( "input#user_name").value.should == user.name
               page.should_not have_selector(
                   "input[disabled='disabled'][id='user_name']")
             end
