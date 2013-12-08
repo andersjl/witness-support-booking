@@ -290,8 +290,7 @@ describe "Database views" do
 
     context "initial data" do
 
-      it{ puts page.find( "label").text
-          within( :id, "search-form"){ should have_selector(
+      it{ within( :id, "search-form"){ should have_selector(
             "label", text: "#{ total_count}")}}
       it{ within( :id, "search-form"){ should have_selector(
             "input[value='#{ first_date}']")}}

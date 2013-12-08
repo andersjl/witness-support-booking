@@ -3,9 +3,9 @@
 
 /* mixins, variables, etc. */
 
-$gray-medium-light: #eaeaea;
-$ajl-red: #c00;
-$ajl-yellow: #c60;
+$grayMediumLight: #eaeaea;
+$ajlRed: #c00;
+$ajlYellow: #c60;
 
 
 /* universal */
@@ -39,9 +39,9 @@ textarea {
   li {
     overflow: auto;
     padding: 10px 0;
-    border-top: 1px solid $gray-light;
+    border-top: 1px solid $grayLight;
     &:last-child {
-      border-bottom: 1px solid $gray-light;
+      border-bottom: 1px solid $grayLight;
     }
   }
 }
@@ -100,8 +100,8 @@ p {
 footer {
   margin-top: 2em;
   padding-top: 5px;
-  border-top: 1px solid $gray-medium-light;
-  color: $gray-light;
+  border-top: 1px solid $grayMediumLight;
+  color: $grayLight;
   a {
     color: #555;
     &:hover { 
@@ -161,7 +161,7 @@ input, select {
 /* users index */
 
 a.disabled-user {
-  color: $ajl-red;
+  color: $ajlRed;
   font-weight: bold;
   text-decoration: underline;
 }
@@ -172,7 +172,7 @@ a.disabled-user {
 aside {
   section {
     padding: 1em 0;
-    border-top: 1px solid $gray-lighter;
+    border-top: 1px solid $grayLighter;
     &:first-child {
       border: 0;
       padding-top: 0;
@@ -216,24 +216,24 @@ div.own-booking {
 
 div.to-book {
   &.urgent {
-    color: $ajl-yellow;
+    color: $ajlYellow;
     font-weight: bold;
   }
   &.immediate {
-    color: $ajl-red;
+    color: $ajlRed;
     font-weight: bold;
   }
 }
 
 div, span {
   .overbooked {
-    color: $ajl-red;
+    color: $ajlRed;
     font-weight: bold;
   }
 }
 
 div.late-cancel {
-  color: $ajl-red;
+  color: $ajlRed;
   text-decoration: line-through;
 }
 
@@ -260,12 +260,12 @@ div.late-cancel {
     }
   }
   .court-day {
-    border-top: 1px solid $gray-light;
+    border-top: 1px solid $grayLight;
     .weekday {
       text-align: right;
     }
     &.last {
-      border-bottom: 1px solid $gray-light;
+      border-bottom: 1px solid $grayLight;
     }
   }
 }
