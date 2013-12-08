@@ -14,7 +14,7 @@ describe "court_days/index" do
   end
 
   def date_session_to_id( date, session)
-    "session-#{ ( date.to_time_in_current_zone +
+    "session-#{ ( date.in_time_zone +
                     (session == :morning ? MORNING_TIME_OF_DAY :
                                            AFTERNOON_TIME_OF_DAY)).iso8601}"
   end
@@ -98,7 +98,7 @@ describe "court_days/index" do
       test_dates( @tested_date) do |date, show|
         next unless show
         START_TIMES_OF_DAY_DEFAULT.each do |start_tod|
-          start = date.to_time_in_current_zone + start_tod
+          start = date.in_time_zone + start_tod
           next unless start > Time.current
           session = page.first :id, "session-#{ start.iso8601}"
           if @user.admin?
@@ -122,7 +122,7 @@ describe "court_days/index" do
       test_dates( @tested_date) do |date, show|
         next unless show
         START_TIMES_OF_DAY_DEFAULT.each do |start_tod|
-          start = date.to_time_in_current_zone + start_tod
+          start = date.in_time_zone + start_tod
           next unless start < Time.current - 1
           session = page.first :id, "session-#{ start.iso8601}"
           next unless session
@@ -323,7 +323,7 @@ describe "court_days/index" do
       context "not too late" do
         before{ cancel CourtDay.add_weekdays( @session.date,
                                               -(BOOKING_DAYS_AHEAD_MIN + 1)
-                                            ).to_time_in_current_zone}
+                                            ).in_time_zone}
         it{ within( :id, @session_id
                   ){ should_not have_content( @booked_user.name)}}
       end
@@ -336,7 +336,7 @@ describe "court_days/index" do
           @session_id = "session-#{ @session.start_time.iso8601}"
           @booking = Booking.create! user: @booked_user, court_session: @session
           cancel CourtDay.add_weekdays( @session.date, -1
-                                      ).to_time_in_current_zone
+                                      ).in_time_zone
         end
         it{ within( :id, @session_id
                   ){ should_not have_content( @booked_user.name)}}
@@ -351,7 +351,7 @@ seems covered by "any week" ???
         if date >= Date.current
           within( :id, "court-day-#{ date}") do
             if date > Date.current || 
-                 Time.current - Date.current.to_time_in_current_zone <
+                 Time.current - Date.current.in_time_zone <
                    AFTERNOON_TIME_OF_DAY
               should have_selector( "select")
             end
@@ -744,8 +744,8 @@ seems covered by "any week" ???
   context "other court user" do
     before do
       other = User.find_by_court_id court_other
-      unless CourtSession.find_all_by_date_and_court_id(
-                            @cd.date, court_other.id).count > 0
+      unless CourtSession.where( date: @cd.date, court_id: court_other
+                               ).count > 0
         create_test_court_day court: court_other, date: @cd.date,
                               note: "Other note"
       end

@@ -41,7 +41,7 @@ class CourtSession < ActiveRecord::Base
 # read back again.
   validate  :error_unless_reason_to_exist
 
-  default_scope order: "date, start"
+  default_scope -> { order( "date ASC, start ASC")}
 
   belongs_to :court
   has_many :bookings, dependent: :delete_all
@@ -52,7 +52,7 @@ class CourtSession < ActiveRecord::Base
   end
 
   def start_time
-    date && start && (date.to_time_in_current_zone + start)
+    date && start && (date.in_time_zone + start)
   end
 
   def fully_booked?; bookings.count >= need end

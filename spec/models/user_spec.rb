@@ -64,8 +64,7 @@ describe "User model" do
         lambda{ create_test_user name: "z", role: "master",   email: "42"}
       ].shuffle.each{ |creation| creation.call}}
     specify{ User.order_by_role_and_name( court_this).should ==
-               User.find( :all, conditions: [ "court_id = ?", court_this.id],
-                          order: "email")}
+               User.where( court_id: court_this).order( :email)}
   end
 
   describe ".valid_role?" do

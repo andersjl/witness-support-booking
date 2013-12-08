@@ -11,11 +11,11 @@ WitnessSupportBooking::Application.routes.draw do
   resources :court_days, only: :index
   resource  :database, only: [ :new, :create, :show, :update]
   root to: "static_pages#home"
-  match "/sign_up", to: "users#new"
-  match "/log_in",  to: "user_sessions#new"
-  match "/log_out", to: "user_sessions#destroy"
-  match "/about",   to: "static_pages#about"
-  match "/help",    to: "static_pages#help"
+  get "/sign_up" => "users#new"
+  get "/log_in" => "user_sessions#new"
+  delete "/log_out" => "user_sessions#destroy"
+  get "/about" => "static_pages#about"
+  get "/help" => "static_pages#help"
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

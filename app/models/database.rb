@@ -19,7 +19,7 @@ module AllDataDefs
       lambda{ |booking, time| booking.court_session =
                 CourtSession.find_by_date_and_court_id_and_start(
                   time.to_date, @booking_court,
-                  time.to_time - time.to_date.to_time_in_current_zone)}]
+                  time.to_time - time.to_date.in_time_zone)}]
 
   # The root element in the XML file.
   ROOT_TAG = "db_dump"
@@ -263,8 +263,8 @@ extend ActiveModel::Naming
                    list
                  end
                end + [ CourtDayNote, CourtSession].collect do |model|
-                       model.find( :all, conditions: [ "date < ?", date]
-                                 ).inject( [ model]){ |l, o| l << o.id}
+                       model.where( "date < ?", date
+                                  ).inject( [ model]){ |l, o| l << o.id}
                      end
   end
 
@@ -276,10 +276,10 @@ extend ActiveModel::Naming
 
   def row_count( count_date)
     [ CourtDayNote, CourtSession].inject( 0) do |total, model|
-      total + model.count( conditions: [ 'date >= ?', count_date])
+      total + model.where( "date >= ?", count_date).count
     end + [ Booking, CancelledBooking].inject( 0) do |total, model|
-            total + model.count( joins: :court_session,
-                      conditions: [ 'court_sessions.date >= ?', count_date])
+            total + model.joins( :court_session).
+                      where( "court_sessions.date >= ?", count_date).count
           end + Court.count + User.count
   end
 

@@ -139,9 +139,8 @@ describe "CourtSession model" do
       @session.save!
       create_test_court_session date: CourtDay.add_weekdays( @session.date, 1)
     end
-    specify{ CourtSession.find( :first,
-                                conditions: ["court_id = ?", @session.court]
-                              ).should == @session}
+    specify{ CourtSession.find_by( court_id: @session.court
+                                 ).should == @session}
   end
 end
 

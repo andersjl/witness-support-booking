@@ -15,7 +15,7 @@ class CourtDayNote < ActiveRecord::Base
 
   before_save{ |note| note.text.strip!}
 
-  default_scope order: "date"
+  default_scope -> { order( "date ASC")}
 
   belongs_to :court
 

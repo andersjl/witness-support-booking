@@ -166,7 +166,7 @@ def create_test_court_session_do( attrs, do_not_save, increment = false)
   end
   used = attrs.dup
   if increment
-    old_time = attrs[ :date].to_time_in_current_zone + attrs[ :start]
+    old_time = attrs[ :date].in_time_zone + attrs[ :start]
     ix = START_TIMES_OF_DAY_DEFAULT.index( attrs[ :start])
     attrs[ :start] =
       if ix
@@ -175,7 +175,7 @@ def create_test_court_session_do( attrs, do_not_save, increment = false)
       else
         (attrs[ :start] + 1 + rand( 24 * 60 *60)) % (24 * 60 * 60)
       end
-    while attrs[ :date].to_time_in_current_zone + attrs[ :start] <= old_time
+    while attrs[ :date].in_time_zone + attrs[ :start] <= old_time
       attrs[ :date] = CourtDay.add_weekdays( attrs[ :date], 1)
     end
     used[ :need] = used[ :need] + rand( used[ :need] + 1)
@@ -217,4 +217,48 @@ def create_test_court_day_note_do( attrs, do_not_save, increment = false)
   end
 end
 private :create_test_court_day_note_do
+
+module DatabaseRows
+
+  DISTANT_PAST = Date.current - 100000
+  DISTANT_FUTURE = Date.current + 100000
+  DIRECT_GETTER = lambda{ |obj| obj.date}
+  INDIRECT_GETTER = lambda{ |obj| obj.court_session.date}
+
+  def init_row_counts
+    @rows_p_date =
+      [ [ nil, Court, User],
+        [ DIRECT_GETTER, CourtDayNote, CourtSession],
+        [ INDIRECT_GETTER, Booking, CancelledBooking]
+      ].inject( { }) do |rows_p_date, models|
+        date_getter = models.shift
+        models.each do |model|
+          model.all.each do |obj|
+            date = date_getter ? date_getter.call( obj) : DISTANT_FUTURE
+            rows_p_date[ date] ||= 0
+            rows_p_date[ date] += 1
+          end
+        end
+        rows_p_date
+      end.to_a.sort.reverse
+    @mid_date = @rows_p_date[ @rows_p_date.count / 2 - rand( 2)][ 0]
+  end
+
+  def count_not_older_than( first_date)
+    first_date = first_date.to_date
+  # puts "@rows_p_date = #{ @rows_p_date.inspect}"
+  # result =
+    @rows_p_date.inject( 0) do |total, date_count|
+      date, count = date_count
+      break( total) if date < first_date
+      total + count
+    end
+  # puts "count_not_older_than( #{ first_date.iso8601}) = #{ result}"
+  # result
+  end
+
+  def total_count; count_not_older_than DISTANT_PAST end
+  def first_date; @rows_p_date[ -1][ 0] end
+  def last_date; @rows_p_date[ 1][ 0] end
+end
 

@@ -277,51 +277,21 @@ describe "Database views" do
   end
 
   describe "destroy old" do
-
-    DIRECT_GETTER = lambda{ |obj| obj.date}
-    INDIRECT_GETTER = lambda{ |obj| obj.court_session.date}
-    DISTANT_PAST = Date.current - 100000
-    DISTANT_FUTURE = Date.current + 100000
+  include DatabaseRows
 
     before do
       create_sample_data
       @master = create_test_user( email: "ma@ster", role: "master",
                                   password: "master")
       fake_log_in( @master)
-      @rows_p_date =
-        [ [ nil, Court, User],
-          [ DIRECT_GETTER, CourtDayNote, CourtSession],
-          [ INDIRECT_GETTER, Booking, CancelledBooking]
-        ].inject( { }) do |rows_p_date, models|
-          date_getter = models.shift
-          models.each do |model|
-            model.all.each do |obj|
-              date = date_getter ? date_getter.call( obj) : DISTANT_FUTURE
-              rows_p_date[ date] ||= 0
-              rows_p_date[ date] += 1
-            end
-          end
-          rows_p_date
-        end.to_a.sort.reverse
+      init_row_counts
       visit user_path( @master)
     end
 
-    def count_not_older_than( first_date)
-      first_date = first_date.to_date
-      @rows_p_date.inject( 0) do |total, date_count|
-        date, count = date_count
-        break( total) if date < first_date
-        total + count
-      end
-    end
-
-    def total_count; count_not_older_than DISTANT_PAST end
-    def first_date; @rows_p_date[ -1][ 0] end
-    def last_date; @rows_p_date[ 1][ 0] end
-
     context "initial data" do
 
-      it{ within( :id, "search-form"){ should have_selector(
+      it{ puts page.find( "label").text
+          within( :id, "search-form"){ should have_selector(
             "label", text: "#{ total_count}")}}
       it{ within( :id, "search-form"){ should have_selector(
             "input[value='#{ first_date}']")}}

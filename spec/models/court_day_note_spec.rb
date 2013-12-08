@@ -72,9 +72,8 @@ describe "CourtDayNote model" do
       @day_note.save!
       create_test_court_day_note date: Date.tomorrow
     end
-    specify{ CourtDayNote.find( :first,
-                                conditions: ["court_id = ?", @day_note.court]
-                              ).should == @day_note}
+    specify{ CourtDayNote.where( court_id: @day_note.court
+                               ).first.should == @day_note}
   end
 end
 

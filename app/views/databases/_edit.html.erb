@@ -16,8 +16,8 @@
       <%= form_for database, url: database_path,
             html: { method: "put", class: "form-inline"} do |f| %>
         <%= f.submit t( "database.drop_older.label"),
-                        confirm: t( "database.drop_older.confirm",
-                                    date: count_date) %>
+                     data: { confirm: t( "database.drop_older.confirm",
+                                         date: count_date)} %>
       <% end %>
     </div>
     <div>

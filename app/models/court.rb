@@ -5,10 +5,10 @@
 # Court sessions and court day notes, however, are destroyed with the court.
 class Court < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true
-  default_scope order: "name"
+  default_scope -> { order( "name ASC")}
   has_many :court_sessions, dependent: :destroy
   has_many :court_day_notes, dependent: :destroy
-  has_many :users, dependent: :restrict
+  has_many :users, dependent: :restrict_with_exception
 
   def inspect
     "|#{ name}|#{ link}|"
