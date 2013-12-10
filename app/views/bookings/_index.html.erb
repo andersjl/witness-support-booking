@@ -1,19 +1,17 @@
 <%  bookings.each do |booking| %>
-          <div class="row">
-            <div class="span<%= span %><%= current_user?( booking.user) ?
-                                             " own-booking" : "" %>">
+          <div class="row<%=
+                       current_user?( booking.user) ? " own-booking" : "" %>">
 <%    if admin? && !booking.expired? %>
-              <%= link_to booking.user.name, booking,
-                          method: :delete,
-                          data: { confirm:
-                              t( "booking.cancel.confirm",
-                                 name: booking.user.name,
-                                 date: booking.court_session.date,
-                                 session: t( "court_session.name#{ booking.
-                                              court_session.start}.short"))} %>
+            <%= link_to booking.user.name, booking,
+                        method: :delete,
+                        data: { confirm:
+                            t( "booking.cancel.confirm",
+                               name: booking.user.name,
+                               date: booking.court_session.date,
+                               session: t( "court_session.name#{ booking.
+                                            court_session.start}.short"))} %>
 <%    else %>
-              <%= booking.user.name %>
+            <%= booking.user.name %>
 <%    end %>
-            </div>
           </div>
 <%  end %>

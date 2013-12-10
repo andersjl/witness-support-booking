@@ -1,4 +1,4 @@
-<div class="center hero-unit">
+<div class="jumbotron center">
   <h1><%= t( "general.application") %></h1>
   <%= render partial: "static_pages/greeting" %>
 <% if logged_in?
@@ -9,7 +9,7 @@
   <% end %>
 <% else %>
   <%= link_to t( "static_pages.home.sign_up"), sign_up_path,
-              :class => "btn btn-large btn-primary" %>
+              class: "btn btn-lg btn-primary" %>
   <%= render partial: "static_pages/log_in_help" %>
 <% end %>
 </div>

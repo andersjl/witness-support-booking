@@ -1,10 +1,10 @@
 
 module CourtDaysHelper
 
-  def offset_n_span_to_class( offset, span)
+  def offset_n_span_to_class( offs, span)
     result = ""
-    result += "offset#{ offset} " if offset.is_a?( Numeric) && offset > 0
-    result += "span#{ span}"
+    result += "col-md-offset-#{ offs} " if offs.is_a?( Numeric) && offs > 0
+    result += "col-md-#{ span}"
   end
 
   def back_to_court_days( court = nil)

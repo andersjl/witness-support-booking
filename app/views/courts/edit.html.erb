@@ -2,7 +2,7 @@
 <h1><%= t "courts.edit.title", name: @court.name %></h1>
 
 <div class="row">
-  <div class="span6 offset3">
+  <div class="col-md-6 col-md-offset-3">
     <%= form_for @court do |f| %> 
       <%= render :partial => "shared/error_messages",
                  :locals => { :model => @court} %>
@@ -10,7 +10,7 @@
       <%= f.text_field :name %>
       <%= f.label :link %>
       <%= f.text_field :link %>
-      <%= f.submit t( "general.edit") %>
+      <%= f.submit t( "general.edit"), class: "btn btn-primary" %>
     <% end %>
   </div>
 </div>

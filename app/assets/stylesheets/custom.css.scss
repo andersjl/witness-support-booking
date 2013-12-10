@@ -1,11 +1,9 @@
 @import "bootstrap";
 
 
-/* mixins, variables, etc. */
-
-$grayMediumLight: #eaeaea;
-$ajlRed: #c00;
-$ajlYellow: #c60;
+$gray-medium-light: #eaeaea;
+$ajl-red: #c00;
+$ajl-yellow: #c60;
 
 
 /* universal */
@@ -39,9 +37,9 @@ textarea {
   li {
     overflow: auto;
     padding: 10px 0;
-    border-top: 1px solid $grayLight;
+    border-top: 1px solid $gray-light;
     &:last-child {
-      border-bottom: 1px solid $grayLight;
+      border-bottom: 1px solid $gray-light;
     }
   }
 }
@@ -100,36 +98,31 @@ p {
 footer {
   margin-top: 2em;
   padding-top: 5px;
-  border-top: 1px solid $grayMediumLight;
-  color: $grayLight;
+  border-top: 1px solid $gray-medium-light;
+  color: $gray-light;
   a {
     color: #555;
     &:hover { 
       color: #222;
     }
   } 
-  small {
-    float: left;
-  }
-  ul {
-    float: right;
-    list-style: none;
-    li {
-      float: left;
-      margin-left: 10px;
-    }
-  }
 }
 
 
 /* forms */
 
 input, textarea, select, .uneditable-input {
-/*  border: 1px solid #bbb; */
   width: 100%;
-  padding: 2px;
-  margin-bottom: 2px;
-  @include box_sizing( border-box);
+  padding: 0.5%;
+  margin-bottom: 1%;
+}
+
+.btn{
+  width: auto;
+}
+
+label {
+  margin-bottom: 0%;
 }
 
 input, select {
@@ -144,6 +137,10 @@ input, select {
   }
 }
 
+.alert-error {
+  @extend .alert-danger;
+}
+
 #error_explanation {
   color: #f00;
   ul {
@@ -153,43 +150,16 @@ input, select {
 }
 
 .field_with_errors {
-  @extend .control-group;
-  @extend .error;
+  color: #f00;
 }
 
 
 /* users index */
 
 a.disabled-user {
-  color: $ajlRed;
+  color: $ajl-red;
   font-weight: bold;
   text-decoration: underline;
-}
-
-
-/* sidebar */
-
-aside {
-  section {
-    padding: 1em 0;
-    border-top: 1px solid $grayLighter;
-    &:first-child {
-      border: 0;
-      padding-top: 0;
-    }
-    span {
-      display: block;
-      margin-bottom: 3px;
-      line-height: 1;
-    }
-    h1 {
-      font-size: 1.4em;
-      text-align: left;
-      letter-spacing: -1px;
-      margin-bottom: 3px;
-      margin-top: 0px;
-    }
-  }
 }
 
 
@@ -216,24 +186,24 @@ div.own-booking {
 
 div.to-book {
   &.urgent {
-    color: $ajlYellow;
+    color: $ajl-yellow;
     font-weight: bold;
   }
   &.immediate {
-    color: $ajlRed;
+    color: $ajl-red;
     font-weight: bold;
   }
 }
 
 div, span {
   .overbooked {
-    color: $ajlRed;
+    color: $ajl-red;
     font-weight: bold;
   }
 }
 
 div.late-cancel {
-  color: $ajlRed;
+  color: $ajl-red;
   text-decoration: line-through;
 }
 
@@ -260,12 +230,12 @@ div.late-cancel {
     }
   }
   .court-day {
-    border-top: 1px solid $grayLight;
+    border-top: 1px solid $gray-light;
     .weekday {
       text-align: right;
     }
     &.last {
-      border-bottom: 1px solid $grayLight;
+      border-bottom: 1px solid $gray-light;
     }
   }
 }
@@ -289,10 +259,6 @@ div.late-cancel {
   margin-top: 1.5em;
 }
 
-.right {
-  text-align: right;
-}
-
 input {
   &#admin_pw, &#user_pw {
     width: 10em;
@@ -304,6 +270,5 @@ input {
   float: left;
   width: 100%;
   margin-top: 45px;
-  @include box_sizing( border-box);
 }
 

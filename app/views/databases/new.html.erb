@@ -1,13 +1,10 @@
 <% provide( :title, t( "databases.new.title")) %>
 <%= render partial: "databases/warning" %>
-<div class="row">
-  <div class="span6 offset3">
-    <%= form_for( @database, :url => database_path) do |f| %>
+    <%= form_for( @database, :url => database_path,
+                             html: { class: "form-inline"}) do |f| %>
       <%= f.label :all_data, t( "database.create.label") %>
       <%= f.file_field :all_data %>
       <%= f.submit t( "general.ok"),
                    data: { confirm: t( "database.create.confirm")} %>
     <% end %>
-  </div>
-</div>
 

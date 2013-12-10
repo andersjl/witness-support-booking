@@ -1,6 +1,7 @@
 <div class="row database-management" id="database-management">
-  <div class="span6 right" id="search-form">
-    <%= form_tag database_path, method: "get", class: "form-inline" do |f| %>
+  <div class="col-md-6" id="search-form">
+    <%= form_tag database_path, method: "get",
+                                class: "form-inline pull-right" do |f| %>
       <%= label_tag :count_date, t( "database.count_date.label",
                                     rows: database.row_count( count_date)) %>
       <%= text_field_tag :count_date, count_date,
@@ -11,8 +12,8 @@
       </noscript>
     <% end %>
   </div>
-  <div class="span6 left" id="drop-older-form">
-    <div style="float:left">
+  <div class="col-md-6" id="drop-older-form">
+    <div class="pull-left">
       <%= form_for database, url: database_path,
             html: { method: "put", class: "form-inline"} do |f| %>
         <%= f.submit t( "database.drop_older.label"),

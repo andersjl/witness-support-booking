@@ -1,8 +1,12 @@
 <div class="row xml-dump-n-restore" id="xml-dump-n-restore">
-  <div class="span6 left">
-    <%= link_to t( "shared.dump.prompt"), database_path %>
+  <div class="col-md-6">
+    <nav>
+      <%= link_to t( "shared.dump.prompt"), database_path %>
+    </nav>
   </div>
-  <div class="span6 right">
-    <%= link_to t( "shared.load.prompt"), new_database_path %>
+  <div class="col-md-6 pull-right">
+    <nav class="pull-right">
+      <%= link_to t( "shared.load.prompt"), new_database_path %>
+    </nav>
   </div>
 </div>

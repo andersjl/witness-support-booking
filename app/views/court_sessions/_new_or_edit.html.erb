@@ -1,21 +1,19 @@
-              <div style="float:left">
-                <%= form_for session, html: { class: "form-inline"} do |f| %>
+              <%= form_for session, html: { class: "form-inline pull-left"} do |f| %>
 <%  if session.new_record? %>
-                  <%= f.hidden_field :court_id %>
-                  <%= f.hidden_field :date %>
-                  <%= f.hidden_field :start %>
+                <%= f.hidden_field :court_id %>
+                <%= f.hidden_field :date %>
+                <%= f.hidden_field :start %>
 <%  end %>
-                  <%= f.label :need %>
-                  <%= f.select :need,
-                               options_for_select( (PARALLEL_SESSIONS_MAX + 1
-                                                   ).times.to_a, session.need
-                                                 ),
-                               { }, onchange: "this.form.submit();" %>
-                  <noscript>
-                    <%= submit_tag "OK" %>
-                  </noscript>
-                <% end %>
-              </div>
+                <%= f.label :need %>
+                <%= f.select :need,
+                             options_for_select( (PARALLEL_SESSIONS_MAX + 1
+                                                 ).times.to_a, session.need
+                                               ),
+                             { }, onchange: "this.form.submit();" %>
+                <noscript>
+                  <%= submit_tag "OK" %>
+                </noscript>
+              <% end %>
 <%  if !session.fully_booked?
       if session.date < CourtDay.add_weekdays( Date.current,
                                                BOOKING_DAYS_AHEAD_MIN) %>

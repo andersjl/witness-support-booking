@@ -1,23 +1,25 @@
 <% provide( :title, t( "general.log_in")) %>
 <h1><%= t( "general.log_in") %></h1>
 
-<div class="row">
-  <div class="span6 offset3">
-    <%= form_for( :user_session, :url => user_sessions_path) do |f| %>
-      <%= f.label :court_id, t( "activerecord.attributes.user.court") %>
-      <%= f.collection_select :court_id, @courts, :id, :name,
-                              :prompt => t( "court.prompt") %>
-      <%= f.label :email, t( "activerecord.attributes.user.email") %>
-      <%= f.text_field :email %>
-      <%= f.label :password, t( "activerecord.attributes.user.password") %>
-      <%= f.password_field :password %>
-      <%= f.submit t( "general.log_in"),
-                   :class => "btn btn-large btn-primary" %>
-    <% end %>
-    <p>
-      <%= t( "user_sessions.new.no_password_p") %>
-      <%= link_to t( "user_sessions.new.register"), sign_up_path %>
-    </p>
+<div class="container">
+  <div class="row">
+    <div class="col-md-6 col-md-offset-3">
+      <%= form_for( :user_session, :url => user_sessions_path) do |f| %>
+        <%= f.label :court_id, t( "activerecord.attributes.user.court") %>
+        <%= f.collection_select :court_id, @courts, :id, :name,
+                                :prompt => t( "court.prompt") %>
+        <%= f.label :email, t( "activerecord.attributes.user.email") %>
+        <%= f.text_field :email %>
+        <%= f.label :password, t( "activerecord.attributes.user.password") %>
+        <%= f.password_field :password %>
+        <%= f.submit t( "general.log_in"),
+                     :class => "btn btn-primary" %>
+      <% end %>
+      <p>
+        <%= t( "user_sessions.new.no_password_p") %>
+        <%= link_to t( "user_sessions.new.register"), sign_up_path %>
+      </p>
+    </div>
   </div>
 </div>
 

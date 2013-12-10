@@ -1,6 +1,6 @@
 <% provide( :title, t( "users.show.title", name: @user.name)) %>
 <div class="row">
-  <aside class="span12">
+  <div class="col-md-12">
     <section>
       <h1><%= @user.name %></h1>
     </section>
@@ -17,7 +17,7 @@
 <% if master? && current_user?( @user)%>
     <section><%= link_to t( "courts.index.title"), courts_path %></section>
 <% end %>
-  </aside>
+  </div>
 </div>
 <% if master? && current_user?( @user) %>
   <%= render partial: "databases/edit",
