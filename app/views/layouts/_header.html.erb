@@ -1,6 +1,7 @@
 <nav class="navbar-wrapper navbar-inverse navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
+<%  if media_query_available %>
       <button type="button" class="navbar-toggle" data-toggle="collapse"
               data-target=".navbar-collapse">
         <span class="sr-only">Toggle navigation</span>
@@ -8,10 +9,12 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
+<%  end %>
       <%= link_to t( "general.application"), root_path, id: "logo" %>
     </div>
-    <div class="collapse navbar-collapse">
-<% if logged_in? %>
+    <div<%= (media_query_available ? ' class="collapse navbar-collapse"'
+                                   : '').html_safe %>>
+<%  if logged_in? %>
       <ul class="nav navbar-nav">
         <li>
           <%= link_to current_user.court.name, current_user.court.link %>
@@ -21,17 +24,17 @@
         <li><%= link_to t( "general.log_out"), log_out_path,
                         :method => "delete" %></li>
         <li><%= link_to t( "general.help.short"), help_path %></li>
-  <% if enabled? %>
+<%    if enabled? %>
         <li><%= link_to t( "court_days.index.title"), court_days_path %></li>
         <li><%= link_to t( "users.index.title"), users_path %></li>
-  <% end %>
+<%    end %>
       </ul>
-<% else %>
+<%  else %>
       <ul class="nav navbar-nav pull-right">
         <li><%= link_to t( "general.log_in"), log_in_path %></li>
         <li><%= link_to t( "general.help.short"), help_path %></li>
       </ul>
-<% end %>
+<%  end %>
     </div>
   </div>
 </nav>

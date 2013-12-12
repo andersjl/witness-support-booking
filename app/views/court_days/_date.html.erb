@@ -1,4 +1,4 @@
-        <div class="col-md-<%= span %> weekday">
+        <%= bootstrap_tag "div", span, class: "weekday" %>
           <span><%= t( "general.cwday")[ court_day.date.cwday] %></span>
           <span class="court-day-date"><%= court_day.date.iso8601 %></span>
         </div>

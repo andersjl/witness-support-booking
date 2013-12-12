@@ -10,8 +10,8 @@
 <%    if (!admin? || session.expired?) && !session.reason_to_exist?
         offset += session_span
       else %>
-        <div class="<%= offset_n_span_to_class( offset, session_span)
-                     %>" id="<%= "session-#{ session.start_time.iso8601}" %>">
+        <%= bootstrap_tag :div, session_span, offset: offset,
+                      html: "id=\"session-#{ session.start_time.iso8601}\"" %>
 <%=     render partial: "court_days/session_button",
                locals: { session: session} %>
 <%      if admin? %>
@@ -28,8 +28,8 @@
         <div class="heading hidden-md hidden-lg">
           <%= t( "court_days.index.note") %>
         </div>
-        <div class="<%= offset_n_span_to_class( offset, note_span)
-                     %>" id="<%= "note-#{ court_day.date.iso8601}" %>">
+        <%= bootstrap_tag :div, note_span, offset: offset,
+                          html: "id=\"note-#{ court_day.date.iso8601}\"" %>
 <%  if admin? && !court_day.note.expired? %>
 <%=   render partial: "court_day_notes/new_or_edit",
              locals:  { note: court_day.note} %>

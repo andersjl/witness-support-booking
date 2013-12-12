@@ -1,13 +1,13 @@
       <div class="row heading hidden-xs hidden-sm">
-        <div class="col-md-<%= date_span %> weekday">
+        <%= bootstrap_tag :div, date_span, class: "weekday" %>
           <%= t( "general.date").capitalize %>
         </div>
 <% START_TIMES_OF_DAY_DEFAULT.each do |start_tod| %>
-        <div class="col-md-<%= session_span %>">
+        <%= bootstrap_tag :div, session_span %>
           <%= t( "court_session.name#{ start_tod}.long").capitalize %>
         </div>
 <% end %>
-        <div class="col-md-<%= note_span %>">
+        <%= bootstrap_tag :div, note_span %>
 <% if @disabled_count > 0 %>
           <%= link_to t( "court_days.index.users_to_enable",
                          count: @disabled_count),

@@ -1,5 +1,5 @@
 <div class="row database-management" id="database-management">
-  <div class="col-md-6" id="search-form">
+  <%= bootstrap_tag :div, 6, html: 'id="search-form"' %>
     <%= form_tag database_path, method: "get",
                                 class: "form-inline pull-right" do |f| %>
       <%= label_tag :count_date, t( "database.count_date.label",
@@ -12,7 +12,7 @@
       </noscript>
     <% end %>
   </div>
-  <div class="col-md-6" id="drop-older-form">
+  <%= bootstrap_tag :div, 6, html: 'id="drop-older-form"' %>
     <div class="pull-left">
       <%= form_for database, url: database_path,
             html: { method: "put", class: "form-inline"} do |f| %>

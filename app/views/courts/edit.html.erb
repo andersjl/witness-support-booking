@@ -2,7 +2,7 @@
 <h1><%= t "courts.edit.title", name: @court.name %></h1>
 
 <div class="row">
-  <div class="col-md-6 col-md-offset-3">
+  <%= bootstrap_tag :div, 6, 3 %>
     <%= form_for @court do |f| %> 
       <%= render :partial => "shared/error_messages",
                  :locals => { :model => @court} %>
