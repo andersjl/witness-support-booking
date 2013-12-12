@@ -36,14 +36,14 @@ module ApplicationHelper
     when Fixnum
       offset = more
     when Hash
-      offstet = more[ :offset]
+      offset = more[ :offset]
       html_class = more[ :class]
       html_other = more[ :html]
     end
     result = "<#{ tag} class=\"col-#{ media_query_available ? 'md' : 'xs' 
                                     }-#{ span}"
     result += " col-#{ media_query_available ? 'md' : 'xs'
-                     }-offset-#{ offset}" if offset
+                     }-offset-#{ offset}" if offset && offset > 0
     result += " " + html_class if html_class
     result += "\""
     result += " " + html_other if html_other

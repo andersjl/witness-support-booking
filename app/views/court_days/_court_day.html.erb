@@ -4,7 +4,7 @@
            locals:  { court_day: court_day, span: date_span} %>
 <%  offset = 0
     court_day.sessions.each do |session| %>
-        <div class="heading hidden-md hidden-lg">
+        <div class="heading visible-xs visible-sm">
           <%= t( "court_session.name#{ session.start}.long").capitalize %>
         </div>
 <%    if (!admin? || session.expired?) && !session.reason_to_exist?
@@ -25,7 +25,7 @@
 <%      offset = 0
       end
     end %>
-        <div class="heading hidden-md hidden-lg">
+        <div class="heading visible-xs visible-sm">
           <%= t( "court_days.index.note") %>
         </div>
         <%= bootstrap_tag :div, note_span, offset: offset,
