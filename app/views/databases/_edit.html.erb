@@ -1,28 +1,24 @@
 <div class="row database-management" id="database-management">
-  <%= bootstrap_tag :div, 6, html: 'id="search-form"' %>
-    <%= form_tag database_path, method: "get",
-                                class: "form-inline pull-right" do |f| %>
-      <%= label_tag :count_date, t( "database.count_date.label",
-                                    rows: database.row_count( count_date)) %>
-      <%= text_field_tag :count_date, count_date,
-                         class:    "datepicker",
-                         onchange: "this.form.submit();" %>
-      <noscript>
-        <%= submit_tag "OK" %>
-      </noscript>
-    <% end %>
-  </div>
-  <%= bootstrap_tag :div, 6, html: 'id="drop-older-form"' %>
-    <div class="pull-left">
+  <%= bootstrap_tag :div, 12 %>
+    <div id="search-form">
+      <%= form_tag database_path, method: "get", class: "form-inline" do |f| %>
+        <%= label_tag :count_date, t( "database.count_date.label",
+                                      rows: database.row_count( count_date)) %>
+        <%= text_field_tag :count_date, count_date,
+                           class:    "datepicker",
+                           onchange: "this.form.submit();" %>
+        <noscript>
+          <%= submit_tag "OK" %>
+        </noscript>
+      <% end %>
+    </div>
+    <div id="drop-older-form">
       <%= form_for database, url: database_path,
             html: { method: "put", class: "form-inline"} do |f| %>
         <%= f.submit t( "database.drop_older.label"),
                      data: { confirm: t( "database.drop_older.confirm",
                                          date: count_date)} %>
       <% end %>
-    </div>
-    <div>
-      &nbsp;
       <%= t( "database.oldest_date", date: database.oldest_date) %>
     </div>
   </div>

@@ -1,16 +1,14 @@
 <footer class="footer">
-  <div class="container">
-    <div class="row">
-      <%= bootstrap_tag :div, 6 %>
-        <small>
-          <%= link_to OWNER_NAME, OWNER_URL %>.
-        </small>
-      </div>
-      <%= bootstrap_tag :div, 6 %>
-        <nav class="pull-right">
-          <%= link_to t( "general.about.long"), about_path %>
-        </nav>
-      </div>
+  <div class="row">
+    <%= bootstrap_tag :div, 6 %>
+      <small>
+        <%= link_to OWNER_NAME, OWNER_URL %>.
+      </small>
+    </div>
+    <%= bootstrap_tag :div, 6 %>
+      <nav class="pull-right">
+        <%= link_to t( "general.about.long"), about_path %>
+      </nav>
     </div>
   </div>
 </footer>

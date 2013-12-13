@@ -15,7 +15,7 @@ module ApplicationHelper
       @media_query_available =
         !(ENV[ "RESPONSIVE"] == "FALSE") &&
         begin
-          ie = /IE\s+(\d+)/ =~ request.user_agent
+          ie = /IE\s+(\d+)/.match request.user_agent
           !(ie && ie[ 1].to_i < 9)
         end
     end
