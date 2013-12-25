@@ -44,6 +44,7 @@ sv:
       short: Om
     application: Vittnesstöd
     date: datum
+    cookies: Vi använder kakor (cookies)
     cwday:
     - 
     - mån

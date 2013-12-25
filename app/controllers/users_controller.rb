@@ -1,6 +1,8 @@
 class UsersController < ApplicationController
 extend Authorization
 
+  before_action :cookies_required, :only => :new
+
   authorize [ :index, :show], [ "normal", "admin", "master"]
   authorize [ :edit, :update],
             [ "disabled", "normal", "admin", "master"] do |params, user|

@@ -17,4 +17,6 @@ BOOKING_DAYS_AHEAD_MAX     = 10
 WS_DEFINITION_URL = "http://www.brottsoffermyndigheten.se/om-oss/vittnesstod"
 OWNER_NAME                 = "Brottsofferjouren Sydost"
 OWNER_URL                  = "http://www.farsta.boj.se"
+COOKIES_INFO_PTS = "http://www.pts.se/sv/Bransch/Regler/Lagar/Lag-om-elektr" +
+  "onisk-kommunikation/Cookies-kakor/Fragor-och-svar-om-kakor-for-anvandare/"
 

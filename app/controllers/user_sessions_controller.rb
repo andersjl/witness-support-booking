@@ -1,5 +1,7 @@
 class UserSessionsController < ApplicationController
 
+  before_action :cookies_required, :only => :new
+
   class UserSession
     attr_reader :court_id, :email
     def initialize( court_id)

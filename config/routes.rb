@@ -15,6 +15,7 @@ WitnessSupportBooking::Application.routes.draw do
   get "/log_in" => "user_sessions#new"
   delete "/log_out" => "user_sessions#destroy"
   get "/about" => "static_pages#about"
+  get "/cookies_info" => "static_pages#cookies_info"
   get "/help" => "static_pages#help"
 
   # The priority is based upon order of creation:
