@@ -288,7 +288,7 @@ extend ActiveModel::Naming
     destroy_old! if @too_old
   end
 
-  def timestamp; @timestamp ||= Time.current.iso8601 end
+  def timestamp; @timestamp ||= Time.current.strftime( "%Y%m%dT%H%M%S%z") end
   def version; AllDataDefs.version end
 
   def replace!
