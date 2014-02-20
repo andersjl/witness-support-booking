@@ -13,6 +13,7 @@ START_TIMES_OF_DAY_DEFAULT = [ MORNING_TIME_OF_DAY, AFTERNOON_TIME_OF_DAY]
 
 BOOKING_DAYS_AHEAD_MIN     = 3
 BOOKING_DAYS_AHEAD_MAX     = 10
+BOOKING_DAYS_REMOVABLE     = 5
 
 WS_DEFINITION_URL = "http://www.brottsoffermyndigheten.se/om-oss/vittnesstod"
 OWNER_NAME                 = "Brottsofferjouren Sydost"

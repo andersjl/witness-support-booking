@@ -15,7 +15,10 @@ class Booking < ActiveRecord::Base
                court_session && court_session.start_time.iso8601}|"
   end
 
-  def expired?; court_session.expired? end
+  def expired?
+    CourtDay.add_weekdays( court_session.start_time.to_date,
+                           BOOKING_DAYS_REMOVABLE) < Date.current
+  end
 
   # creates a CancelledBooking to mirror <tt>self</tt>
   def destroy_and_log
