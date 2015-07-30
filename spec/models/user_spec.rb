@@ -223,7 +223,7 @@ describe "User model" do
         lambda do
           b = Booking.new user: @user, court_session: @session
           b.save!
-        end.should raise_error( ActiveRecord::RecordNotUnique)
+        end.should raise_error( ActiveRecord::ActiveRecordError, /unique/i)
       end
 
       specify "destroyed along with self" do

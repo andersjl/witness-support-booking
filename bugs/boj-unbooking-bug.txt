@@ -1,0 +1,55 @@
+Late unbooking
+
+2015-07-30T09:00:14.764279+00:00 app[web.1]: NoMethodError (undefined method `date' for nil:NilClass):
+2015-07-30T09:00:14.764281+00:00 app[web.1]:   app/models/cancelled_booking.rb:26:in `obsolete?'
+2015-07-30T09:00:14.764283+00:00 app[web.1]:   app/models/cancelled_booking.rb:32:in `block in purge_old'
+2015-07-30T09:00:14.764284+00:00 app[web.1]:   app/models/cancelled_booking.rb:30:in `times'
+2015-07-30T09:00:14.764286+00:00 app[web.1]:   app/models/cancelled_booking.rb:30:in `purge_old'
+2015-07-30T09:00:14.764288+00:00 app[web.1]:   app/models/cancelled_booking.rb:5:in `block in <class:CancelledBooking>'
+2015-07-30T09:00:14.764290+00:00 app[web.1]:   app/models/booking.rb:26:in `destroy_and_log'
+2015-07-30T09:00:14.764291+00:00 app[web.1]:   app/controllers/bookings_controller.rb:27:in `destroy'
+2015-07-30T09:00:14.764293+00:00 app[web.1]: 
+2015-07-30T09:00:14.765349+00:00 app[web.1]: NoMethodError (undefined method `date' for nil:NilClass):
+2015-07-30T09:00:14.765345+00:00 app[web.1]: 
+2015-07-30T09:00:14.764294+00:00 app[web.1]: 
+2015-07-30T09:00:14.765351+00:00 app[web.1]:   app/models/cancelled_booking.rb:26:in `obsolete?'
+2015-07-30T09:00:14.765352+00:00 app[web.1]:   app/models/cancelled_booking.rb:32:in `block in purge_old'
+2015-07-30T09:00:14.765354+00:00 app[web.1]:   app/models/cancelled_booking.rb:30:in `times'
+2015-07-30T09:00:14.765355+00:00 app[web.1]:   app/models/cancelled_booking.rb:30:in `purge_old'
+2015-07-30T09:00:14.765359+00:00 app[web.1]:   app/models/booking.rb:26:in `destroy_and_log'
+2015-07-30T09:00:14.765362+00:00 app[web.1]: 
+2015-07-30T09:00:14.765357+00:00 app[web.1]:   app/models/cancelled_booking.rb:5:in `block in <class:CancelledBooking>'
+2015-07-30T09:00:14.765363+00:00 app[web.1]: 
+2015-07-30T09:00:14.765360+00:00 app[web.1]:   app/controllers/bookings_controller.rb:27:in `destroy'
+
+Not late
+
+2015-07-30T09:28:37.693792+00:00 app[web.1]:   Parameters: {"utf8"=>"✓", "authenticity_token"=>"2YFxjxlqALmH+YZXbiTmINhj84PQAM1yPopOkDlLYUg=", "commit"=>"Avboka em", "id"=>"4019"}
+2015-07-30T09:28:37.693774+00:00 app[web.1]:   Parameters: {"utf8"=>"✓", "authenticity_token"=>"2YFxjxlqALmH+YZXbiTmINhj84PQAM1yPopOkDlLYUg=", "commit"=>"Avboka em", "id"=>"4019"}
+2015-07-30T09:28:37.740974+00:00 app[web.1]: Completed 500 Internal Server Error in 47ms
+2015-07-30T09:28:37.741044+00:00 app[web.1]: Completed 500 Internal Server Error in 47ms
+2015-07-30T09:28:37.742515+00:00 app[web.1]:   app/models/cancelled_booking.rb:32:in `block in purge_old'
+2015-07-30T09:28:37.742509+00:00 app[web.1]: 
+2015-07-30T09:28:37.742516+00:00 app[web.1]:   app/models/cancelled_booking.rb:30:in `times'
+2015-07-30T09:28:37.742523+00:00 app[web.1]:   app/controllers/bookings_controller.rb:27:in `destroy'
+2015-07-30T09:28:37.742521+00:00 app[web.1]:   app/models/booking.rb:26:in `destroy_and_log'
+2015-07-30T09:28:37.742512+00:00 app[web.1]: NoMethodError (undefined method `date' for nil:NilClass):
+2015-07-30T09:28:37.742518+00:00 app[web.1]:   app/models/cancelled_booking.rb:30:in `purge_old'
+2015-07-30T09:28:37.742591+00:00 app[web.1]: 
+2015-07-30T09:28:37.742513+00:00 app[web.1]:   app/models/cancelled_booking.rb:26:in `obsolete?'
+2015-07-30T09:28:37.742525+00:00 app[web.1]: 
+2015-07-30T09:28:37.742594+00:00 app[web.1]: NoMethodError (undefined method `date' for nil:NilClass):
+2015-07-30T09:28:37.742524+00:00 app[web.1]: 
+2015-07-30T09:28:37.742520+00:00 app[web.1]:   app/models/cancelled_booking.rb:5:in `block in <class:CancelledBooking>'
+2015-07-30T09:28:37.742595+00:00 app[web.1]:   app/models/cancelled_booking.rb:26:in `obsolete?'
+2015-07-30T09:28:37.742598+00:00 app[web.1]:   app/models/cancelled_booking.rb:30:in `times'
+2015-07-30T09:28:37.742599+00:00 app[web.1]:   app/models/cancelled_booking.rb:30:in `purge_old'
+2015-07-30T09:28:37.742602+00:00 app[web.1]:   app/models/booking.rb:26:in `destroy_and_log'
+2015-07-30T09:28:37.742596+00:00 app[web.1]:   app/models/cancelled_booking.rb:32:in `block in purge_old'
+2015-07-30T09:28:37.742601+00:00 app[web.1]:   app/models/cancelled_booking.rb:5:in `block in <class:CancelledBooking>'
+2015-07-30T09:28:37.742603+00:00 app[web.1]:   app/controllers/bookings_controller.rb:27:in `destroy'
+2015-07-30T09:28:37.742605+00:00 app[web.1]: 
+2015-07-30T09:28:37.742606+00:00 app[web.1]: 
+
+
+
