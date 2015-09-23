@@ -54,8 +54,9 @@ module AllDataDefs
       [ "court_session",  COURT_DEF, "date", "start", "need"],
       [ "court_day_note", COURT_DEF, "date", "text"],
       [ "booking",        BOOKING_COURT_DEF, BOOKING_USER_DEF,
-                          BOOKING_SESSION_DEF],
-      [ "cancelled_booking"]]
+                          BOOKING_SESSION_DEF
+      ], [ "cancelled_booking"], [ "snapshot"],
+    ]
 
   def self.define_standard_get( model_tag, attr_tag)  # :nodoc:
     define_method "get_#{ model_tag}_#{ attr_tag}".intern do |model_obj|
@@ -236,22 +237,58 @@ extend ActiveModel::Naming
   end
 
   def all_data
-    Nokogiri::XML::Builder.new( encoding: "UTF-8") do |xml|
-      xml.send( ROOT_TAG, time: timestamp, version: version) do
-        AllDataDefs.model_tags.each do |model_tag|
-          AllDataDefs.model_class( model_tag).all.each do |model_obj|
-            attr_tags = AllDataDefs.attr_tags( model_tag)
-            next if attr_tags.count == 0
-            xml.send( model_tag) do
-              attr_tags.each do |attr_tag|
-                fixed = attr_tag == "text" ? "text_" : attr_tag
-                xml.send( fixed, attr_get( model_tag, attr_tag, model_obj))
+    # The original and obvious code was simply
+    #
+    #   Nokogiri::XML::Builder.new( encoding: "UTF-8") do |xml|
+    #     ...
+    #   end.to_xml
+    #
+    # This sometimes takes more than 30 seconds to complete.  No problem,
+    # since this requires master and should be called once a week or so.  But
+    # if you deploy on Heroku the platform will return an error to the browser
+    # if there is no response within 30 seconds.  (While sending and error to
+    # the browser, Heroku does not interrupt the process, it runs to the end.)
+    #
+    # Hence this code using a helper model Snapshot to store the result for
+    # ten minutes to return to the browser the next time around in case there
+    # was no return the first time.
+    #
+    # This is not very convenient when testing, since the test code would have
+    # to wait ten minutes after a change in the database before it can be
+    # downloaded.  So we disable the snapshot-in-database mechanism in the
+    # test environment.
+    #
+    snapshot = Snapshot.first
+    if snapshot && Time.now - snapshot.created_at < 600
+      result = snapshot.all_data
+      Snapshot.delete_all
+    else
+      # Force the error in the Heroku stage environment
+      sleep( 35) if ENV[ "RAILS_MODE"] == "DEBUG"
+      snapshot = Snapshot.new
+      snapshot.all_data =
+        Nokogiri::XML::Builder.new( encoding: "UTF-8") do |xml|
+          xml.send( ROOT_TAG, time: timestamp, version: version) do
+            AllDataDefs.model_tags.each do |model_tag|
+              AllDataDefs.model_class( model_tag).all.each do |model_obj|
+                attr_tags = AllDataDefs.attr_tags( model_tag)
+                next if attr_tags.count == 0
+                xml.send( model_tag) do
+                  attr_tags.each do |attr_tag|
+                    fixed = attr_tag == "text" ? "text_" : attr_tag
+                    xml.send( fixed, attr_get( model_tag, attr_tag, model_obj)
+                            )
+                  end
+                end
               end
             end
           end
-        end
-      end
-    end.to_xml
+        end.to_xml
+      Snapshot.delete_all
+      snapshot.save unless Rails.env.test?
+      result = snapshot.all_data
+    end
+    result
   end
 
   def oldest_date=( date)
