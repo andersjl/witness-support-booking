@@ -1,7 +1,8 @@
 <div class="row xml-dump-n-restore" id="xml-dump-n-restore">
   <%= bootstrap_tag :div, 6 %>
     <nav>
-      <%= link_to t( "shared.dump.prompt"), database_path %>
+      <%= link_to t( "shared.dump.prompt"), database_path,
+                  'data-no-turbolink' => 'true' %>
     </nav>
   </div>
   <%= bootstrap_tag :div, 6, class: "pull-right" %>
