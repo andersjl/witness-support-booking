@@ -49,8 +49,9 @@ describe "User model" do
     it{ should_not be_master}
   end
 
-  describe( "#role_to_order"
-          ){ specify{ pending "implicit in .order_by_role_and_name"}}
+  describe "#role_to_order" do
+    specify{ pending "implicit in .order_by_role_and_name"; fail}
+  end
 
   describe ".order_by_role_and_name" do
     before{
@@ -68,8 +69,8 @@ describe "User model" do
   end
 
   describe ".valid_role?" do
-    USER_ROLES.each{ |role| specify{ User.valid_role?( role).should be_true}}
-    specify{ User.valid_role?( "unknown role").should_not be_true}
+    USER_ROLES.each{ |role| specify{ User.valid_role?( role).should be_truthy}}
+    specify{ User.valid_role?( "unknown role").should_not be_truthy}
   end
 
   describe ".disabled_count" do
@@ -190,7 +191,7 @@ describe "User model" do
     context "with invalid password" do
       let( :user_for_invalid_password){ @found_user.authenticate( "invalid")}
       it{ should_not == user_for_invalid_password}
-      specify{ user_for_invalid_password.should be_false}
+      specify{ user_for_invalid_password.should be_falsey}
     end
 
   end

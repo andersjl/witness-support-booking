@@ -1,10 +1,10 @@
 $:<< File.join(File.dirname(__FILE__), '..')
-require 'rubygems'
-require 'spork'
+#require 'rubygems'
+#require 'spork'
 #uncomment the following line to use spork with the debugger
 #require 'spork/ext/ruby-debug'
 
-Spork.prefork do
+#Spork.prefork do
   # Loading more in this block will cause your tests to run faster. However,
   # if you change any configuration or code from libraries loaded here, you'll
   # need to restart spork for it take effect.
@@ -21,12 +21,14 @@ Spork.prefork do
     config.infer_base_class_for_anonymous_controllers = true
     config.order = "random"
     config.include Capybara::DSL
+    config.expect_with( :rspec){ |c| c.syntax = [ :should, :expect]}
+    config.include Rails.application.routes.url_helpers
   end
-end
+#end
 
-Spork.each_run do
+#Spork.each_run do
   # This code will be run each time you run your specs.
   Dir[Rails.root.join("spec/support/**/*.rb")].each {|f| require f}
 
-end
+#end
 

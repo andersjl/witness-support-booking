@@ -3,7 +3,7 @@ require "app/helpers/application_helper"
 include ApplicationHelper
 include UserSessionsHelper
 
-describe "court_days/index" do
+describe "court_days/index", :type => :request do
 
   def test_dates( date_in_week)
     (7 * (WEEKS_P_PAGE + 2) + 1).times do |n|

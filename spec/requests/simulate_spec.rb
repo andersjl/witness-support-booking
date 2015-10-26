@@ -1,3 +1,3 @@
 describe "Simulate" do
-  specify( "role game"){ pending "test not written"}
+  specify( "role game"){ pending "test not written"; fail}
 end

@@ -31,7 +31,7 @@ describe "CourtDay" do
                           court_this
                         ).each do |session|
         subject.find{ |cd| cd.date == session.date &&
-                             cd.sessions.include?( session)}.should be_true
+                             cd.sessions.include?( session)}.should be_truthy
       end
     end
 
@@ -53,7 +53,7 @@ describe "CourtDay" do
                           court_this
                         ).each do |note|
         subject.find{ |cd| cd.date == note.date && cd.note == note
-                    }.should be_true
+                    }.should be_truthy
       end
     end
 
@@ -71,8 +71,8 @@ describe "CourtDay" do
 
   end
 
-  specify( ".monday"){ pending "not tested"}
-  specify( ".add_weekdays"){ pending "not tested"}
-  specify( ".ensure_weekday"){ pending "not tested"}
+  specify( ".monday"){ pending "not tested"; fail}
+  specify( ".add_weekdays"){ pending "not tested"; fail}
+  specify( ".ensure_weekday"){ pending "not tested"; fail}
 end
 

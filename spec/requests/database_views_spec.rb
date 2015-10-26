@@ -1,7 +1,7 @@
 require "spec_helper"
 require "database"
 
-describe "Database views" do
+describe "Database views", :type => :request do
 
   def create_sample_data
     u1, u2, u3 = create_test_user count: 3

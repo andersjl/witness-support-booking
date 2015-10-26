@@ -194,7 +194,7 @@ def verify_reachable( actions, reachable = true)
     end
     specify action do
       if reachable
-      # controller.should_receive action  -- does not redirect
+      # expect( controller).to receive( action)  -- does not redirect
         controller.instance_eval %Q$
           def #{ action}( *args)
             raise "reached"
@@ -202,7 +202,7 @@ def verify_reachable( actions, reachable = true)
         lambda{ verify_reachable_trigger action, method, target
               }.should raise_error( "reached")
       else
-        controller.should_not_receive action
+        expect( controller).not_to receive( action)
         verify_reachable_trigger action, method, target
       end
     end

@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "Court pages" do
+describe "Court pages", :type => :request do
 
   subject{ page}
 
@@ -56,8 +56,8 @@ describe "Court pages" do
           end
         end
       end
-      covered_has_users.should be_true
-      covered_has_no_users.should be_true
+      covered_has_users.should be_truthy
+      covered_has_no_users.should be_truthy
     end
 
     context "deleting a court" do

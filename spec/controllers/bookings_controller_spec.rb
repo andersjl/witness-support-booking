@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BookingsController do
+describe BookingsController, :type => :controller do
   context "authorization," do
     it_is_private :create do |correct_user|
       Booking.new user: correct_user,

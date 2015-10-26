@@ -27,7 +27,7 @@ how to tailor it to your needs.
 ### Development
 
 The Ruby version and all gem dependencies are defined in the `Gemfile`.  If
-you have the correct ruby, simply fork, cd to the application directory, and
+you have the correct ruby, simply clone, cd to the application directory, and
 
     bundle install
     bundle exec rake db:reset

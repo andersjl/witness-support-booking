@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe UsersController do
+describe UsersController, :type => :controller do
   context "authorization," do
     it_is_open :create  # new not tested, clashes with cookie detection
     it_is_protected :edit, :update

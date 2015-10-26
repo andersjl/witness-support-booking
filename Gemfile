@@ -1,21 +1,20 @@
 source 'https://rubygems.org'
 
-ruby "2.0.0"
+ruby "2.2.3"
 
-gem 'rails', '~> 4.0.1'
+gem 'rails'
 gem 'bootstrap-sass'
 gem 'bcrypt-ruby'
 gem 'nokogiri'
 gem 'turbolinks'
 gem 'json'
 gem 'jquery-rails'
-gem 'jquery-ui-rails'
 gem 'jquery-turbolinks'
 
 group :development, :test do
   gem 'sqlite3'
   gem 'rspec-rails'
-  gem 'spork'
+  gem 'rspec-its'
 end
 
 group :test do
