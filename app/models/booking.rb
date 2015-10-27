@@ -20,11 +20,15 @@ class Booking < ActiveRecord::Base
                            BOOKING_DAYS_REMOVABLE) < Date.current
   end
 
-  # creates a CancelledBooking to mirror <tt>self</tt>
+  # creates and returns a CancelledBooking to mirror <tt>self</tt> unless if
+  # the destruction destroys the court_session, too, nil is returned.
   def destroy_and_log
     destroy
+    court_session.reload
     CancelledBooking.create! court_session: court_session, user: user,
                              cancelled_at: Time.current
+  rescue
+    nil
   end
 
   def not_overbooked

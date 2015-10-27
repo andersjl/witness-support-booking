@@ -722,13 +722,15 @@ seems covered by "any week" ???
                 ){ click_button t( "booking.cancel.label",
                    session: t( "court_session.name#{ @session.start}.short"))}
         end
-        before do
-          soon = CourtDay.add_weekdays Date.current, 1
-          @session = CourtSession.find_by_date_and_court_id( soon, @cd.court
-                 ) || create_test_court_session( date: soon, court: @cd.court)
+        def create_booking( date)
+          @session = CourtSession.find_by_date_and_court_id( date, @cd.court
+                 ) || create_test_court_session( date: date, court: @cd.court)
           @session.bookings.delete_all
           Booking.create! user: @user, court_session: @session
-          visit_date soon
+          visit_date date
+        end
+        before do
+          create_booking( CourtDay.add_weekdays( Date.current, 1))
         end
         context "leaving need" do
           before{ cancel}
@@ -736,7 +738,19 @@ seems covered by "any week" ???
                                     text: t( "booking.cancel.late"))}
         end
         context "overbooked" do
+          # this is actually covered by "no need bug" below.  It would be nice
+          # to change this one to have a non-zero residual need
           before do
+            @session.update_attribute :need, 0
+            cancel
+          end
+          it{ should_not have_selector( "div.alert.alert-error")}
+        end
+        context "no need bug" do
+          before do
+            @session.update_attribute :need, 0
+            cancel
+            create_booking( CourtDay.add_weekdays( @session.date, 1))
             @session.update_attribute :need, 0
             cancel
           end
