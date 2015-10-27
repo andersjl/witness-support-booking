@@ -30,8 +30,8 @@ module AllDataDefs
   # name, and will also be the XML tag for that model's data.
   #
   # If this is the only element in the subarray, this model is NOT written to
-  # or read from the XML file, but any existing objects are deleted when
-  # reading XML.
+  # the XML file, but any existing objects are deleted when reading XML.  If
+  # the tag is present when reading an XML file, the read fails.
   #
   # Each remaining element describes an attribute.  It is either simply the
   # attribute name, or an array where the first element is the attribute name.

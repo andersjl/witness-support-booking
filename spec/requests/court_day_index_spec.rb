@@ -480,8 +480,11 @@ seems covered by "any week" ???
       context "future" do
 
         before do
-          @tested_date = CourtDay.add_weekdays(
-                           @cd.date, 1 - BOOKING_DAYS_REMOVABLE + rand( 10))
+          loop do
+            @tested_date = CourtDay.add_weekdays(
+                            @cd.date, 1 - BOOKING_DAYS_REMOVABLE + rand( 10))
+            break if @tested_date != @cd.date
+          end
           create_tested_date
           Booking.create! user: @booked_user,
                           court_session: @tested_cd.sessions[ 0]
