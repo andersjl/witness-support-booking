@@ -1,10 +1,10 @@
 source 'https://rubygems.org'
 
-ruby "2.2.3"
+ruby "2.2.4"
 
 gem 'rails'
 gem 'bootstrap-sass'
-gem 'bcrypt-ruby'
+gem 'bcrypt'
 gem 'nokogiri'
 gem 'turbolinks'
 gem 'json'
