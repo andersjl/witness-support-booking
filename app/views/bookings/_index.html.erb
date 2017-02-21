@@ -12,6 +12,9 @@
                                             court_session.start}.short"))} %>
 <%    else %>
             <%= booking.user.name %>
+<%    end
+      if admin? %>
+            <%= booking.created_at.strftime "%F" %>
 <%    end %>
           </div>
 <%  end %>

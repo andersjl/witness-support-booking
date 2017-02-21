@@ -87,7 +87,7 @@ describe "court_days/index", :type => :request do
       test_dates( @tested_date) do |date, show|
         if show
           should have_content date.iso8601
-        else
+        elsif ! @user.admin?
           should_not have_content date.iso8601
         end
       end
