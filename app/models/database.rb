@@ -54,7 +54,7 @@ module AllDataDefs
       [ "court_session",  COURT_DEF, "date", "start", "need"],
       [ "court_day_note", COURT_DEF, "date", "text"],
       [ "booking",        BOOKING_COURT_DEF, BOOKING_USER_DEF,
-                          BOOKING_SESSION_DEF
+                          BOOKING_SESSION_DEF, "booked_at"
       ], [ "cancelled_booking"], [ "snapshot"],
     ]
 

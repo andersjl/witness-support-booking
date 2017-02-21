@@ -124,7 +124,8 @@ describe "CourtSession model" do
       context "booked" do
         before do
           @session.update_attribute :need, 1
-          Booking.create! user: create_test_user, court_session: @session
+          Booking.create! user: create_test_user, court_session: @session,
+                          booked_at: @session.date - rand( 10)
           @session.update_attribute :need, 0
           @session.reload
         end

@@ -5,7 +5,8 @@ describe "Booking model" do
   before do
     @user = create_test_user
     @session = create_test_court_session court: @user.court, need: 2
-    @booking = Booking.create!( user: @user, court_session: @session)
+    @booking = Booking.create! user: @user, court_session: @session,
+                               booked_at: @session.date - rand( 10)
   end
 
   subject{ @booking}
@@ -43,7 +44,8 @@ describe "Booking model" do
       before do
         @session = create_test_court_session(
                      court: create_test_court( name: "Other"), need: 2)
-        @booking = Booking.new user: @user, court_session: @session
+        @booking = Booking.new user: @user, court_session: @session,
+                               booked_at: @session.date - rand( 10)
         @booking.valid?
       end
       it{ should_not be_valid}
@@ -92,8 +94,9 @@ describe "Booking model" do
       specify{ (Time.now - @cancelled.cancelled_at).should < 1}}
     context "and recreated" do
       before do
-        Booking.create! user: @booking.user,
-                        court_session: @booking.court_session
+        Booking.create! user:          @booking.user,
+                        court_session: @booking.court_session,
+                        booked_at:     @booking.court_session.date - rand( 10)
         @cancelled = CancelledBooking.find_by_court_session_id_and_user_id(
                                       @booking.court_session, @booking.user)
       end

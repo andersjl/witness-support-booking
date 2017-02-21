@@ -12,8 +12,10 @@ describe Database do
       u = create_test_user
       s1, s2 = create_test_court_session count: 2
       n = create_test_court_day_note
-      b1 = Booking.create! user: u, court_session: s1
-      b2 = Booking.create! user: u, court_session: s2
+      b1 = Booking.create! user: u, court_session: s1,
+                           booked_at: s1.date - rand( 10)
+      b2 = Booking.create! user: u, court_session: s2,
+                           booked_at: s2.date - rand( 10)
       b1.destroy_and_log
       init_row_counts
     end

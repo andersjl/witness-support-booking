@@ -2,6 +2,7 @@ class Booking < ActiveRecord::Base
 
   validates :user_id, presence: true
   validates :court_session_id, presence: true
+  validates :booked_at, presence: true
   validate :not_overbooked, :within_one_court
 
   before_save :destroy_cancelled_booking

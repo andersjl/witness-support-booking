@@ -30,7 +30,9 @@ def court_default( name)
                                         password: "bad_pw"
     other_court_session =
       create_test_court_session court: other_court, need: 1
-    Booking.create! user: other_court_user, court_session: other_court_session
+    Booking.create! user:          other_court_user,
+                    court_session: other_court_session,
+                    booked_at:     other_court_session.date - rand( 10)
   end
   Court.find_by_name( name)
 end

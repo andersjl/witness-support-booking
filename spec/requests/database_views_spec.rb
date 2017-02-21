@@ -16,7 +16,9 @@ describe "Database views", :type => :request do
     @has_2_bookings = s3
     @overbooked_user = u3
     [ [ 1, 3], [ 1, 6], [ 2, 5], [ 2, 2], [ 3, 1], [ 3, 3]].collect do |u, s|
-      Booking.create! user: eval( "u#{ u}"), court_session: eval( "s#{ s}")
+      session = eval( "s#{ s}")
+      Booking.create! user: eval( "u#{ u}"), court_session: session,
+                      booked_at: session.date - rand( 10)
     end
   end
 

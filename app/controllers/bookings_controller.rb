@@ -14,6 +14,7 @@ extend Authorization
     booking = Booking.new
     booking.user_id          = params[ :booking][ :user_id]
     booking.court_session_id = params[ :booking][ :court_session_id]
+    booking.booked_at        = Date.today
     @model_with_errors = booking unless booking.save
     back_to_court_days
   end

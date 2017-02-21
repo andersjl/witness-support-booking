@@ -212,7 +212,9 @@ describe "User model" do
 
     context "booked" do
 
-      before{ Booking.create! user: @user, court_session: @session}
+      before{ Booking.create! user: @user, court_session: @session,
+                              booked_at: @session.date - rand( 10)
+            }
 
       it{ should be_booked( @session)}
 
@@ -222,7 +224,8 @@ describe "User model" do
 
       specify "second booking fails" do
         lambda do
-          b = Booking.new user: @user, court_session: @session
+          b = Booking.new user: @user, court_session: @session,
+                          booked_at: @session.date - rand( 10)
           b.save!
         end.should raise_error( ActiveRecord::ActiveRecordError, /unique/i)
       end

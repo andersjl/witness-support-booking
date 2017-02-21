@@ -70,7 +70,8 @@ describe "court_days/index", :type => :request do
     @note_id = "note-#{ @cd.date.iso8601}"
     @booked_user = create_test_user name: "Berit Bokad",
                                     email: "bokad@example.com"
-    Booking.create! user: @booked_user, court_session: @cd.sessions[ 1]
+    Booking.create! user: @booked_user, court_session: @cd.sessions[ 1],
+                    booked_at: @cd.sessions[ 1].date - rand( 10)
   end
 
   shared_examples_for "on court_days index page" do
@@ -304,8 +305,10 @@ describe "court_days/index", :type => :request do
         @session_id = "session-#{ @session.start_time.iso8601}"
         @session.update_attribute :need, 2
         Booking.create! user: create_test_user( court: @session.court),
-                        court_session: @session
-        @booking = Booking.create! user: @booked_user, court_session: @session
+                        court_session: @session,
+                        booked_at: @session.date - rand( 10)
+        @booking = Booking.create! user: @booked_user, court_session: @session,
+                                   booked_at: @session.date - rand( 10)
       end
       context "leaving need" do
         before{ cancel}
@@ -334,7 +337,8 @@ describe "court_days/index", :type => :request do
                  ) || create_test_court_session( date: yest, court: @cd.court)
           @session.bookings.delete_all
           @session_id = "session-#{ @session.start_time.iso8601}"
-          @booking = Booking.create! user: @booked_user, court_session: @session
+          @booking = Booking.create! user: @booked_user, court_session: @session,
+                                     booked_at: @session.date - rand( 10)
           cancel CourtDay.add_weekdays( @session.date, -1
                                       ).in_time_zone
         end
@@ -438,7 +442,7 @@ seems covered by "any week" ???
 
       context "future date, new and save" do
         before do
-          weeks, days = (10+ rand( 100)).divmod 5
+          weeks, days = (10 + rand( 100)).divmod 5
           new_start_date = @monday + 7 * weeks + days
           visit_date new_start_date
           change( CourtDay.monday( new_start_date) + rand( 5),
@@ -455,7 +459,8 @@ seems covered by "any week" ???
     context "unbooking" do
 
       before do
-        Booking.create! user: @booked_user, court_session: @cd.sessions[ 0]
+        Booking.create! user: @booked_user, court_session: @cd.sessions[ 0],
+                        booked_at: @cd.sessions[ 0].date - rand( 10)
         @morning_id = date_session_to_id @cd.date, :morning
         @afternoon_id = date_session_to_id @cd.date, :afternoon
         visit court_days_path
@@ -487,7 +492,8 @@ seems covered by "any week" ???
           end
           create_tested_date
           Booking.create! user: @booked_user,
-                          court_session: @tested_cd.sessions[ 0]
+                          court_session: @tested_cd.sessions[ 0],
+                          booked_at: @tested_cd.sessions[ 0].date - rand( 10)
           visit_date @tested_date
           within( :id, @tested_id){ click_link( @booked_user.name)}
         end
@@ -503,7 +509,8 @@ seems covered by "any week" ???
                         Date.current, -1 - BOOKING_DAYS_REMOVABLE - rand( 10))
           create_tested_date
           Booking.create! user: @booked_user,
-                          court_session: @tested_cd.sessions[ 0]
+                          court_session: @tested_cd.sessions[ 0],
+                          booked_at: @tested_cd.sessions[ 0].date - rand( 10)
           visit_date @tested_date
         end
 
@@ -726,7 +733,8 @@ seems covered by "any week" ???
           @session = CourtSession.find_by_date_and_court_id( date, @cd.court
                  ) || create_test_court_session( date: date, court: @cd.court)
           @session.bookings.delete_all
-          Booking.create! user: @user, court_session: @session
+          Booking.create! user: @user, court_session: @session,
+                          booked_at: @session.date - rand( 10)
           visit_date date
         end
         before do

@@ -50,7 +50,8 @@ module Data
         session.need.times do
           user = (rand( 3) == 0 ? shortlist : users).sample
           if rand( 3) != 0 && !user.booked?( session)
-            Booking.create user: user, court_session: session
+            Booking.create user: user, court_session: session,
+                           booked_at: session.date - rand( 10)
             bookings += 1
           end
         end
