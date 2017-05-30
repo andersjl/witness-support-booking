@@ -70,7 +70,7 @@ class CourtSession < ActiveRecord::Base
   end
 
   def reason_to_exist?; need > 0 || !bookings.empty? end
-  def expired?; start_time < Time.current end
+  def expired?; start_time + ALLOW_LATE_BOOKING < Time.current end
 
   def error_unless_reason_to_exist
     return unless need
