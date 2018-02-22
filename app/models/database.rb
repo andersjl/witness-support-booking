@@ -49,13 +49,15 @@ module AllDataDefs
   #   lambda{ |model_obj, value| setter( model_obj, value)}
   #
   MODEL_DEFS =  # order matters, hence no Hash (no longer true ...)
-    [ [ "court",          "name", "link"],
-      [ "user",           COURT_DEF, "name", "email", "password_digest"],
-      [ "court_session",  COURT_DEF, "date", "start", "need"],
-      [ "court_day_note", COURT_DEF, "date", "text"],
-      [ "booking",        BOOKING_COURT_DEF, BOOKING_USER_DEF,
-                          BOOKING_SESSION_DEF, "booked_at"
-      ], [ "cancelled_booking"], [ "snapshot"],
+    [ [ "court",             "name", "link"],
+      [ "user",              COURT_DEF, "name", "email", "password_digest"],
+      [ "court_session",     COURT_DEF, "date", "start", "need"],
+      [ "court_day_note",    COURT_DEF, "date", "text"],
+      [ "booking",           BOOKING_COURT_DEF, BOOKING_USER_DEF,
+                             BOOKING_SESSION_DEF, "booked_at"],
+      [ "cancelled_booking", BOOKING_COURT_DEF, BOOKING_USER_DEF,
+                             BOOKING_SESSION_DEF, "cancelled_at"],
+      [ "snapshot"],
     ]
 
   def self.define_standard_get( model_tag, attr_tag)  # :nodoc:
@@ -101,7 +103,7 @@ module AllDataDefs
   end
 
   def self.model_class( model_tag)
-    (@@model_classes ||= { })[ model_tag] ||= model_tag.camelize.constantize
+    model_tag.camelize.constantize
   end
 
   def self.attr_tags( model_tag)

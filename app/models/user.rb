@@ -32,8 +32,9 @@ class User < ActiveRecord::Base
   before_save :create_remember_token
 
   belongs_to :court
-  has_many :bookings, dependent: :destroy  # may destroy court_session, too
-  has_many :cancelled_bookings, dependent: :delete_all  # nothing to destroy
+  has_many :bookings,           dependent: :restrict_with_error
+  has_many :cancelled_bookings, dependent: :restrict_with_error
+  has_many :court_sessions, through: :bookings
 
   def inspect; "|#{ court && court.name}|#{ name}|#{ email}|#{ role}|" end
 
@@ -48,8 +49,16 @@ class User < ActiveRecord::Base
     bookings.find_by_court_session_id court_session.id
   end
 
+  def invalidate
+    update_columns zombie: true, role: "disabled", password_digest: nil
+    # note that the record is no longer valid!
+    # we invalidate rather than destroy to keep past bookings
+    self.court_sessions =
+      court_sessions.where( "date < '#{ Time.now.strftime( "%F")}'")
+  end
+
   def self.order_by_role_and_name( court)
-    where( "court_id = ?", court.id).sort do |u1, u2|
+    where( court: court, zombie: false).sort do |u1, u2|
       if u1.role == u2.role
         u1.name <=> u2.name
       else
@@ -63,9 +72,9 @@ class User < ActiveRecord::Base
 
   def self.disabled_count( court = nil)
     if court
-      where( "court_id = ? and role = ?", court, "disabled").count
+      where( court: court, role: "disabled", zombie: false).count
     else
-      where( "role = ?", "disabled").count
+      where( role: "disabled", zombie: false).count
     end
   end
 

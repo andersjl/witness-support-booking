@@ -230,8 +230,8 @@ describe "User model" do
         end.should raise_error( ActiveRecord::ActiveRecordError, /unique/i)
       end
 
-      specify "destroyed along with self" do
-        expect{ @user.destroy}.to change( Booking, :count).by( -1)
+      specify "destroyed by #invalidate" do
+        expect{ @user.invalidate}.to change( Booking, :count).by( -1)
       end
     end
   end

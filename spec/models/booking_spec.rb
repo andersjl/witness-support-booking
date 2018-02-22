@@ -61,8 +61,8 @@ describe "Booking model" do
 
   describe "cascading" do
 
-    context "when user is destroyed" do
-      before{ @user.destroy}
+    context "when user is invalidated" do
+      before{ @user.invalidate}
       specify{ expect{ @booking.reload
                      }.to raise_error ActiveRecord::RecordNotFound}
     end

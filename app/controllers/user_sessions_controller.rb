@@ -22,7 +22,8 @@ class UserSessionsController < ApplicationController
     if user && master? && !user.master?
       spoof user
       redirect_to court_days_path
-    elsif user && user.authenticate( params[ :user_session][ :password])
+    elsif user && ! user.zombie &&
+          user.authenticate( params[ :user_session][ :password])
       log_in user
       redirect_to court_days_path
     else

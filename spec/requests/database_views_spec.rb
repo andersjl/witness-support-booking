@@ -15,7 +15,10 @@ describe "Database views", :type => :request do
     @has_1_booking = s6
     @has_2_bookings = s3
     @overbooked_user = u3
-    [ [ 1, 3], [ 1, 6], [ 2, 5], [ 2, 2], [ 3, 1], [ 3, 3]].collect do |u, s|
+    Booking.create!( user: u2, court_session: s5,
+                     booked_at: s5.date - 5 - rand( 5)
+                   ).destroy_and_log
+    [ [ 1, 3], [ 1, 6], [ 2, 2], [ 3, 1], [ 3, 3]].collect do |u, s|
       session = eval( "s#{ s}")
       Booking.create! user: eval( "u#{ u}"), court_session: session,
                       booked_at: session.date - rand( 10)
@@ -85,7 +88,11 @@ describe "Database views", :type => :request do
         @has_2_bookings =
           [ @has_2_bookings.court.name, @has_2_bookings.start_time.iso8601]
         @overbooked_user = [ @overbooked_user.court.name, @overbooked_user.email]
-        User.all.each{ |u| u.destroy if u.email != @kept_email}
+        kept_id = User.find_by_email( @kept_email).id
+        [ Booking, CancelledBooking].each do |booking_class|
+          booking_class.where( "user_id != '#{ kept_id}'").delete_all
+        end
+        User.where( "id != #{ kept_id}").delete_all
         @curr_count = AllDataDefs.model_tags.inject( { }) do |cnt, tag|
           cls = AllDataDefs.model_class( tag)
           cnt[ cls] = cls.count + (cls == User ? 1 : 0)

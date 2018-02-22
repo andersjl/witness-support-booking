@@ -15,34 +15,11 @@ describe "CancelledBooking model" do
   it{ should respond_to :court_session}
   it{ should respond_to :cancelled_at}
 
-  context ".purge_old" do
-
-    def expect_purge( total, purged)
-      case total
-      when 0 then @cancelled.delete
-      when 1 then # do nothing
-      else
-        [ create_test_court_session( court: @user.court, count: total - 1)
-        ].flatten.each{ |s| CancelledBooking.create user: @user,
-                              court_session: s, cancelled_at: Time.current}
-      end
-      CourtSession.all.each{ |s| s.update_attribute :date,
-                CourtDay.add_weekdays( s.date, - BOOKING_DAYS_AHEAD_MAX - 14)}
-      CancelledBooking.all.sample.send( :purge_old)
-      CancelledBooking.count.should == total - purged
-    end
-
-    specify( "purge 1 of 1"){ expect_purge 1, 1}
-    specify( "purge 1 of 10"){ expect_purge 10, 1}
-    specify( "purge 2 of 11"){ expect_purge 11, 2}
-  end
-
   describe "cascading" do
 
-    context "when user is destroyed" do
-      before{ @user.destroy}
-      specify{ expect{ @cancelled.reload
-                     }.to raise_error ActiveRecord::RecordNotFound}
+    context "when user is invalidated" do
+      before{ @user.invalidate}
+      specify{ expect{ @cancelled.reload}.not_to raise_error}
     end
 
     context "when court_session is destroyed" do

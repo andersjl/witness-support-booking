@@ -4,8 +4,7 @@ extend Authorization
   before_action :cookies_required, :only => :new
 
   authorize [ :index, :show], [ "normal", "admin", "master"]
-  authorize [ :edit, :update],
-            [ "disabled", "normal", "admin", "master"] do |params, user|
+  authorize [ :edit, :update], USER_ROLES do |params, user|
     user.id == params[ :id].to_i || user.master? ||
       (user.admin? && User.find( params[ :id]).court == user.court)
   end
@@ -123,6 +122,8 @@ extend Authorization
     if destroyed
       destroyed_inspect = destroyed.inspect
       destroyed.destroy
+      # suppose restrict_with_error error - perhaps a bit sloppy
+      destroyed.invalidate if destroyed.errors.count > 0
       flash[ :success] = t( "user.destroyed", user: destroyed_inspect)
     end
     redirect_to users_path

@@ -37,6 +37,7 @@ describe "User pages", :type => :request do
 
     context "first user" do
       before do
+        Booking.destroy_all
         User.destroy_all
         Court.destroy_all
         visit sign_up_path
