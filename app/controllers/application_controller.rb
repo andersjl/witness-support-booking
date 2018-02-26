@@ -1,8 +1,8 @@
 
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
-  include UserSessionsHelper
-  include CourtDaysHelper
+  include UserSessionsUtils
+  include CourtDaysUtils
 
   # Detects if cookies are present (only GET requests, not for bots).
   # If cookies are disabled, shows a flash message.

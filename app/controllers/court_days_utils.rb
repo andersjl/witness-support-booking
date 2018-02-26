@@ -1,5 +1,5 @@
 
-module CourtDaysHelper
+module CourtDaysUtils
 
   def back_to_court_days( court = nil)
     collect_court_days( court || current_user.court)
