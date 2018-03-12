@@ -76,8 +76,8 @@ describe "court_days/index", :type => :request do
 
   shared_examples_for "on court_days index page" do
     it{ should have_title(
-          "#{ t( 'general.application')} | #{ t( 'court_days.index.title')}")}
-    it{ should have_selector( "h1", text: t( "court_days.index.title"))}
+      "#{ t( 'general.application')} | #{ t( 'court_days.index.title.weeks')}")}
+    it{ should have_selector( "h1", text: t( "court_days.index.title.weeks"))}
   end
 
   shared_examples_for "any week" do
@@ -124,7 +124,7 @@ describe "court_days/index", :type => :request do
         next unless show
         START_TIMES_OF_DAY_DEFAULT.each do |start_tod|
           start = date.in_time_zone + start_tod
-          next unless start < Time.current - 1
+          next unless start < Time.current - ALLOW_LATE_BOOKING - 1
           session = page.first( :id, "session-#{ start.iso8601}", minimum: 0)
           next unless session
           session.should_not have_selector "select"
@@ -175,7 +175,7 @@ describe "court_days/index", :type => :request do
       before do
         @new_start_date = @monday + 4711 + rand( 7)
         within :id, "weekpicker-bottom" do
-          fill_in "start_date", with: @new_start_date
+          fill_in "monday", with: @new_start_date
           click_button "OK"
         end
         @tested_date = CourtDay.monday @new_start_date

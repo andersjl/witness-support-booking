@@ -25,7 +25,11 @@
                             :method => "delete" %></li>
             <li><%= link_to t( "general.help.short"), help_path %></li>
 <%      if enabled? %>
-            <li><%= link_to t( "court_days.index.title"), court_days_path %></li>
+            <li>
+              <%= link_to t( "court_days.index.title.weeks"),
+                            court_days_path
+              %>
+            </li>
             <li><%= link_to t( "users.index.title"), users_path %></li>
 <%      end %>
           </ul>
@@ -42,7 +46,8 @@
                                            :method => "delete" %>
         &nbsp; <%= link_to t( "general.help.short"), help_path %>
 <%    if enabled? %>
-        &nbsp; <%= link_to t( "court_days.index.title"), court_days_path %>
+        &nbsp;
+        <%= link_to t( "court_days.index.title.weeks"), court_days_path %>
         &nbsp; <%= link_to t( "users.index.title"), users_path %>
 <%    end
     else %>

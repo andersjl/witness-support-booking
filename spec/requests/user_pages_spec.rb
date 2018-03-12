@@ -82,7 +82,7 @@ describe "User pages", :type => :request do
         it{ should have_selector( "div.alert.alert-success",
               text: t( "user.created", name: @user.name))}
         it{ should have_link( @user.court.name, href: @user.court.link)}
-        it{ should_not have_link( t( "court_days.index.title"))}
+        it{ should_not have_link( t( "court_days.index.title.weeks"))}
         it{ should_not have_link( t( "users.index.title"))}
         it{ should have_link( t( "general.log_out"), href: log_out_path)}
         it{ should_not have_link( t( "general.log_in"))}
@@ -489,7 +489,7 @@ describe "User pages", :type => :request do
       it "new password works" do
         fake_log_in @edited, @new_pw
         should have_title( "#{ t( 'general.application')
-                             } | #{ t( 'court_days.index.title')}")
+                             } | #{ t( 'court_days.index.title.weeks')}")
       end
     end
 
@@ -547,7 +547,7 @@ describe "User pages", :type => :request do
 
         it_behaves_like "password change"
         it{ should have_title( "#{ t( 'general.application')
-                                 } | #{ t('court_days.index.title')}")}
+                                 } | #{ t('court_days.index.title.weeks')}")}
         it{ within( "div.alert.alert-success"
                   ){ should have_content( t( "user.changed.message"))}}
         it{ should have_link( t( "general.log_out"), href: log_out_path)}

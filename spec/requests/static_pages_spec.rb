@@ -15,7 +15,8 @@ describe "Static pages", :type => :request do
     end
 
     shared_examples_for "any enabled user's start page" do
-      it{ should have_link t( "court_days.index.title"), :href => court_days_path}
+      it{ should have_link t( "court_days.index.title.weeks"),
+                           :href => court_days_path}
       it{ should have_link t( "users.index.title"), :href => users_path}
     end
 

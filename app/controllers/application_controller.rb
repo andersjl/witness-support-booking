@@ -4,6 +4,52 @@ class ApplicationController < ActionController::Base
   include UserSessionsUtils
   include CourtDaysUtils
 
+  # Handles a parameter that is also stored as a string in session.
+  #
+  # The returned value is converted to a symbol if no block given.
+  #
+  # An optional block converts the value.  If the block return value is an
+  # Array, it is a pair [ <value to use>, <string to store in session>]. If
+  # not, it is the value to use.  (So you cannot store an Array this way!)
+  #
+  # The session key is always converted to a symbol.
+  #
+  # If there is no string to store in the session, the session key is deleted
+  # from the session.
+  #
+  # options
+  #   :no_params       truthy => only look for a value in session
+  #   :session_key     default param
+  #   :session_prefix  prepended to param
+  #   :default         value if not found in params or session
+  # If no block, a value in params is converted to a symbol.
+  def persistent_param( param, options)
+    sess_key =
+      ( options[ :session_key] ||
+        ( options[ :session_prefix] &&
+            ( options[ :session_prefix] + "_" + param.to_s)
+        ) || param
+      ).intern
+    value =
+      ( ( ! options[ :no_params] && params[ param]) ||
+        session[ sess_key] ||
+        options[ :default]
+      ).to_s
+    value = nil if 0 == value.strip.length
+    if value
+      if block_given?
+        converted = yield( value)
+        converted, value = converted if converted.is_a? Array
+      else
+        converted = value.intern
+      end
+      session[ sess_key] = value
+    else
+      session.delete( sess_key)
+    end
+    converted
+  end
+
   # Detects if cookies are present (only GET requests, not for bots).
   # If cookies are disabled, shows a flash message.
   # Usage:

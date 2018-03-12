@@ -1,14 +1,12 @@
-<div class="weekpicker" id="weekpicker-<%= wp_id %>">
+<div class="dateselector" id="weekpicker-<%= wp_id %>">
   <%= t( "court_days.week_picker.prompt") %>
   <%= form_tag court_days_path, method: "get", class: "form-inline" do %>
     <%= submit_tag VALUE_LAST_WEEK %>
-    <%= text_field_tag :start_date, @start_date,
+    <%= text_field_tag :monday, @monday,
                        id: "datepicker-#{ wp_id}",
-                       class: "datepicker",
-                       onchange: "this.form.submit();" %>
-    <noscript>
-      <%= submit_tag "OK" %>
-    </noscript>
+                       class: "datepicker"
+    %>
+    <%= submit_tag "OK" %>
     <%= submit_tag VALUE_NEXT_WEEK %>
   <% end %>
 </div>

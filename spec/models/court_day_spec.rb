@@ -17,7 +17,7 @@ describe "CourtDay" do
                            5 * WEEKS_P_PAGE + 4, court_this )
       generate_bookings( court_this)
       @first_date = CourtDay.monday( Date.current)
-      @page = CourtDay.page( court_this, Date.current)
+      @page = CourtDay.page( court_this, @first_date)
     end
 
     subject{ @page}

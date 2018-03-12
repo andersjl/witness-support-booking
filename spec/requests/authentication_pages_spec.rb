@@ -32,8 +32,9 @@ describe "Authentication pages" do
         end
 
         if role != "disabled"
-          it{ should have_title( "#{ t( 'general.application')
-                                   } | #{ t( 'court_days.index.title')}")}
+          it{ should have_title(
+              "#{ t( 'general.application')
+                } | #{ t( 'court_days.index.title.weeks')}")}
         end
         it{ should have_link( @user.court.name, :href => @user.court.link)}
         it{ should have_link( t( "general.log_out"), :href => log_out_path)}

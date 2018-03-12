@@ -1,5 +1,5 @@
-<%  provide( :title, t( "court_days.index.title")) %>
-    <h1><%= t( "court_days.index.title") %></h1>
+<%  provide( :title, @title) %>
+    <h1><%= @title %></h1>
 <%  if @model_with_errors %>
 <%=   render partial: "shared/error_messages",
              locals: { model: @model_with_errors} %>
@@ -18,5 +18,5 @@
                         last: ix == @court_days.count - 1} %>
 <%  end %>
     </div>
-<%= render partial: "court_days/weekpicker",
-           locals:  { wp_id: "bottom"} %>
+<%=   render partial: "court_days/dateselector",
+             locals:  { wp_id: "bottom"} %>

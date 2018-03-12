@@ -186,7 +186,10 @@ sv:
       title: Domstolar
   court_days:
     index:
-      title: Rondningar
+      title:
+        weeks: Rondningar
+        unbooked: Obokade pass
+        cancelled: Avbokningar
       users_to_enable:
         one: "%{count} ny att aktivera"
         other: "%{count} nya att aktivera"

@@ -56,7 +56,7 @@ describe "Database views", :type => :request do
         it "shows correct page after login" do
           if @logged_in.enabled?
             should have_title( "#{ t( 'general.application')
-                                 } | #{ t( 'court_days.index.title')}")
+                                 } | #{ t( 'court_days.index.title.weeks')}")
           else
             should have_content( t( "static_pages.home.disabled",
                                     email: @logged_in.email))

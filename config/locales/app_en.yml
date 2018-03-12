@@ -140,7 +140,10 @@ en:
       title: Courts
   court_days:
     index:
-      title: Sessions
+      title:
+        weeks: Sessions
+        unbooked: Unbooked
+        cancelled: Cancelled
       users_to_enable: "%{count} new to enable"
       users_to_enable_common: new to enable
     week_picker:
