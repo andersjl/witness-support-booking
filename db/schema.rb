@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180220194320) do
+ActiveRecord::Schema.define(version: 2018_03_13_051002) do
 
   create_table "bookings", force: :cascade do |t|
     t.integer "user_id", null: false
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 20180220194320) do
     t.datetime "cancelled_at", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["court_session_id", "user_id"], name: "index_cancelled_bookings_on_court_session_id_and_user_id", unique: true
+    t.index ["court_session_id", "user_id"], name: "index_cancelled_bookings_on_court_session_id_and_user_id"
   end
 
   create_table "court_day_notes", force: :cascade do |t|

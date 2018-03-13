@@ -41,23 +41,40 @@ module Data
 
   def generate_bookings( *courts)
     [ courts].flatten.each do |court|
-      bookings = 0
-      unbooked = 0
+      bookings  = 0
+      unbooked  = 0
+      cancelled = 0
       users = User.where( [ "court_id = ? and role = ?", court.id, "normal"])
       shortlist = users[ 0, 3].compact
       CourtSession.where( [ "court_id = ?", court]).each do |session|
         bookings_before = bookings
         session.need.times do
           user = (rand( 3) == 0 ? shortlist : users).sample
-          if rand( 3) != 0 && !user.booked?( session)
-            Booking.create user: user, court_session: session,
-                           booked_at: session.date - rand( 10)
-            bookings += 1
+          case rand( 6)
+          when 0
+            CancelledBooking.create( user: user, court_session: session,
+              cancelled_at:
+                [ session.date.midnight + session.start, Time.current
+                ].min -
+                  rand( ( 0 == rand( 2) ?
+                      BOOKING_DAYS_AHEAD_MIN : BOOKING_DAYS_AHEAD_MAX
+                    ) * 86400
+            )     )
+            cancelled += 1
+          when 1
+            #  do nothing
+          else
+            if ! user.booked?( session)
+              Booking.create( user: user, court_session: session,
+                booked_at: session.date - rand( 10)
+              )
+              bookings += 1
+            end
           end
         end
         unbooked += 1 if bookings == bookings_before
       end
-      yield court, bookings, unbooked if block_given?
+      yield court, bookings, unbooked, cancelled if block_given?
     end
   end
 

@@ -11,12 +11,12 @@ namespace :db do
 
   task populate: :environment do
 
-    puts "==  Create courts ============================================================"
+    puts "==  Create courts ================================================="
     COURT_COUNT.times{ |c| court =
                              Court.create name: "Domstol #{ c + 1}"}
     puts "  #{ COURT_COUNT} courts created"
 
-    puts "==  Create users ============================================================="
+    puts "==  Create users =================================================="
     master = User.create(
                     court:    Court.find_by_name( "Domstol 2"),
                     email:    "master@example.com",
@@ -46,7 +46,7 @@ namespace :db do
       puts "  #{ USER_COUNT} normal users created at #{ court.name}"
     end
 
-    puts "==  Create court days ========================================================"
+    puts "==  Create court days ============================================="
     generate_court_days(
       CourtDay.monday( Date.current - (COURT_DAY_COUNT / 10) * 7),
       COURT_DAY_COUNT, *Court.all
@@ -55,12 +55,22 @@ namespace :db do
                } (#{ sessions} sessions, #{ notes} notes)"
     end
 
-    puts "==  Create bookings =========================================================="
-    generate_bookings( *Court.all) do |court, bookings, unbooked|
-      puts "  #{ bookings} bookings created at #{
-                                 court.name} (#{ unbooked} sessions unbooked)"
+    puts "==  Create bookings ==============================================="
+    generate_bookings( *Court.all) do |court, bookings, unbooked, cancelled|
+      puts "  #{ bookings} bookings created at #{ court.name} (#{
+                                 unbooked} unbooked, #{ cancelled} cancelled)"
     end
-    puts "== done"
+    puts "  #{
+        CourtSession.select do |cs|
+          users = cs.cancelled_bookings.reduce( {}) do |users, cb|
+              users[ cb.user] ||= 0
+              users[ cb.user]  += 1
+              users
+            end
+          users.values.count > 0 && users.values.max > 1
+        end.count
+      } multiple cancels"
+    puts "==  done"
   end
 end
 
