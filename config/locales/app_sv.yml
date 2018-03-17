@@ -84,19 +84,19 @@ sv:
     edit_name_or_link: Ändra namn eller länk
     changed: Uppgifterna sparade
     create: Skapa ny domstol
-    created: Domstol %{court} skapad
+    created: "Domstol %{court} skapad"
     default: Automatgenererad första domstol
     destroy:
       confirm: |
-        Är du säker?  Om du klickar på OK tar du bort domstolen %{name} och
-        alla dess inskrivna behov och texter
-    destroyed: Domstol %{court} borttagen
+        "Är du säker?  Om du klickar på OK tar du bort domstolen %{name} och
+        alla dess inskrivna behov och texter"
+    destroyed: "Domstol %{court} borttagen"
     prompt: Välj domstol
 
 # subject matter court day, regardless of controller
   court_day:
     error:
-      weekend: är en %{dow}
+      weekend: "är en %{dow}"
     need:
       label: Behov
 
@@ -135,45 +135,45 @@ sv:
         Är du säker? Om inläsningen misslyckas finns varken användare eller
         bokningar kvar!
       label: RADERA HELA DATABASEN och ersätt den med filen
-    dropped_older_than: Databasen rensad på poster äldre än %{date}
+    dropped_older_than: "Databasen rensad på poster äldre än %{date}"
     drop_older:
       label: Rensa äldre
       confirm: |
-        Är du säker? Alla pass, noteringar och bokningar äldre än %{date}
-        kommer att rensas bort oåterkalleligt!
+        "Är du säker? Alla pass, noteringar och bokningar äldre än %{date}
+        kommer att rensas bort oåterkalleligt!"
     error:
-      untouched: Databasen är orörd
       compromised: Databasen är påverkad
+      exception: "Undantag %{exception}"
       parse: Inläsningen misslyckades
-      exception: Undantag %{exception}
-    oldest_date: Äldsta befintliga datum %{date}
+      untouched: Databasen är orörd
+    oldest_date: "Äldsta befintliga datum %{date}"
     row_count: rader
 
 # subject matter user, regardless of controller
   user:
     changed:
       message: Uppgifterna sparade
-      password: Lösenordet ändrat för %{name}
-    created: Välkommen %{name}!
+      password: "Lösenordet ändrat för %{name}"
+    created: "Välkommen %{name}!"
     destroy:
-      confirm: Ta bort %{name}?
-    destroyed: Användare %{user} borttagen
+      confirm: "Ta bort %{name}?"
+    destroyed: "Användare %{user} borttagen"
     disable:
       label: Deaktivera
-      confirm: Deaktivera %{name}?
+      confirm: "Deaktivera %{name}?"
     enable:
       label: Aktivera
-      confirm: Aktivera %{name}?
+      confirm: "Aktivera %{name}?"
     error:
       email_taken: redan använd vid denna domstol
     promote:
       label: Bemyndiga
-      confirm: Bemyndiga %{user} att administrera vittnesstöd vid %{court}?
+      confirm: "Bemyndiga %{user} att administrera vittnesstöd vid %{court}?"
     role:
       admin: domstolsadministratör
-      changed: Roll för användare %{name} ändrad från %{from} till %{to}
+      changed: "Roll för användare %{name} ändrad från %{from} till %{to}"
       changed_fail: |
-        Roll för användare %{name} kunde inte ändras från %{from} till %{to}
+        "Roll för användare %{name} kunde inte ändras från %{from} till %{to}"
       disabled: deaktiverad
       master: webbmaster
       normal: vittnesstöd
@@ -181,21 +181,38 @@ sv:
 # view specific
   courts:
     edit:
-      title: Ändra domstol %{name}
+      title: "Ändra domstol %{name}"
     index:
       title: Domstolar
   court_days:
+    endpicker:
+      prompt: Slutdatum (för avbokade/missade)
     index:
       title:
         weeks: Rondningar
-        unbooked: Obokade pass
+        underbooked: Missade pass
         cancelled: Avbokningar
+      cancelled:
+        zero: "ingen avbokad"
+        one: "1 avbokad (%{late} sent)"
+        other: "%{count} avbokade (%{late} sent)"
+      underbooked:
+        zero: "inget missat pass"
+        one: "ett missat pass (%{unbooked} obemannat)"
+        other: "%{count} missade pass %{unbooked} obemannade"
       users_to_enable:
         one: "%{count} ny att aktivera"
         other: "%{count} nya att aktivera"
-      users_to_enable_common: att aktivera
       note: Notering
-    week_picker:
+    startpicker:
+      prompt: Startdatum för Avb(okade) / Mis(sade)
+    submit:
+      cancelled: Avb
+      underbooked: Mis
+      weeks:
+        one: Vecka
+        other: "%{count} veckor"
+    weekpicker:
       prompt: |
         Växla vecka med pilarna eller skriv in ett datum i den önskade veckan
   databases:
@@ -212,22 +229,23 @@ sv:
       no_password_p: Inget lösenord?
       register: Registrera ett nu!
   shared:
-    error: Formuläret innehåller %{count} fel
+    error: "Formuläret innehåller %{count} fel"
     dump:
       prompt: Läs ut hela databasen till en fil
     load:
       prompt: RADERA HELA DATABASEN och läs in en fil
   static_pages:
     home:
-      disabled: Du kommer att få ett mejl till %{email} när du kan börja boka!
+      disabled: |
+          "Du kommer att få ett mejl till %{email} när du kan börja boka!"
       sign_up: Registrera dig
   users:
     edit:
       save: Spara ändringar
-      title: Ändra %{name}
+      title: "Ändra %{name}"
     index:
       heading:
-        long: Alla användare vid %{court}
+        long: "Alla användare vid %{court}"
         short: Alla användare
       rescue: Sätt nytt lösenord
       title: Användare

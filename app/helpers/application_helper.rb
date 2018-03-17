@@ -29,14 +29,13 @@ module ApplicationHelper
   #   class:  concat with the Bootstrap class, e.g. 'my-class' (no quotes)
   #   html: other html string, e.g. 'id="whatever"' (with quotes)
   def bootstrap_tag( tag, span, more = nil)
-    offstet = nil
-    html_class = nil
-    html_other = nil
     case more
     when Integer
-      offset = more
+      offset     = more
+      html_class = nil
+      html_other = nil
     when Hash
-      offset = more[ :offset]
+      offset     = more[ :offset]
       html_class = more[ :class]
       html_other = more[ :html]
     end

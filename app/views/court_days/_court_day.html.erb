@@ -15,10 +15,16 @@
 <%=     render partial: "court_days/session_button",
                locals: { session: session} %>
 <%      if admin? %>
-<%=       render partial: "cancelled_bookings/index",
-                 locals: { late_cancels: session.late_cancels,
-                           span: session_span} %>
-<%      end %>
+<%        if :cancelled == @page_mode %>
+<%=         render partial: "cancelled_bookings/index",
+                   locals:  { cancels: session.cancelled_bookings,
+                              span:    session_span} %>
+<%        else %>
+<%=         render partial: "cancelled_bookings/index",
+                   locals:  { cancels: session.late_cancels,
+                              span:    session_span} %>
+<%        end
+        end %>
 <%=     render partial: "bookings/index",
                locals: { bookings: session.bookings, span: session_span} %>
         </div>

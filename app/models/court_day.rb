@@ -23,6 +23,11 @@ class CourtDay
 
   # Collect objects for an index page.
   #
+  # mode is one of
+  #   :cancelled    Cancelled from start_date up to options[ :end_date]
+  #   :underbooked  Underbooked from start_date up to options[ :end_date]
+  #   :weeks        WEEKS_P_PAGE weeks without filtering
+  #
   # start_date is the first day to include. Only weekdays are included.
   #
   # Currently recognized options:
@@ -31,7 +36,13 @@ class CourtDay
   #                START_TIMES_OF_DAY_DEFAULT
   #   :weeks       The number of weeks to show when no end_date, ignored if
   #                end_date, default WEEKS_P_PAGE
-  def self.page( court, start_date, options = {})
+  #
+  # An optional block is called once for mode :cancelled and :underbooked with
+  #   mode   The mode
+  #   total  The total number of cancelled / underbooked sessions
+  #   extra  The number of late cancels    / sessions with no booking
+  #
+  def self.page( court, mode, start_date, options = {})
     weeks = options[ :weeks] || WEEKS_P_PAGE
     end_date = options[ :end_date]
     if end_date
@@ -40,28 +51,51 @@ class CourtDay
       end_date = start_date + 7 * weeks
     end
     start_tods = options[ :start_tods] || START_TIMES_OF_DAY_DEFAULT
-    dates = (end_date - start_date).to_i.times.reduce( []) do |result, n|
+    count = extra = 0
+    @@page = (end_date - start_date).to_i.times.reduce( []) do |result, n|
         date = start_date + n
-        result << date if date.cwday <= 5
-        result
+        next result if date.cwday > 5
+        next result if :weeks != mode && date >= Date.today
+        include_day = false
+        sessions = start_tods.collect do |start_tod|
+          session = CourtSession.find_by_date_and_court_id_and_start(
+              date, court, start_tod
+            ) ||
+            CourtSession.new(
+              court: court, date: date, start: start_tod, need: 0
+            )
+          case mode
+          when :cancelled
+            session.cancelled_bookings.each do |cb|
+              count       += 1
+              include_day  = true
+              extra       += 1 if cb.late?
+            end
+          when :underbooked
+            booked      = session.bookings.count
+            underbooked = session.need - booked
+            if 0 < underbooked
+              count += underbooked
+              extra += 1 if 0 == booked
+              include_day  = true
+            end
+          when :weeks
+            include_day = true
+          end
+          session
+        end
+        next result unless include_day
+        result << new( {
+              court:    court,
+              date:     date,
+              sessions: sessions,
+              note: CourtDayNote.find_by_date_and_court_id( date, court) ||
+                CourtDayNote.new( court: court, date: date)
+            }
+          )
       end
-    @@page = dates.collect do |date|
-        new( {
-            court:    court,
-            date:     date,
-            sessions: start_tods.collect do |start_tod|
-                CourtSession.find_by_date_and_court_id_and_start(
-                    date, court, start_tod
-                  ) ||
-                CourtSession.new(
-                    court: court, date: date, start: start_tod, need: 0
-                  )
-              end,
-            note: CourtDayNote.find_by_date_and_court_id( date, court) ||
-              CourtDayNote.new( court: court, date: date)
-          }
-        )
-      end
+    yield mode, count, extra if :weeks != mode
+    @@page
   end
 
   # presently only used for testing

@@ -14,8 +14,8 @@ module CourtDaysUtils
         mode = given = mode.intern
         unless :weeks == mode
           case params[ :commit]
-          when t( "court_days.submit.cancelled") then mode = :cancelled
-          when t( "court_days.submit.unbooked")  then mode = :unbooked
+          when t( "court_days.submit.cancelled")   then mode = :cancelled
+          when t( "court_days.submit.underbooked") then mode = :underbooked
           end
         end
         given == mode ? mode : [ mode, mode.to_s]
@@ -47,7 +47,8 @@ module CourtDaysUtils
         end
       end
     @end_date = persistent_param(
-        :end_date, options.merge( { default: ( @start_date >> 12).iso8601})
+        :end_date,
+        options.merge( { default: ( ( @start_date >> 12) - 1).iso8601})
       ){ |date| Date.parse( date)}
     options = {}
     if :weeks == @page_mode
@@ -56,7 +57,17 @@ module CourtDaysUtils
       start_date = @start_date
       options[ :end_date] = @end_date
     end
-    @court_days = CourtDay.page( court, start_date, options)
+    @court_days = CourtDay.page( court, @page_mode, start_date, options
+      ) do |mode, count, extra|
+        case mode
+        when :cancelled
+          @cancelled    = count
+          @late_cancels = extra
+        when :underbooked
+          @underbooked = count
+          @unbooked    = extra
+        end
+      end
     @title = t( "court_days.index.title.#{ @page_mode}")
     @disabled_count = admin? ? User.disabled_count( !master? && court) : 0
   end

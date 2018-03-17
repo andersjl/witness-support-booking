@@ -203,9 +203,12 @@ div, span {
   }
 }
 
-div.late-cancel {
-  color: $ajl-red;
+.cancel {
   text-decoration: line-through;
+}
+
+.late.cancel {
+  color: $ajl-red;
 }
 
 .dateselector {
@@ -215,11 +218,11 @@ div.late-cancel {
   }
 }
 
-#weekpicker-top {
+#dateselector-top {
   margin-bottom: 2em;
 }
 
-#weekpicker-bottom {
+#dateselector-bottom {
   margin-top: 2em;
 }
 

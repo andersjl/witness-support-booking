@@ -2,18 +2,27 @@
         <%= bootstrap_tag :div, date_span, class: "weekday" %>
           <%= t( "general.date").capitalize %>
         </div>
-<% START_TIMES_OF_DAY_DEFAULT.each do |start_tod| %>
+<%  START_TIMES_OF_DAY_DEFAULT.each do |start_tod| %>
         <%= bootstrap_tag :div, session_span %>
           <%= t( "court_session.name#{ start_tod}.long").capitalize %>
         </div>
-<% end %>
+<%  end %>
         <%= bootstrap_tag :div, note_span %>
-<% if @disabled_count > 0 %>
+<%  case @page_mode
+    when :cancelled %>
+        <%= t( "court_days.index.cancelled",
+              count: @cancelled, late: @late_cancels) %>
+<%  when :underbooked %>
+        <%= t( "court_days.index.underbooked",
+              count: @underbooked, unbooked: @unbooked) %>
+<%  when :weeks
+      if @disabled_count > 0 %>
           <%= link_to t( "court_days.index.users_to_enable",
                          count: @disabled_count),
                       users_path, class: "disabled-user" %>
-<% else %>
+<%    else %>
           <%= t( "court_days.index.note") %>
-<% end %>
+<%    end
+    end %>
         </div>
       </div>

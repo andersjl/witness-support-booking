@@ -227,40 +227,47 @@ module DatabaseRows
   DIRECT_GETTER = lambda{ |obj| obj.date}
   INDIRECT_GETTER = lambda{ |obj| obj.court_session.date}
 
-  def init_row_counts
-    @rows_p_date =
+  def row_counts
+    rows_p_date =
       [ [ nil, Court, User],
         [ DIRECT_GETTER, CourtDayNote, CourtSession],
         [ INDIRECT_GETTER, Booking, CancelledBooking]
-      ].inject( { }) do |rows_p_date, models|
+      ].inject( { }) do |memo, models|
         date_getter = models.shift
         models.each do |model|
           model.all.each do |obj|
             date = date_getter ? date_getter.call( obj) : DISTANT_FUTURE
-            rows_p_date[ date] ||= 0
-            rows_p_date[ date] += 1
+            memo[ date] ||= 0
+            memo[ date] += 1
           end
         end
-        rows_p_date
+        memo
       end.to_a.sort.reverse
-    @mid_date = @rows_p_date[ @rows_p_date.count / 2 - rand( 2)][ 0]
+    mid_date = rows_p_date[ rows_p_date.count / 2 - rand( 2)][ 0]
+    [ rows_p_date, mid_date]
   end
 
-  def count_not_older_than( first_date)
-    first_date = first_date.to_date
-  # puts "@rows_p_date = #{ @rows_p_date.inspect}"
-  # result =
-    @rows_p_date.inject( 0) do |total, date_count|
+  def init_row_counts
+    @rows_p_date, @mid_date = row_counts
+  end
+
+  def count_not_older_than( first_counted_date, rows_p_date = @rows_p_date)
+    first_counted_date = first_counted_date.to_date
+    rows_p_date.inject( 0) do |total, date_count|
       date, count = date_count
-      break( total) if date < first_date
+      break( total) if date < first_counted_date
       total + count
     end
-  # puts "count_not_older_than( #{ first_date.iso8601}) = #{ result}"
-  # result
   end
 
-  def total_count; count_not_older_than DISTANT_PAST end
-  def first_date; @rows_p_date[ -1][ 0] end
-  def last_date; @rows_p_date[ 1][ 0] end
+  def total_count( rows_p_date = @rows_p_date)
+    count_not_older_than( DISTANT_PAST, rows_p_date)
+  end
+  def first_date( rows_p_date = @rows_p_date)
+    rows_p_date[ -1][ 0]
+  end
+  def last_date( rows_p_date = @rows_p_date)
+    rows_p_date[ 1][ 0]
+  end
 end
 

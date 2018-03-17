@@ -1,5 +1,6 @@
-<%  late_cancels.each do |late_cancel| %>
-          <div class="row late-cancel">
-            <%= late_cancel.user.name %>
+<%  cancels.each do |cancel| %>
+          <div class="row<%= cancel.late? ? ' late' : '' %> cancel">
+            <%= cancel.user.name %>
+            <%= cancel.cancelled_at.strftime( "%Y-%m-%d") %>
           </div>
 <%  end %>

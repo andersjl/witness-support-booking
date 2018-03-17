@@ -12,15 +12,13 @@ class ApplicationController < ActionController::Base
   # Array, it is a pair [ <value to use>, <string to store in session>]. If
   # not, it is the value to use.  (So you cannot store an Array this way!)
   #
-  # The session key is always converted to a symbol.
-  #
   # If there is no string to store in the session, the session key is deleted
   # from the session.
   #
   # options
   #   :no_params       truthy => only look for a value in session
   #   :session_key     default param
-  #   :session_prefix  prepended to param
+  #   :session_prefix  String prepended to param
   #   :default         value if not found in params or session
   # If no block, a value in params is converted to a symbol.
   def persistent_param( param, options)

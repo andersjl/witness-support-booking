@@ -17,7 +17,7 @@ describe "CourtDay" do
                            5 * WEEKS_P_PAGE + 4, court_this )
       generate_bookings( court_this)
       @first_date = CourtDay.monday( Date.current)
-      @page = CourtDay.page( court_this, @first_date)
+      @page = CourtDay.page( court_this, :weeks, @first_date)
     end
 
     subject{ @page}
@@ -67,12 +67,14 @@ describe "CourtDay" do
       end
     end
 
+    specify( "modes :cancelled and :unbooked"){ pending "Not tested"; fail}
+
     after( :all){ clear_models}
 
   end
 
-  specify( ".monday"){ pending "not tested"; fail}
-  specify( ".add_weekdays"){ pending "not tested"; fail}
-  specify( ".ensure_weekday"){ pending "not tested"; fail}
+  specify( ".monday"){ pending "Not tested"; fail}
+  specify( ".add_weekdays"){ pending "Not tested"; fail}
+  specify( ".ensure_weekday"){ pending "Not tested"; fail}
 end
 

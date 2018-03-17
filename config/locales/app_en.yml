@@ -9,6 +9,7 @@ en:
       short: About
     application: Witness Support
     date: Date
+    cookies: We use cookies
     cwday:
     - 
     - Mon
@@ -33,34 +34,35 @@ en:
 # subject matter booking, regardless of controller
   booking:
     error:
-      court_mismatch: "%{court_day} and %{user} belong to different courts"
-      full: "%{court_day} is fully booked %{session}"
+      court_mismatch: |
+        "%{court_session} and %{user} belong to different courts"
+      full: "%{court_session} is fully booked"
     book:
-      label: Book %{session}
+      label: "Book %{session}"
     cancel:
-      confirm: Unbook %{name} %{date} %{session}?
-      label: Cancel %{session}
+      confirm: "Unbook %{name} %{date} %{session}?"
+      label: "Cancel %{session}"
       late: Late cancellation! Contact your witness support coordinator!
-    cancelled: "%{user} unbooked %{date} %{session}"
+    cancelled: "%{user} cancelled %{date} %{session}"
 
 # subject matter court, regardless of controller
   court:
     edit_name_or_link: Edit name or link
     changed: Saved changes
     create: Create a new court
-    created: Court %{court} created
+    created: "Court %{court} created"
     default: Automatically generated first court
     destroy:
       confirm: |
-        Are You sure?  Clicking OK removes the court %{name} and all its
-        recorded needs and notes.
-    destroyed: Court %{court} removed
+        "Are You sure?  Clicking OK removes the court %{name} and all its
+        recorded needs and notes."
+    destroyed: "Court %{court} removed"
     prompt: Choose court
 
 # subject matter court day, regardless of controller
   court_day:
     error:
-      weekend: is a %{dow}
+      weekend: "is a %{dow}"
     need:
       label: Need
 
@@ -91,43 +93,54 @@ en:
 
 # subject matter database, regardless of controller
   database:
+    count_date:
+      label: "%{rows} rows not older than"
     created: New database loaded. You have to log in again.
     create:
       confirm: |
         Are You sure?  If loading fails you will be left without users and
         bookings!
       label: ERASE THE ENTIRE DATABASE and load data from the file
+    dropped_older_than: "Entries older than %{date} purged from database"
+    drop_older:
+      label: Purge older
+      confirm: |
+        "Are you sure? All sessions, notes, and bookings older than %{date}
+        will be lost for ever!"
     error:
-      message: "%{reason}: %{message}. The database is not affected."
+      compromised: The database is affected
+      exception: "Exception %{exception}"
       parse: Loading failed
-      exception: Exception %{exception}
+      untouched: The database is not affected
+    oldest_date: "Oldest existing date %{date}"
+    row_count: rows
 
 # subject matter user, regardless of controller
   user:
     changed:
       message: Saved changes
-      password: Password changed for %{name}
-    created: Welcome %{name}!
+      password: "Password changed for %{name}"
+    created: "Welcome %{name}!"
     destroy:
-      confirm: Remove %{name}?
-    destroyed: User %{user} removed
+      confirm: "Remove %{name}?"
+    destroyed: "User %{user} removed"
     disable:
       label: Disable
-      confirm: Disable %{name}?
+      confirm: "Disable %{name}?"
     enable:
       label: Enable
-      confirm: Enable %{name}?
+      confirm: "Enable %{name}?"
     error:
       email_taken: already taken at this court
     promote:
       label: Promote
       confirm: |
-        Promote %{user} to administrate Witness Support Service at %{court}?
+        "Promote %{user} to administrate Witness Support Service at %{court}?"
     role:
       admin: court administrator
-      changed: Role for user %{name} changed from %{from} to %{to}
+      changed: "Role for user %{name} changed from %{from} to %{to}"
       changed_fail: |
-        Role for user %{name} could not be changed from %{from} to %{to}
+        "Role for user %{name} could not be changed from %{from} to %{to}"
       disabled: disabled
       master: web master
       normal: witness service
@@ -135,18 +148,36 @@ en:
 # view specific
   courts:
     edit:
-      title: Change court %{name}
+      title: "Change court %{name}"
     index:
       title: Courts
   court_days:
+    endpicker:
+      prompt: End date (for cancelled/underbooked)
     index:
       title:
         weeks: Sessions
-        unbooked: Unbooked
-        cancelled: Cancelled
+        underbooked: Underbooked Sessions
+        cancelled: Cancelled Bookings
+      cancelled:
+        zero: "none cancelled"
+        one: "1 cancelled (%{late} late)"
+        other: "%{count} cancelled (%{late} late)"
+      underbooked:
+        zero: "none underbooked"
+        one:  "1 underbooked (%{unbooked} unbooked)"
+        other: "%{count} underbooked (%{unbooked} unbooked)"
       users_to_enable: "%{count} new to enable"
-      users_to_enable_common: new to enable
-    week_picker:
+      note: Note
+    startpicker:
+      prompt: Start date for Can(celled)/Und(erbooked)
+    submit:
+      cancelled: Can
+      underbooked: Und
+      weeks:
+        one: Week
+        other: "%{count} Weeks"
+    weekpicker:
       prompt: |
         Change week by clicking the arrows or enter a date in the desired week
   databases:
@@ -163,22 +194,23 @@ en:
       no_password_p: No password?
       register: Register one now!
   shared:
-    error: The form contains %{count} errors
+    error: "The form contains %{count} errors"
     dump:
       prompt: Dump the entire database to a file
     load:
       prompt: ERASE THE ENTIRE DATABASE and load a file
   static_pages:
     home:
-      disabled: You will receive a mail to %{email} when you can start booking!
+      disabled: |
+        "You will receive a mail to %{email} when you can start booking!"
       sign_up: Sign up
   users:
     edit:
       save: Save changes
-      title: Edit %{name}
+      title: "Edit %{name}"
     index:
       heading:
-        long: All users at %{court}
+        long: "All users at %{court}"
         short: All users
       rescue: Set new password
       title: Users

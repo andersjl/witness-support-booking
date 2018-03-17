@@ -26,9 +26,12 @@ describe "court_days/index", :type => :request do
   end
 
   def visit_date( date)
-    within :id, "weekpicker-bottom" do
-      fill_in "datepicker-bottom", with: date
-      click_on "OK"
+    within :id, "dateselector-bottom" do
+      fill_in "weekpicker-bottom", with: date
+      click_on( @user && @user.admin? ?
+                t( "court_days.submit.weeks", count: WEEKS_P_PAGE) :
+                "OK"
+              )
     end
   end
 
@@ -94,13 +97,12 @@ describe "court_days/index", :type => :request do
       end
     end
 
-
     it "has controls from now on" do
       test_dates( @tested_date) do |date, show|
         next unless show
         START_TIMES_OF_DAY_DEFAULT.each do |start_tod|
           start = date.in_time_zone + start_tod
-          next unless start > Time.current
+          next unless start > Time.current - ALLOW_LATE_BOOKING
           session = page.first( :id, "session-#{ start.iso8601}", minimum: 0)
           if @user.admin?
             session.should have_selector "select"
@@ -174,9 +176,12 @@ describe "court_days/index", :type => :request do
     context "setting the date" do
       before do
         @new_start_date = @monday + 4711 + rand( 7)
-        within :id, "weekpicker-bottom" do
+        within :id, "dateselector-bottom" do
           fill_in "monday", with: @new_start_date
-          click_button "OK"
+          click_on( @user && @user.admin? ?
+                    t( "court_days.submit.weeks", count: WEEKS_P_PAGE) :
+                    "OK"
+                  )
         end
         @tested_date = CourtDay.monday @new_start_date
       end
@@ -287,6 +292,9 @@ describe "court_days/index", :type => :request do
 
     it_behaves_like "on court_days index page"
 
+    specify( "should display underbooked"){ pending "Not tested"; fail}
+    specify( "should display cancelled"){ pending "Not tested"; fail}
+
     context "late cancels" do
       def cancel( at = nil)
         @booking.destroy_and_log
@@ -313,7 +321,7 @@ describe "court_days/index", :type => :request do
       context "leaving need" do
         before{ cancel}
         it{ within( :id, @session_id){ should have_selector(
-                                "div.late-cancel", text: @booked_user.name)}}
+                                "div.late.cancel", text: @booked_user.name)}}
       end
       context "was overbooked" do
         before do
@@ -346,6 +354,7 @@ describe "court_days/index", :type => :request do
                   ){ should_not have_content( @booked_user.name)}}
       end
     end
+
 =begin
 seems covered by "any week" ???
     it "has input controls for each changeable Court Day" do

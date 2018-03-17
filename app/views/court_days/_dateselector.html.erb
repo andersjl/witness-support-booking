@@ -1,12 +1,42 @@
-<div class="dateselector" id="weekpicker-<%= wp_id %>">
-  <%= t( "court_days.week_picker.prompt") %>
-  <%= form_tag court_days_path, method: "get", class: "form-inline" do %>
-    <%= submit_tag VALUE_LAST_WEEK %>
-    <%= text_field_tag :monday, @monday,
-                       id: "datepicker-#{ wp_id}",
-                       class: "datepicker"
-    %>
-    <%= submit_tag "OK" %>
-    <%= submit_tag VALUE_NEXT_WEEK %>
-  <% end %>
+<div class="row dateselector" id="dateselector-<%= ds_id %>">
+<%  if admin? %>
+  <%= bootstrap_tag( "div", datepicker_width) %>
+    <%= t( "court_days.startpicker.prompt") %>
+    <%= form_tag court_days_path, method: "get", class: "form-inline" do %>
+      <%= hidden_field_tag "mode", "other" %>
+      <%= submit_tag t( "court_days.submit.cancelled") %>
+      <%= text_field_tag :start_date, @start_date,
+                         id: "startpicker-#{ ds_id}", class: "datepicker"
+      %>
+      <%= submit_tag t( "court_days.submit.underbooked") %>
+    <% end %>
+  </div>
+<%  end %>
+  <%= bootstrap_tag( "div", weekpicker_width) %>
+    <%= t( "court_days.weekpicker.prompt") %>
+    <%= form_tag court_days_path, method: "get", class: "form-inline" do %>
+      <%= hidden_field_tag "mode", "weeks" %>
+      <%= submit_tag VALUE_LAST_WEEK %>
+      <%= text_field_tag :monday, @monday,
+                         id: "weekpicker-#{ ds_id}", class: "datepicker"
+      %>
+      <%= submit_tag(
+        admin? ? t( "court_days.submit.weeks", count: WEEKS_P_PAGE) : "OK"
+      )
+      %>
+      <%= submit_tag VALUE_NEXT_WEEK %>
+    <% end %>
+  </div>
+<%  if admin? %>
+  <%= bootstrap_tag( "div", datepicker_width) %>
+    <%= t( "court_days.endpicker.prompt") %>
+    <%= form_tag court_days_path, method: "get", class: "form-inline" do %>
+      <%= text_field_tag :end_date, @end_date,
+                         id: "endpicker-#{ ds_id}", class: "datepicker"
+      %>
+      <%= submit_tag "OK" %>
+    <% end %>
+  </div>
+<%  end %>
 </div>
+

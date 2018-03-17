@@ -324,7 +324,7 @@ describe "Database views", :type => :request do
         context "dropping older" do
           before do
             @expected_new_first_date = @chosen_date.to_date
-            while !@rows_p_date.assoc( @expected_new_first_date)
+            while ! @rows_p_date.assoc( @expected_new_first_date)
               @expected_new_first_date += 1
             end
             within( :id, "drop-older-form"){
@@ -349,6 +349,7 @@ describe "Database views", :type => :request do
                      @expected_new_first_date}"
             end
           end
+          specify{ first_date( row_counts[ 0]) == @expected_first_date}
         end
       end
     end
