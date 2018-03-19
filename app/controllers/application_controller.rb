@@ -28,23 +28,35 @@ class ApplicationController < ActionController::Base
             ( options[ :session_prefix] + "_" + param.to_s)
         ) || param
       ).intern
-    value =
-      ( ( ! options[ :no_params] && params[ param]) ||
-        session[ sess_key] ||
-        options[ :default]
-      ).to_s
-    value = nil if 0 == value.strip.length
-    if value
-      if block_given?
-        converted = yield( value)
-        converted, value = converted if converted.is_a? Array
-      else
-        converted = value.intern
+
+    to_try = []
+    to_try << params[ param].to_s if ! options[ :no_params]
+    to_try << session[ sess_key].to_s
+    to_try << options[ :default].to_s
+    converted = value = nil
+    to_try.each do |try_value|
+      next if 0 == try_value.strip.length
+      next unless try_value
+      begin
+        if block_given?
+          try_conv = yield( try_value)
+          if try_conv.is_a? Array
+            converted, value = try_conv
+          else
+            converted = try_conv
+            value     = try_value
+          end
+        else
+          converted = try_value.intern
+          value     = try_value
+        end
+        session[ sess_key] = value.to_s
+        break
+      rescue Exception => e
+        flash[ :error] = "#{ t( 'general.error.parameter')}: #{ e.message}"
       end
-      session[ sess_key] = value
-    else
-      session.delete( sess_key)
     end
+    session.delete( sess_key) unless value
     converted
   end
 

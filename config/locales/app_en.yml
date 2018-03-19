@@ -21,6 +21,8 @@ en:
     - Sun
     destroy: Remove
     edit: Edit
+    error:
+      parameter: Parameter error
     help:
       long: Unwritten English Help Page
       short: Help

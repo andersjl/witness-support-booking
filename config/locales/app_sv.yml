@@ -56,6 +56,8 @@ sv:
     - sön
     destroy: Ta bort
     edit: Ändra
+    error:
+      parameter: Felaktigt värde
     help:
       long: Hjälpsida
       short: Hjälp
