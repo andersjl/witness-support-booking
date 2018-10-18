@@ -1,10 +1,27 @@
 <% provide( :title, t( "users.new.title")) %>
-<h1><%= t( "users.new.title") %></h1>
+<% if @login_hint %>
+  <h1><%= t( "users.new.login_question") %></h1>
+<% else %>
+  <h1><%= t( "users.new.title") %></h1>
+<% end %>
 <div class="row">
   <%= bootstrap_tag :div, 6, 3 %>
+<% if @login_hint %>
+    <div class="row">
+      <%= bootstrap_tag :div, 10 %>
+        <%= t( "users.new.login_hint", email: @user.email) %>
+      </div>
+      <%= bootstrap_tag :div, 2 %>
+        <%= link_to t( "general.log_in"), log_in_path,
+          class: "btn btn-md btn-primary" %>
+      </div>
+    </div>
+<% else %>
+    <%= render :partial => "shared/error_messages",
+               :locals => { :model => @user} %>
+<% end %>
+    <div class="row">&nbsp;</div>
     <%= form_for( @user) do |f| %>
-      <%= render :partial => "shared/error_messages",
-                 :locals => { :model => @user} %>
       <%= f.label :court %>
       <%= f.collection_select :court, @courts, :id, :name,
                               prompt: t( "court.prompt") %>

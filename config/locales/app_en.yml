@@ -217,10 +217,15 @@ en:
       rescue: Set new password
       title: Users
     new:
-      title: New user
+      login_hint: |
+        The email %{email} has been registered previously.  If you want to use
+        it to log in, click \"Log in\" here.  If you want to change it, do so
+        below and click \"Register new user\".
+      login_question: Do you want to log in?
       password: Choose password
       password_confirm: Confirm password
       save: Register new user
+      title: New user
     show:
       title: "%{name}"
 

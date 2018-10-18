@@ -38,6 +38,11 @@ extend Authorization
       flash[ :success] = t( "user.created", name: user.name)
       redirect_to root_path
     else
+      details = user.errors.details
+      if 1 == details.count && :email == details.first.first &&
+          :taken == details.first.last.first[ :error]
+        @login_hint = true
+      end
       @user = user
       @courts = Court.all
       render "new"

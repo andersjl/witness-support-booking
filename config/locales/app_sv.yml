@@ -252,10 +252,15 @@ sv:
       rescue: Sätt nytt lösenord
       title: Användare
     new:
-      title: Ny användare
+      login_hint: |
+        Mejladressen "%{email}" är redan registrerad.  Om du vill logga in med
+        den, klicka på "Logga in" här bredvid.  Om du vill ändra den, gör det
+        nedan och klicka på "Registrera ny användare".
+      login_question: Vill du logga in?
       password: Välj lösenord
       password_confirm: Bekräfta lösenord
       save: Registrera ny användare
+      title: Ny användare
     show:
       title: "%{name}"
 
