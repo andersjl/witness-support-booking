@@ -1,0 +1,24 @@
+heroku maintenance:on --app tranquil-temple-9529
+git checkout whatever
+cd .. ; cd witness_support_booking
+rspec
+git push staging whatever:master
+heroku run rake db:migrate --app tranquil-temple-9529
+heroku restart --app tranquil-temple-9529
+heroku maintenance:off --app tranquil-temple-9529
+
+kolla att allt ser bra ut
+
+heroku maintenance:on --app boj-vittnesstod
+git push heroku whatever:master
+heroku run rake db:migrate --app boj-vittnesstod
+heroku restart --app boj-vittnesstod
+heroku maintenance:off --app boj-vittnesstod
+
+kolla att allt ser bra ut
+
+git checkout master
+git merge whatever
+
+master ska ALLTID vara det som är i produktion på boj-vittnesstod!
+
