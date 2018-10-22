@@ -89,9 +89,8 @@ sv:
     created: "Domstol %{court} skapad"
     default: Automatgenererad första domstol
     destroy:
-      confirm: |
-        "Är du säker?  Om du klickar på OK tar du bort domstolen %{name} och
-        alla dess inskrivna behov och texter"
+      confirm: "Är du säker?  Om du klickar på OK tar du bort domstolen
+        %{name} och alla dess inskrivna behov och texter"
     destroyed: "Domstol %{court} borttagen"
     prompt: Välj domstol
 
@@ -133,16 +132,14 @@ sv:
       label: "%{rows} rader inte äldre än"
     created: Ny databas inläst. Du måste logga in igen.
     create:
-      confirm: |
-        Är du säker? Om inläsningen misslyckas finns varken användare eller
-        bokningar kvar!
+      confirm: Är du säker? Om inläsningen misslyckas finns varken användare
+        eller bokningar kvar!
       label: RADERA HELA DATABASEN och ersätt den med filen
     dropped_older_than: "Databasen rensad på poster äldre än %{date}"
     drop_older:
       label: Rensa äldre
-      confirm: |
-        "Är du säker? Alla pass, noteringar och bokningar äldre än %{date}
-        kommer att rensas bort oåterkalleligt!"
+      confirm: "Är du säker? Alla pass, noteringar och bokningar äldre än
+        %{date} kommer att rensas bort oåterkalleligt!"
     error:
       compromised: Databasen är påverkad
       exception: "Undantag %{exception}"
@@ -174,8 +171,8 @@ sv:
     role:
       admin: domstolsadministratör
       changed: "Roll för användare %{name} ändrad från %{from} till %{to}"
-      changed_fail: |
-        "Roll för användare %{name} kunde inte ändras från %{from} till %{to}"
+      changed_fail: "Roll för användare %{name} kunde inte ändras från %{from}
+        till %{to}"
       disabled: deaktiverad
       master: webbmaster
       normal: vittnesstöd
@@ -215,8 +212,8 @@ sv:
         one: Vecka
         other: "%{count} veckor"
     weekpicker:
-      prompt: |
-        Växla vecka med pilarna eller skriv in ett datum i den önskade veckan
+      prompt: Växla vecka med pilarna eller skriv in ett datum i den önskade
+        veckan
   databases:
     new:
       title: Läs in fil
@@ -238,8 +235,7 @@ sv:
       prompt: RADERA HELA DATABASEN och läs in en fil
   static_pages:
     home:
-      disabled: |
-          "Du kommer att få ett mejl till %{email} när du kan börja boka!"
+      disabled: "Du kommer att få ett mejl till %{email} när du kan börja boka!"
       sign_up: Registrera dig
   users:
     edit:
@@ -252,10 +248,9 @@ sv:
       rescue: Sätt nytt lösenord
       title: Användare
     new:
-      login_hint: |
-        Mejladressen "%{email}" är redan registrerad.  Om du vill logga in med
-        den, klicka på "Logga in" här bredvid.  Om du vill ändra den, gör det
-        nedan och klicka på "Registrera ny användare".
+      login_hint: "Mejladressen \"%{email}\" är redan registrerad.  Om du vill
+        logga in med den, klicka på \"Logga in\" här bredvid.  Om du vill
+        ändra den, gör det nedan och klicka på \"Registrera ny användare\"."
       login_question: Vill du logga in?
       password: Välj lösenord
       password_confirm: Bekräfta lösenord

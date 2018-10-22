@@ -36,8 +36,8 @@ en:
 # subject matter booking, regardless of controller
   booking:
     error:
-      court_mismatch: |
-        "%{court_session} and %{user} belong to different courts"
+      court_mismatch: "%{court_session} and %{user} belong to different
+        courts"
       full: "%{court_session} is fully booked"
     book:
       label: "Book %{session}"
@@ -55,9 +55,8 @@ en:
     created: "Court %{court} created"
     default: Automatically generated first court
     destroy:
-      confirm: |
-        "Are You sure?  Clicking OK removes the court %{name} and all its
-        recorded needs and notes."
+      confirm: "Are You sure?  Clicking OK removes the court %{name} and all
+        its recorded needs and notes."
     destroyed: "Court %{court} removed"
     prompt: Choose court
 
@@ -99,16 +98,14 @@ en:
       label: "%{rows} rows not older than"
     created: New database loaded. You have to log in again.
     create:
-      confirm: |
-        Are You sure?  If loading fails you will be left without users and
-        bookings!
+      confirm: Are You sure?  If loading fails you will be left without users
+        and bookings!
       label: ERASE THE ENTIRE DATABASE and load data from the file
     dropped_older_than: "Entries older than %{date} purged from database"
     drop_older:
       label: Purge older
-      confirm: |
-        "Are you sure? All sessions, notes, and bookings older than %{date}
-        will be lost for ever!"
+      confirm: "Are you sure? All sessions, notes, and bookings older than
+        %{date} will be lost for ever!"
     error:
       compromised: The database is affected
       exception: "Exception %{exception}"
@@ -136,13 +133,13 @@ en:
       email_taken: already taken at this court
     promote:
       label: Promote
-      confirm: |
-        "Promote %{user} to administrate Witness Support Service at %{court}?"
+      confirm: "Promote %{user} to administrate Witness Support Service at
+        %{court}?"
     role:
       admin: court administrator
       changed: "Role for user %{name} changed from %{from} to %{to}"
-      changed_fail: |
-        "Role for user %{name} could not be changed from %{from} to %{to}"
+      changed_fail: "Role for user %{name} could not be changed from %{from}
+        to %{to}"
       disabled: disabled
       master: web master
       normal: witness service
@@ -180,8 +177,8 @@ en:
         one: Week
         other: "%{count} Weeks"
     weekpicker:
-      prompt: |
-        Change week by clicking the arrows or enter a date in the desired week
+      prompt: Change week by clicking the arrows or enter a date in the
+        desired week
   databases:
     new:
       title: Load file
@@ -203,8 +200,8 @@ en:
       prompt: ERASE THE ENTIRE DATABASE and load a file
   static_pages:
     home:
-      disabled: |
-        "You will receive a mail to %{email} when you can start booking!"
+      disabled: "You will receive a mail to %{email} when you can start
+        booking!"
       sign_up: Sign up
   users:
     edit:
@@ -217,10 +214,9 @@ en:
       rescue: Set new password
       title: Users
     new:
-      login_hint: |
-        The email %{email} has been registered previously.  If you want to use
-        it to log in, click \"Log in\" here.  If you want to change it, do so
-        below and click \"Register new user\".
+      login_hint: "The email \"%{email}\" has been registered previously.  If
+        you want to use it to log in, click \"Log in\" here.  If you want to
+        change it, do so below and click \"Register new user\"."
       login_question: Do you want to log in?
       password: Choose password
       password_confirm: Confirm password
