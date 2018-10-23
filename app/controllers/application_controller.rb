@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
   # If cookies are disabled, shows a flash message.
   # Usage:
   # * relevant controllers:
-  #   before_filter :cookies_required
+  #   before_action :cookies_required
   # Adapted from
   #   http://code.freudendahl.net/2012/04/ruby-on-rails-cookie-detection/
   # who adapted it from

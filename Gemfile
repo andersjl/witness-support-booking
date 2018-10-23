@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-ruby "2.2.4"
+ruby "2.5.3"
 
 gem 'rails'
 gem 'bootstrap-sass'
@@ -27,7 +27,7 @@ group :production do
 end
 
 group :assets do
-  gem 'sass-rails'
+  gem 'sassc-rails'
   gem 'coffee-rails'
   gem 'uglifier'
 end

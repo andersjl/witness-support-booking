@@ -97,7 +97,7 @@ end
 private :create_test_user_do
 
 def fake_log_in( user, password = nil)
-  if page.first( "a", text: t( "general.log_out"))
+  if page.first( "a", text: t( "general.log_out"), minimum: 0)
     click_link( t( "general.log_out"))
   end
   visit log_in_path

@@ -101,7 +101,7 @@ describe "court_days/index", :type => :request do
         START_TIMES_OF_DAY_DEFAULT.each do |start_tod|
           start = date.in_time_zone + start_tod
           next unless start > Time.current
-          session = page.first :id, "session-#{ start.iso8601}"
+          session = page.first( :id, "session-#{ start.iso8601}", minimum: 0)
           if @user.admin?
             session.should have_selector "select"
           else
@@ -113,7 +113,7 @@ describe "court_days/index", :type => :request do
           end
         end
         if @user.admin? && date >= Date.current
-          page.first( :id, "note-#{ date.iso8601}"
+          page.first( :id, "note-#{ date.iso8601}", minimum: 0
                     ).should have_selector "textarea"
         end
       end
@@ -125,13 +125,13 @@ describe "court_days/index", :type => :request do
         START_TIMES_OF_DAY_DEFAULT.each do |start_tod|
           start = date.in_time_zone + start_tod
           next unless start < Time.current - 1
-          session = page.first :id, "session-#{ start.iso8601}"
+          session = page.first( :id, "session-#{ start.iso8601}", minimum: 0)
           next unless session
           session.should_not have_selector "select"
           session.should_not have_selector "input"
         end
         next unless date < Date.current
-        note = page.first :id, "note-#{ date.iso8601}"
+        note = page.first( :id, "note-#{ date.iso8601}", minimum: 0)
         next unless note
         note.should_not have_selector "textarea"
       end

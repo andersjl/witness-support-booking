@@ -33,7 +33,7 @@ module ApplicationHelper
     html_class = nil
     html_other = nil
     case more
-    when Fixnum
+    when Integer
       offset = more
     when Hash
       offset = more[ :offset]
