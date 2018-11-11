@@ -115,6 +115,27 @@ describe "User pages", :type => :request do
 
     shared_examples_for "any admin" do  # @disabl, @normal, @admin
 
+      it{ should have_title(
+                 "#{ t( 'general.application')} | #{ t( 'users.index.title')}")}
+
+      context "when clicking a user" do
+        before do
+          @other = User.where( "id != ? and court_id = ?",
+                               @user.id, @user.court.id).sample
+          click_link( @other.name)
+        end
+        it{ should have_title(
+                     t( "general.application") + " | #{ @other.name}")}
+      end
+
+      it "lists each user with link" do
+        User.order_by_role_and_name( @court).each do |user|
+          page.should have_selector( "li", text: user.name)
+          page.should have_link( user.name)
+          page.should_not have_content( user.email)
+        end
+      end
+
       it{ within( "li#user-#{ @disabl.id}"
                 ){ should have_link( t( "users.index.rescue"),
                                      href: edit_user_path( @disabl))}}
@@ -165,35 +186,6 @@ describe "User pages", :type => :request do
     before do
       @user = create_test_user( court: @court, count: 3).sample
       fake_log_in @user
-      visit users_path
-    end
-
-    it{ should have_title(
-               "#{ t( 'general.application')} | #{ t( 'users.index.title')}")}
-    it{ should have_selector( "h1",
-          text: t( "users.index.heading.long", court: @user.court.name))}
-    it{ should_not have_content( t( "users.index.rescue"))}
-    it{ should_not have_content( t( "general.destroy"))}
-    it{ should_not have_content( t( "user.disable.label"))}
-    it{ should_not have_content( t( "user.enable.label"))}
-    it{ should_not have_content( t( "user.promote.label"))}
-
-    context "when clicking a user" do
-      before do
-        @other = User.where( "id != ? and court_id = ?",
-                             @user.id, @user.court.id).sample
-        click_link( @other.name)
-      end
-      it{ should have_title(
-                   t( "general.application") + " | #{ @other.name}")}
-    end
-
-    it "lists each user with link" do
-      User.order_by_role_and_name( @court).each do |user|
-        page.should have_selector( "li", text: user.name)
-        page.should have_link( user.name)
-        page.should_not have_content( user.email)
-      end
     end
 
     context "as admin" do
@@ -210,6 +202,8 @@ describe "User pages", :type => :request do
 
       it_behaves_like "any admin"
 
+      it{ should have_selector( "h1",
+            text: t( "users.index.heading.long", court: @user.court.name))}
       it{ should_not have_content( t( "user.promote.label"))}
     end
 
@@ -309,18 +303,6 @@ describe "User pages", :type => :request do
       it{ should have_content( @user.email)}
       it{ should have_link( t( "general.edit"),
                             href: edit_user_path( @user))}
-      it_behaves_like "all execept master viewing self"
-    end
-
-    context "other user" do
-      before do
-        @other = create_test_user court: @court, name: "Other",
-                                  email: "ot@her"
-        @shown = @other
-        visit user_path( @other)
-      end
-      it_behaves_like "viewing any user"
-      it{ should_not have_content( @other.email)}
       it_behaves_like "all execept master viewing self"
     end
 

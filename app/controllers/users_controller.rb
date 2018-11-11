@@ -3,8 +3,8 @@ extend Authorization
 
   before_action :cookies_required, :only => :new
 
-  authorize [ :index, :show], [ "normal", "admin", "master"]
-  authorize [ :edit, :update], USER_ROLES do |params, user|
+  authorize [ :index], [ "admin", "master"]
+  authorize [ :edit, :show, :update], ENABLED_ROLES do |params, user|
     user.id == params[ :id].to_i || user.master? ||
       (user.admin? && User.find( params[ :id]).court == user.court)
   end

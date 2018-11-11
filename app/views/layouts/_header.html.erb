@@ -30,8 +30,14 @@
                             court_days_path
               %>
             </li>
+<%        if admin? %>
             <li><%= link_to t( "users.index.title"), users_path %></li>
-<%      end %>
+<%        else %>
+            <li>
+              <%= link_to( current_user.name, user_path( current_user)) %>
+            </li>
+<%        end
+        end %>
           </ul>
 <%    else %>
           <ul class="nav navbar-nav pull-right">

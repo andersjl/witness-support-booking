@@ -112,7 +112,7 @@ def it_is_private_do( allow_admin, actions, block)
 end
 
 # a block is necessary
-def it_requires_admin( *actions, &block)
+def it_requires_admin( correct, *actions, &block)
   context "requires admin" do
     before do
       @correct_user = create_test_user email: "admin@example.com",
@@ -130,11 +130,13 @@ def it_requires_admin( *actions, &block)
         verify_reachable actions, false
       end
     end
-    context "protected from wrong court admin:" do
-      before{ @user = create_test_user(
-                        court: create_test_court( name: "Wrong court"),
-                        email: "admin@example.com", role: "admin")}
-      verify_reachable actions, false
+    if correct
+      context "protected from wrong court admin:" do
+        before{ @user = create_test_user(
+                          court: create_test_court( name: "Wrong court"),
+                          email: "admin@example.com", role: "admin")}
+        verify_reachable actions, false
+      end
     end
     context "allowed for court admin:" do
       before{ @user = @correct_user}

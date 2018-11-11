@@ -101,10 +101,19 @@ describe "Authentication pages" do
           context "spoofing #{ spoofed_role}" do
 
             def check_logged_in( user, spoofer = nil)
-              visit edit_user_path( user)
-              page.find( "input#user_name").value.should == user.name
-              page.should_not have_selector(
-                  "input[disabled='disabled'][id='user_name']")
+              page.should_not have_link(
+                  t( 'general.log_in'), href: '/log_in'
+                )
+              page.should have_link t( 'general.log_out'), href: '/log_out'
+              if 'disabled' == user.role
+                page.should_not have_link href: /user/
+              else
+                visit edit_user_path( user)
+                page.find( "input#user_name").value.should == user.name
+                page.should_not have_selector(
+                    "input[disabled='disabled'][id='user_name']"
+                  )
+              end
             end
 
             before do

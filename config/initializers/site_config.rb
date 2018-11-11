@@ -1,5 +1,6 @@
 
-USER_ROLES     = [ "disabled", "normal", "admin", "master"]
+USER_ROLES    = [ "disabled", "normal", "admin", "master"]
+ENABLED_ROLES = USER_ROLES - [ "disabled"]
 
 # court_days index submit values
 VALUE_LAST_WEEK            = "<<"

@@ -17,7 +17,6 @@ describe "Static pages", :type => :request do
     shared_examples_for "any enabled user's start page" do
       it{ should have_link t( "court_days.index.title.weeks"),
                            :href => court_days_path}
-      it{ should have_link t( "users.index.title"), :href => users_path}
     end
 
     context "unknown user" do
@@ -33,8 +32,18 @@ describe "Static pages", :type => :request do
         end
         it_behaves_like "any user's start page"
         it{ should have_link t( "general.log_out"), :href => log_out_path}
-        if USER_ROLES.index( role) > USER_ROLES.index( "disabled")
+        if USER_ROLES.index( "disabled") == USER_ROLES.index( role)
+          it do
+            should_not have_link t( "users.index.title")
+            should_not have_link @user.name
+          end
+        else
           it_behaves_like "any enabled user's start page"
+          if USER_ROLES.index( "normal") == USER_ROLES.index( role)
+            it{ should have_link( @user.name, href: user_path( @user))}
+          else
+            it{ should have_link t( "users.index.title"), :href => users_path}
+          end
         end
       end
     end
