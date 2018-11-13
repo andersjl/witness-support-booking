@@ -1,4 +1,10 @@
 class CancelledBooking < ActiveRecord::Base
+include ValidateWithinOneCourt
+
+  validates :user_id, presence: true
+  validates :court_session_id, presence: true
+  validates :cancelled_at, presence: true
+  validate  :within_one_court
 
   belongs_to :user
   belongs_to :court_session

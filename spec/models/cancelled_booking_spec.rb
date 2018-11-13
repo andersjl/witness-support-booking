@@ -11,9 +11,41 @@ describe "CancelledBooking model" do
 
   subject{ @cancelled}
 
+  it{ should be_valid}
   it{ should respond_to :user}
   it{ should respond_to :court_session}
   it{ should respond_to :cancelled_at}
+
+  describe "validation" do
+
+    context "when user is not present" do
+      before{ @cancelled.user = nil}
+      it{ should_not be_valid}
+    end
+
+    context "when court_session is not present" do
+      before{ @cancelled.court_session = nil}
+      it{ should_not be_valid}
+    end
+
+    context "when user and court_session have different courts" do
+      before do
+        @session = create_test_court_session(
+                     court: create_test_court( name: "Other"), need: 2)
+        @cancelled = Booking.new user: @user, court_session: @session,
+                               booked_at: @session.date - rand( 10)
+        @cancelled.valid?
+      end
+      it{ should_not be_valid}
+      context "errors" do
+        subject{ @cancelled.errors}
+        its( [ :base]){ should include(
+              t( "booking.error.court_mismatch",
+                 court_session: @cancelled.court_session.inspect,
+                 user: @cancelled.user.inspect))}
+      end
+    end
+  end
 
   describe "cascading" do
 

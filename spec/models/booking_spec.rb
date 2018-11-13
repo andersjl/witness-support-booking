@@ -14,6 +14,7 @@ describe "Booking model" do
   it{ should be_valid}
   it{ should respond_to :user}
   it{ should respond_to :court_session}
+  it{ should respond_to :booked_at}
 
   describe "validation" do
 

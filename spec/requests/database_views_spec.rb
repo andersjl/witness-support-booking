@@ -12,11 +12,11 @@ describe "Database views", :type => :request do
       s.update_attribute :need, i / 2 + 1
       create_test_court_day_note date: s.date if rand( 3) > 0
     end
-    @has_1_booking = s6
-    @has_2_bookings = s3
+    @has_1_booking   = s6
+    @has_2_bookings  = s3
     @overbooked_user = u3
-    Booking.create!( user: u2, court_session: s5,
-                     booked_at: s5.date - 5 - rand( 5)
+    Booking.create!( user: u2, court_session: s6,
+                     booked_at: s6.date - 5 - rand( 5)
                    ).destroy_and_log
     [ [ 1, 3], [ 1, 6], [ 2, 2], [ 3, 1], [ 3, 3]].collect do |u, s|
       session = eval( "s#{ s}")
@@ -258,12 +258,14 @@ describe "Database views", :type => :request do
           context( "#{ model}.count") do
             specify do
               model.count.should ==
-                @orig_count[ model] + case tag
-                                      when "user"          then  1
-                                      when "court_session" then -1
-                                      when "booking"       then -2
-                                      else                       0
-                                      end
+                @orig_count[ model] +
+                  case tag
+                  when "cancelled_booking" then -1  # session got need 0
+                  when "court_session"     then -1  # need 0
+                  when "booking"           then -2  # 1 overbooked, 1 need 0
+                  when "user"              then  1  # new master created
+                  else                           0
+                  end
             end
           end
         end

@@ -1,4 +1,5 @@
 class Booking < ActiveRecord::Base
+include ValidateWithinOneCourt
 
   validates :user_id, presence: true
   validates :court_session_id, presence: true
@@ -40,15 +41,6 @@ class Booking < ActiveRecord::Base
     end
   end
   private :not_overbooked
-
-  def within_one_court
-    return unless user && court_session  # handled by other validations
-    if user.court != court_session.court
-      errors[ :base] << I18n.t( "booking.error.court_mismatch",
-                     user: user.inspect, court_session: court_session.inspect)
-    end
-  end
-  private :within_one_court
 
   def destroy_cancelled_booking
     cancelled = CancelledBooking.find_by_court_session_id_and_user_id(
