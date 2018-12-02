@@ -30,7 +30,35 @@ describe "User pages", :type => :request do
     end
 
     context "with invalid information" do
-      it "should not create a user" do
+
+      before :each do
+        select  @court.name,     from: "user_court"
+        fill_in "user_name",     with: "Example User"
+        fill_in "user_email",    with: "user@example.com"
+        fill_in "user_password", with: "foobar"
+        fill_in "user_password_confirmation", with: "foobar"
+      end
+
+      it "should require user name" do
+        fill_in "user_name", with: ""
+        expect{ click_button t( "users.new.save")}.not_to change User, :count
+      end
+
+      it "should require email" do
+        fill_in "user_email", with: ""
+        expect{ click_button t( "users.new.save")}.not_to change User, :count
+      end
+
+      it "should require password" do
+        fill_in "user_password", with: ""
+        fill_in "user_password_confirmation", with: ""
+        expect{ click_button t( "users.new.save")}.not_to change User, :count
+      end
+
+      it "should require password confirmation" do
+        fill_in "user_password_confirmation", with: ""
+        expect{ click_button t( "users.new.save")}.not_to change User, :count
+        fill_in "user_password_confirmation", with: "foobaz"
         expect{ click_button t( "users.new.save")}.not_to change User, :count
       end
     end
@@ -68,6 +96,14 @@ describe "User pages", :type => :request do
       it "should create a user" do
         expect{ click_button t( "users.new.save")
               }.to change( User, :count).by( 1)
+      end
+
+      it "should remove all whitespace from email" do
+        fill_in "user_email", with: "user@\n  exa\tmple.com "
+        expect do
+            click_button t( "users.new.save")
+        end.to change( User, :count).by( 1)
+        expect( User.find_by( email: "user@example.com")).not_to be_nil
       end
 
       context "after saving the user" do

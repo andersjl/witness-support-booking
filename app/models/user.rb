@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   validates :password_confirmation, presence: true
   validates :role, presence: true, inclusion: { in: USER_ROLES}
 
-  before_save{ |user| user.email = email.downcase}
+  before_save{ |user| user.email = email.downcase.gsub( /\s+/, "")}
   before_save :create_remember_token
 
   belongs_to :court

@@ -17,7 +17,7 @@ class UserSessionsController < ApplicationController
 
   def create
     user = User.find_by_email_and_court_id(
-                  params[ :user_session][ :email].downcase,
+                  params[ :user_session][ :email].downcase.gsub( /\s+/, ""),
                   params[ :user_session][ :court_id])
     if user && master? && !user.master?
       spoof user

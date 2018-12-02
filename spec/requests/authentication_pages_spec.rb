@@ -47,7 +47,10 @@ describe "Authentication pages" do
       end
     end
 
-    before{ visit log_in_path}
+    before do
+      create_test_court( name: "Domstol", count: 3)
+      visit log_in_path
+    end
 
     context "with invalid information" do
       before{ click_button t( "general.log_in")}
@@ -62,8 +65,20 @@ describe "Authentication pages" do
     end
 
     context "with valid information" do
-      before{ create_test_court :name => "Domstol", :count => 3}
       USER_ROLES.each{ |role| test_log_in role}
+    end
+
+    it "should remove all whitespace from email" do
+      user  = create_test_user(
+          court:    Court.find_by( name: 'Domstol 1'),
+          email:    "user@example.com",
+          password: 'foobar',
+        )
+      select(  'Domstol 1', from:       "user_session_court_id")
+      fill_in( "user_session_email",    with: "user@\n  exa\tmple.com ")
+      fill_in( "user_session_password", with: "foobar")
+      click_button( t( "general.log_in"))
+      should have_link( user.name, href: user_path( user))
     end
   end
 
