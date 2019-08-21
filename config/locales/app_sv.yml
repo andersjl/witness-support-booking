@@ -220,7 +220,7 @@ sv:
       erase:
         caps: RADERA HELA DATABASEN
     show:
-      file_name: vittnesstöd_databas
+      file_name: vittnesstod_databas
   user_sessions:
     create:
       error: ogiltig kombination av domstol, mejladress och lösenord
