@@ -27,6 +27,7 @@ group :production do
 end
 
 group :assets do
+  gem 'sprockets', '~>3.0'
   gem 'sassc-rails'
   gem 'coffee-rails'
   gem 'uglifier'
