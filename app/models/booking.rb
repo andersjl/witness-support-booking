@@ -36,8 +36,10 @@ include ValidateWithinOneCourt
   def not_overbooked
     return unless court_session  # handled by other validation
     if court_session.fully_booked?
-      errors[ :base] << I18n.t( "booking.error.full",
-                                court_session: court_session.inspect)
+      errors.add(
+        :base,
+        I18n.t( "booking.error.full", court_session: court_session.inspect)
+      )
     end
   end
   private :not_overbooked

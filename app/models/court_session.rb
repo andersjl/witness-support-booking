@@ -23,9 +23,14 @@ class CourtSession < ActiveRecord::Base
   validates_each :date do |record, attr, val|
     next unless val
     if val.cwday > 5
-      record.errors[ attr] <<
-        I18n.t( "court_day.error.weekend", date: record.date,
-                dow: t( "date.day_names")[ record.date.cwday % 7])
+      record.errors.add(
+        attr,
+        I18n.t(
+          "court_day.error.weekend",
+          date: record.date,
+          dow: t( "date.day_names")[ record.date.cwday % 7],
+        ),
+      )
     end
   end
   validates :start,
@@ -75,8 +80,10 @@ class CourtSession < ActiveRecord::Base
   def error_unless_reason_to_exist
     return unless need
     unless reason_to_exist?
-      errors[ :need] << I18n.t( "court_session.error.no_reason_to_exist",
-                                session: inspect)
+      errors.add(
+        :need,
+        I18n.t( "court_session.error.no_reason_to_exist", session: inspect)
+      )
     end
   end
   private :error_unless_reason_to_exist
