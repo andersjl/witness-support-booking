@@ -54,8 +54,13 @@
 <%    if enabled? %>
         &nbsp;
         <%= link_to t( "court_days.index.title.weeks"), court_days_path %>
-        &nbsp; <%= link_to t( "users.index.title"), users_path %>
-<%    end
+        &nbsp;
+<%      if admin? %>
+          <%= link_to t( "users.index.title"), users_path %>
+<%      else %>
+          <%= link_to( current_user.name, user_path( current_user)) %>
+<%      end
+      end
     else %>
         <%= link_to t( "general.log_in"), log_in_path %>
         &nbsp; <%= link_to t( "general.help.short"), help_path %>
