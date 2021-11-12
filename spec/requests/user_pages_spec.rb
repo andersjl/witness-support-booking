@@ -98,6 +98,24 @@ describe "User pages", :type => :request do
               }.to change( User, :count).by( 1)
       end
 
+      it "should resurrect a zombie" do
+        user = create_test_user email: "user@example.com"
+        session = create_test_court_session(
+          court: @court,
+          date: Date.yesterday,
+        )
+        booking = Booking.new(
+          user: user,
+          court_session: session,
+          booked_at: Date.yesterday - 1,
+        )
+        booking.save
+        user.invalidate
+        click_button t( "users.new.save")
+        user.reload
+        user.zombie.should be false
+      end
+
       it "should remove all whitespace from email" do
         fill_in "user_email", with: "user@\n  exa\tmple.com "
         expect do

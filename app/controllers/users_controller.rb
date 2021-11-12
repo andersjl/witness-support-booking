@@ -27,12 +27,17 @@ extend Authorization
   end
 
   def create
-    user = User.new
+    user = User.find_by_court_id_and_email_and_zombie(
+      params[:user][:court],
+      params[:user][:email].downcase.gsub( /\s+/, ""),
+      true,
+    ) || User.new
     user.court_id              = params[ :user][ :court]
     user.email                 = params[ :user][ :email]
     user.name                  = params[ :user][ :name]
     user.password              = params[ :user][ :password]
     user.password_confirmation = params[ :user][ :password_confirmation]
+    user.zombie                = false
     if user.save
       log_in user
       flash[ :success] = t( "user.created", name: user.name)
