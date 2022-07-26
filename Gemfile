@@ -10,6 +10,7 @@ gem 'turbolinks'
 gem 'json'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
+gem 'puma'
 
 group :development, :test do
   gem 'sqlite3'
