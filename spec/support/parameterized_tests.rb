@@ -226,9 +226,8 @@ def verify_reachable_trigger( action, method, target)
     args[ :id] = :any_id
   end
   send method, action,
-    { params:  args,
-      session: { remember_token: @user && @user.remember_token}
-    }
+    params:  args,
+    session: { remember_token: @user && @user.remember_token}
 end
 
 def get_tested_member( block)

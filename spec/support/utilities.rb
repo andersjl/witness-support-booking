@@ -1,6 +1,6 @@
 
 def t( key, opts = { })
-  I18n.translate key, opts
+  I18n.translate key, **opts
 end
 
 def not_fatal( reason)
